@@ -2,26 +2,20 @@
   <!-- Full lockup for DARK backgrounds: cream wordmark. Mark + two-line wordmark.
        Wordmark is set in the display font; if Clash Display isn't loaded it
        falls back gracefully. For pixel-exact wordmark use the source PNG. -->
-  <defs>
-    <mask id="lockup-d-bite">
-      <rect width="130" height="130" fill="#fff"/>
-      <circle cx="73" cy="38" r="16" fill="#000"/>
-    </mask>
-  </defs>
-
   <!-- Mark -->
   <g transform="translate(4,8)">
     <path d="M80 24 H110 L131 45 V75 L110 96 H80 L59 75 V45 Z"
       stroke="#3FD9C0" stroke-width="8" stroke-linejoin="round" fill="none"/>
-    <g mask="url(#lockup-d-bite)">
-      <circle cx="44" cy="60" r="35" fill="#A974E8"/>
-    </g>
+    <!-- Bite painted as a navy circle over the disc (not an SVG <mask>): robust
+         under GPU compositing, where mask refs can fail to paint. -->
+    <circle cx="42" cy="60" r="44" fill="#A974E8"/>
+    <circle cx="76" cy="33" r="20" fill="#11112e"/>
     <g fill="#F5EFE6">
-      <circle cx="31" cy="53" r="4.4"/>
-      <circle cx="52" cy="50" r="3.7"/>
-      <circle cx="37" cy="73" r="4.8"/>
-      <circle cx="56" cy="71" r="3.9"/>
-      <circle cx="45" cy="62" r="2.9"/>
+      <circle cx="25" cy="51" r="5.5"/>
+      <circle cx="50" cy="47" r="4.6"/>
+      <circle cx="31" cy="74" r="6"/>
+      <circle cx="57" cy="71" r="4.9"/>
+      <circle cx="42" cy="61" r="3.6"/>
     </g>
     <g fill="#A974E8">
       <circle cx="80" cy="47" r="2.6"/>

@@ -1,7 +1,7 @@
 ---
 /**
  * TokenSide — "Machine Intelligence"
- * The Token half: AI workflows, automation, custom tech stack, AI SaaS, measurement.
+ * The Token half: AI workflows, automation, software development, AI SaaS, measurement.
  * Dark navy; teal accents. Intentional mirror of CookieSide layout.
  */
 
@@ -32,18 +32,12 @@ const services = [
   },
   {
     number: "05",
-    title: "Custom Tech Stack",
-    desc: "The right tools, connected and working together. We select, integrate, and maintain the AI stack that fits your team, not the one that's trending.",
-    tags: ["Tool Selection", "Integration", "Maintenance", "Training"],
+    title: "Custom Software & AI Stack",
+    desc: "When off-the-shelf falls short, we build it. Bespoke internal tools, dashboards, and integrations, plus the AI stack to run them, engineered around your operation to remove manual work and drive measurable operational gains.",
+    tags: ["Internal Tools", "Integrations", "Dashboards", "AI Stack"],
   },
   {
     number: "06",
-    title: "AI Software & Copilots",
-    desc: "From image generation to LLM copilots to internal knowledge bases. We implement and optimize the AI software layer across your entire organization.",
-    tags: ["LLM Copilots", "Image Gen", "Knowledge Bases", "Custom GPTs"],
-  },
-  {
-    number: "07",
     title: "Measurement",
     desc: "Attribution, analytics, and the metrics that actually reflect performance, creative and operational. Know what's working across every department, iterate faster.",
     tags: ["Attribution", "Dashboards", "Analytics", "A/B Testing"],
@@ -65,7 +59,7 @@ const services = [
     </h2>
     <p class="token-side__sub">
       AI isn't magic. It's infrastructure. We build the workflows,
-      automation, and tech stack that make your entire organization faster:
+      automation, and software that make your entire organization faster:
       creative production, operations, revenue, back office. Everything
       that compounds when the friction disappears.
     </p>
@@ -234,7 +228,7 @@ const services = [
 </style>
 
 <script>
-  import { gsap } from "../lib/gsap";
+  import { reveal } from "../lib/reveal";
   import { prefersReducedMotion, isCoarsePointer } from "../lib/motion";
 
   const root = document.querySelector<HTMLElement>("[data-token-side]");
@@ -243,18 +237,7 @@ const services = [
   function initTokenSide(root: HTMLElement) {
     const cards = Array.from(root.querySelectorAll<HTMLElement>("[data-token-card]"));
 
-    gsap.from(cards, {
-      opacity: 0,
-      y: 40,
-      stagger: 0.08,
-      duration: 0.7,
-      ease: "power2.out",
-      scrollTrigger: {
-        trigger: root.querySelector(".token-side__grid"),
-        start: "top 78%",
-        once: true,
-      },
-    });
+    reveal(cards, { trigger: root.querySelector(".token-side__grid") });
 
     if (prefersReducedMotion() || isCoarsePointer()) return;
 

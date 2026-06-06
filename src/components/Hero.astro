@@ -32,16 +32,16 @@ const paths = [
     desc: "Where craft meets machine. And outcomes follow.",
     target: "#collision",
     cursor: "link",
-    cursorLabel: "All",
+    cursorLabel: "Overlap",
   },
   {
     key: "token",
     eyebrow: "The Token",
     title: "Machine Intelligence",
-    desc: "AI Workflows · Revenue Ops · Automation · Tech Stack",
+    desc: "AI Workflows · Revenue Ops · Automation · Software Development",
     target: "#token",
     cursor: "token",
-    cursorLabel: "Tech",
+    cursorLabel: "Machine",
   },
 ] as const;
 ---
@@ -57,13 +57,15 @@ const paths = [
     <p class="eyebrow hero__brand">Cookies &amp; Tokens</p>
 
     <h1 class="hero__headline">
-      From campaign to<br />
-      <span class="text-gradient-overlap">cashflow. AI native.</span>
+      The taste of a studio.<br />
+      <span class="text-gradient-overlap">The speed of a machine.</span>
     </h1>
 
     <p class="hero__sub">
-      We pair the best creatives with the smartest AI, building the brand, content,
-      and revenue engines that drive growth. Not cheaper. Better, faster, leaner.
+      We pair human creatives with AI to build brand, content, software, and
+      revenue engines that compound. Design, code, and automation under one
+      roof. Human craft, machine intelligence, one studio, driving value no one
+      thought possible.
     </p>
 
     <!-- The interactive stage = the navigation -->
@@ -200,8 +202,13 @@ const paths = [
   /* ---------- Stage ---------- */
   .hero__stage {
     position: relative;
+    --stage-h: clamp(200px, 30vh, 320px);
+    /* Square shapes are capped well below the stage height so that the resting
+       body plus its motion budget (parallax ≤26px + idle float + 1.08 pop)
+       still stays inside the box and never overlaps the surrounding copy. */
+    --shape-size: calc(var(--stage-h) - 56px);
     width: min(92vw, 540px);
-    height: clamp(200px, 30vh, 320px);
+    height: var(--stage-h);
     margin-block: clamp(0.25rem, 1.5vh, 1rem);
   }
   .hero__prompt {
@@ -231,18 +238,23 @@ const paths = [
       opacity var(--duration-base) var(--ease-out-soft),
       filter var(--duration-base) var(--ease-out-soft);
   }
+  /* Box widths kept near-equal so the cookie disc reads the same (a touch
+     larger) size as the token octagon, which fills slightly less of its box. */
   .hero__shape--cookie {
     left: 0;
-    width: 58%;
+    width: 56%;
     z-index: 2;
   }
   .hero__shape--token {
     right: 0;
-    width: 54%;
+    width: 55%;
     z-index: 1;
   }
+  /* The SVGs are square (1:1). Cap the rendered size by BOTH the box width
+     and the stage height so a shape can never grow taller than the stage and
+     bleed into the sub / caption rows above and below it. */
   .hero__shape-inner {
-    width: min(100%, 300px);
+    width: min(100%, var(--shape-size, 300px));
     will-change: transform;
   }
   .hero__shape-inner :global(svg) {
@@ -466,7 +478,7 @@ const paths = [
   /* Tighten composition on short / small viewports */
   @media (max-height: 720px) {
     .hero__stage {
-      height: clamp(170px, 26vh, 240px);
+      --stage-h: clamp(170px, 26vh, 240px);
     }
   }
 

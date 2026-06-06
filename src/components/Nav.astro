@@ -42,17 +42,20 @@ const links = [
     top: 0;
     inset-inline: 0;
     z-index: 1000;
-    translate: 0 -100%;
+    /* Hidden by default. Uses `transform` (not the `translate` property) so the
+       GSAP show/hide tweens — which write to `transform` — override this cleanly
+       instead of stacking on top of a separate `translate` property. */
+    transform: translateY(-100%);
     opacity: 0;
-    will-change: translate, opacity;
-    /* transition handled by GSAP; CSS fallback for reduced-motion */
+    will-change: transform, opacity;
+    /* transition handled by GSAP; this CSS fallback drives the reduced-motion path */
     transition:
-      translate 0.4s cubic-bezier(0.22, 1, 0.36, 1),
+      transform 0.4s cubic-bezier(0.22, 1, 0.36, 1),
       opacity   0.4s cubic-bezier(0.22, 1, 0.36, 1);
   }
 
   .site-nav.is-visible {
-    translate: 0 0;
+    transform: translateY(0);
     opacity: 1;
   }
 
@@ -188,8 +191,10 @@ const links = [
       });
     };
 
-    // Start hidden (reset any residual GSAP state).
-    gsap.set(nav, { y: "-100%", opacity: 0 });
+    // Start hidden. Under reduced motion we drive purely via the `.is-visible`
+    // class (CSS), so we must NOT leave an inline GSAP transform behind — it
+    // would override the class. The CSS default already hides the nav.
+    if (!reduced) gsap.set(nav, { y: "-100%", opacity: 0 });
 
     const obs = new IntersectionObserver(
       ([entry]) => (entry.isIntersecting ? hide() : show()),

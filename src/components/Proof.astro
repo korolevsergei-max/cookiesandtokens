@@ -6,10 +6,10 @@
  */
 
 const stats = [
-  { value: "3×",  label: "faster from brief to live",         accent: "teal"   },
-  { value: "60%", label: "more creative routes explored",      accent: "purple" },
-  { value: "40%", label: "operational overhead eliminated",    accent: "teal"   },
-  { value: "100%",label: "human reviewed before it ships",     accent: "purple" },
+  { value: "3×",  label: "the target from brief to live",       accent: "teal"   },
+  { value: "60%", label: "wider creative exploration, by design", accent: "purple" },
+  { value: "40%", label: "operational overhead we engineer out", accent: "teal"   },
+  { value: "100%",label: "human reviewed before it ships",       accent: "purple" },
 ];
 
 const marqueeItems = [
@@ -28,14 +28,14 @@ const marqueeItems = [
   aria-labelledby="proof-title"
 >
   <div class="proof__content section-shell">
-    <p class="eyebrow proof__eyebrow">What Good Looks Like</p>
+    <p class="eyebrow proof__eyebrow">The Standard We Hold</p>
     <h2 id="proof-title" class="proof__headline">
       Outcomes, not&nbsp;<span class="proof__accent">outputs.</span>
     </h2>
     <p class="proof__sub">
-      These are the benchmarks our model is engineered to hit. We measure
-      time to live, creative range, and operational efficiency. Not
-      vanity metrics.
+      These are the targets every engagement is built to hit, not averages
+      we are quoting back at you. Time to live, creative range, operational
+      efficiency. The numbers that move the business, never vanity metrics.
     </p>
 
     <dl class="proof__stats" data-proof-stats>
@@ -51,7 +51,7 @@ const marqueeItems = [
   </div>
 
   <!-- Scrolling discipline marquee -->
-  <div class="proof__marquee" aria-label="Our disciplines" role="marquee">
+  <div class="proof__marquee" role="group" aria-label="Our disciplines">
     <div class="proof__marquee-track" aria-hidden="true">
       <!-- Duplicated for seamless loop -->
       {[...marqueeItems, ...marqueeItems].map((item) => (
@@ -232,7 +232,7 @@ const marqueeItems = [
 </style>
 
 <script>
-  import { gsap } from "../lib/gsap";
+  import { reveal, countUp } from "../lib/reveal";
   import { prefersReducedMotion } from "../lib/motion";
 
   const root = document.querySelector<HTMLElement>("[data-proof]");
@@ -241,20 +241,19 @@ const marqueeItems = [
   function initProof(root: HTMLElement) {
     if (prefersReducedMotion()) return;
 
-    gsap.from(root.querySelectorAll(".proof__headline, .proof__sub"), {
-      opacity: 0, y: 30, stagger: 0.12, duration: 0.7, ease: "power2.out",
-      scrollTrigger: { trigger: root, start: "top 72%", once: true },
+    reveal(root.querySelectorAll<HTMLElement>(".proof__headline, .proof__sub"), {
+      trigger: root,
     });
 
+    const statsWrap = root.querySelector<HTMLElement>("[data-proof-stats]");
     const stats = Array.from(root.querySelectorAll<HTMLElement>("[data-stat]"));
-    gsap.from(stats, {
-      opacity: 0, y: 36, scale: 0.94,
-      stagger: 0.1, duration: 0.65, ease: "back.out(1.4)",
-      scrollTrigger: {
-        trigger: root.querySelector("[data-proof-stats]"),
-        start: "top 78%",
-        once: true,
-      },
+    reveal(stats, { trigger: statsWrap, pop: true });
+
+    // Count each stat up from zero as the row scrolls in — the detail that
+    // makes the numbers feel earned rather than printed.
+    stats.forEach((stat) => {
+      const value = stat.querySelector<HTMLElement>(".proof__stat-value");
+      if (value) countUp(value, { trigger: statsWrap });
     });
   }
 </script>

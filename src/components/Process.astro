@@ -17,13 +17,13 @@ const steps = [
     num: "02",
     accent: "teal",
     title: "Build the system",
-    body: "We design the workflows, tools, and AI stack that power the work. Creative and operational, custom to your team, your voice, your constraints. Infrastructure first, so the ideas can fly.",
+    body: "We design the workflows, tools, and AI stack that power the work. Creative and operational, custom to your team, your voice, your constraints. Infrastructure first, so the work moves.",
     tags: ["Workflow Design", "AI Stack", "Ops Automation", "Integration"],
   },
   {
     num: "03",
     accent: "purple",
-    title: "Supercharge",
+    title: "Amplify",
     body: "Elite creatives, amplified by AI at every step. Faster briefs. Wider exploration. Leaner operations. And real human oversight on everything that ships.",
     tags: ["Creative Production", "AI Amplification", "Quality Review"],
   },
@@ -259,7 +259,8 @@ const steps = [
 </style>
 
 <script>
-  import { gsap } from "../lib/gsap";
+  import { gsap, ease } from "../lib/gsap";
+  import { reveal } from "../lib/reveal";
   import { prefersReducedMotion } from "../lib/motion";
 
   const root = document.querySelector<HTMLElement>("[data-process]");
@@ -268,23 +269,18 @@ const steps = [
   function initProcess(root: HTMLElement) {
     if (prefersReducedMotion()) return;
 
-    gsap.from(root.querySelector(".process__header"), {
-      opacity: 0, y: 30, duration: 0.7, ease: "power2.out",
-      scrollTrigger: { trigger: root, start: "top 72%", once: true },
-    });
+    reveal(root.querySelector(".process__header"));
 
+    // Steps keep their signature alternating slide-in, but on the shared
+    // ease + trigger line so the rhythm matches the rest of the page.
     const steps = Array.from(root.querySelectorAll<HTMLElement>("[data-step]"));
     steps.forEach((step, i) => {
       gsap.from(step, {
         opacity: 0,
-        x: i % 2 === 0 ? -30 : 30,
-        duration: 0.6,
-        ease: "power2.out",
-        scrollTrigger: {
-          trigger: step,
-          start: "top 80%",
-          once: true,
-        },
+        x: i % 2 === 0 ? -32 : 32,
+        duration: 0.8,
+        ease: ease.reveal,
+        scrollTrigger: { trigger: step, start: "top 80%", once: true },
       });
     });
   }

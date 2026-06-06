@@ -15,7 +15,7 @@ import logoLockupDarkRaw from "../assets/logo-lockup-dark.svg?raw";
   aria-labelledby="cta-title"
 >
   <div class="cta__inner">
-    <p class="eyebrow cta__eyebrow">Your Move</p>
+    <p class="eyebrow cta__eyebrow">Let's Talk</p>
 
     <h2 id="cta-title" class="cta__headline">
       Let's bake<br />
@@ -164,6 +164,11 @@ import logoLockupDarkRaw from "../assets/logo-lockup-dark.svg?raw";
   .cta__btn:hover {
     transform: translateY(-2px);
   }
+  /* Pressed: settle back down for a physical, tactile click. */
+  .cta__btn:active {
+    transform: translateY(0) scale(0.98);
+    transition-duration: 0.08s;
+  }
   .cta__btn--primary {
     background: var(--gradient-overlap);
     color: var(--color-navy);
@@ -206,6 +211,7 @@ import logoLockupDarkRaw from "../assets/logo-lockup-dark.svg?raw";
 
 <script>
   import { gsap } from "../lib/gsap";
+  import { reveal } from "../lib/reveal";
   import { prefersReducedMotion } from "../lib/motion";
 
   const root = document.querySelector<HTMLElement>("[data-cta]");
@@ -214,11 +220,7 @@ import logoLockupDarkRaw from "../assets/logo-lockup-dark.svg?raw";
   function initCTA(root: HTMLElement) {
     if (prefersReducedMotion()) return;
 
-    const inner = root.querySelector<HTMLElement>(".cta__inner");
-    gsap.from(inner, {
-      opacity: 0, y: 40, duration: 0.9, ease: "power2.out",
-      scrollTrigger: { trigger: root, start: "top 68%", once: true },
-    });
+    reveal(root.querySelector<HTMLElement>(".cta__inner"), { trigger: root });
 
     // Lockup subtle float
     const lockup = root.querySelector<HTMLElement>("[data-cta-lockup]");

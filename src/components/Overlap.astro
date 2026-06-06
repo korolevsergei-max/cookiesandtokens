@@ -357,7 +357,7 @@ const regions = [
 </style>
 
 <script>
-  import { gsap } from "../lib/gsap";
+  import { reveal } from "../lib/reveal";
   import { prefersReducedMotion } from "../lib/motion";
 
   const root = document.querySelector<HTMLElement>("[data-overlap]");
@@ -401,16 +401,10 @@ const regions = [
       });
     });
 
-    // Scroll reveal
+    // Scroll reveal — header on the shared recipe; the venn gets the emphasis pop.
     if (!prefersReducedMotion()) {
-      gsap.from(root.querySelector(".overlap__header"), {
-        opacity: 0, y: 40, duration: 0.7, ease: "power2.out",
-        scrollTrigger: { trigger: root, start: "top 72%", once: true },
-      });
-      gsap.from(venn, {
-        opacity: 0, scale: 0.92, duration: 0.8, ease: "back.out(1.4)", delay: 0.15,
-        scrollTrigger: { trigger: root, start: "top 72%", once: true },
-      });
+      reveal(root.querySelector(".overlap__header"), { trigger: root });
+      reveal(venn, { trigger: root, pop: true, delay: 0.15 });
     }
   }
 </script>

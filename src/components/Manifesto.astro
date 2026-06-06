@@ -21,19 +21,18 @@
     <p class="eyebrow manifesto__eyebrow">The Manifesto</p>
 
     <h2 id="manifesto-title" class="manifesto__headline" data-manifesto-headline>
-      We don't replace the best&nbsp;people.
-      We give them&nbsp;<span class="text-gradient-overlap">leverage.</span>
+      We pair the best people with AI to
+      supercharge&nbsp;<span class="text-gradient-overlap">everything.</span>
     </h2>
 
     <div class="manifesto__body" data-manifesto-body>
       <p>
-        Top tier strategists, writers, and creative directors, wired into
-        AI at every stage. Not a shortcut. A compounding advantage that
-        gets sharper with every project.
+        Elite strategists, marketers, and engineers, wired into AI across
+        the entire build. Creative, growth, and software, all on one&nbsp;system.
       </p>
       <p>
-        Faster cycles. Wider exploration. Frictionless operations. And the
-        human judgment to know what actually&nbsp;ships.
+        The result compounds. More performance, more creativity, faster
+        cycles, and the human judgment to decide what actually&nbsp;ships.
       </p>
     </div>
   </div>
@@ -101,15 +100,34 @@
 
   .manifesto__headline {
     font-size: var(--text-display-lg);
-    line-height: 1.08;
+    line-height: 1.12;
     letter-spacing: var(--text-display-lg--letter-spacing);
     will-change: contents;
+    /* Give descenders ("g"/"p" in "supercharge") room: the inline-block word
+       spans below clip to a tight box, so without bottom padding the final
+       line's tails get cut by the section's overflow: clip. */
+    padding-bottom: 0.15em;
   }
 
   /* Word-reveal spans injected by JS */
   .manifesto__headline :global(.word) {
     display: inline-block;
+    /* pad + offset so transformed glyphs keep their descenders inside the box */
+    padding-bottom: 0.08em;
+    margin-bottom: -0.08em;
     will-change: opacity, transform;
+  }
+
+  /* The payoff word lives inside .text-gradient-overlap, which paints its
+     gradient and clips it to ITS OWN text. Wrapping that text in a child
+     .word span left the child as plain `color: transparent` text with no
+     background of its own — i.e. invisible. Re-apply the clipped gradient to
+     the inner word so "everything." actually renders. */
+  .manifesto__headline :global(.text-gradient-overlap .word) {
+    background: var(--gradient-overlap);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
   }
 
   .manifesto__body {
@@ -162,34 +180,59 @@
 
     const words = Array.from(headline.querySelectorAll<HTMLElement>(".word"));
 
+    // Separate the gradient payoff word ("everything.") from the setup words so
+    // it can land as its own emphasized beat. Without this, it staggers in
+    // last and the headline reads as the truncated "...supercharge" for
+    // most of the scrub.
+    const payoff = headline.querySelector<HTMLElement>(
+      ".text-gradient-overlap .word, .text-gradient-overlap"
+    );
+    const setupWords = words.filter((w) => w !== payoff);
+
     // Reduce-motion guard already returned, so build the scrub.
     const tl = gsap.timeline({
       defaults: { ease: "none" },
       scrollTrigger: {
         trigger: root,
-        start: "top 55%",
-        end: "bottom 45%",
+        start: "top 75%",
+        end: "bottom 55%",
         scrub: 1.2,
         invalidateOnRefresh: true,
       },
     });
 
-    // Words stagger in over 0–0.78 of the scrub.
-    tl.from(words, {
+    // Setup words stagger in over the first ~quarter of the scrub, so the
+    // payoff can punch in early and the COMPLETE sentence — never a dangling
+    // "...supercharge" fragment — is the resting state for most of the scroll.
+    tl.from(setupWords, {
       opacity: 0,
       y: 30,
-      stagger: 0.85 / words.length,
+      stagger: 0.22 / setupWords.length,
       ease: "power2.out",
-      duration: 0.85,
+      duration: 0.25,
     }, 0);
 
-    // Body fades in at the tail.
+    // Payoff lands right behind the last setup word and finishes by ~40% of the
+    // scrub, so the full headline holds for the entire back half.
+    if (payoff) {
+      tl.from(payoff, {
+        opacity: 0,
+        y: 40,
+        scale: 0.92,
+        transformOrigin: "left center",
+        ease: "power3.out",
+        duration: 0.2,
+      }, 0.22);
+    }
+
+    // Body fades in once the headline has landed — kept mid-scrub (not the tail)
+    // so the full copy is settled well before the section scrolls past.
     tl.from(body, {
       opacity: 0,
       y: 28,
       ease: "power2.out",
-      duration: 0.35,
-    }, 0.65);
+      duration: 0.3,
+    }, 0.5);
 
     ScrollTrigger.refresh();
   }

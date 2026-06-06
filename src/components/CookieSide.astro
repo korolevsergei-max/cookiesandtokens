@@ -10,13 +10,13 @@ const services = [
   {
     number: "01",
     title: "Brand & Identity",
-    desc: "Strategy, naming, visual identity, brand guidelines. The full system that makes you recognisable and impossible to ignore.",
+    desc: "Strategy, naming, visual identity, brand guidelines. The full system that makes you instantly recognisable and hard to copy.",
     tags: ["Strategy", "Naming", "Visual Identity", "Guidelines"],
   },
   {
     number: "02",
     title: "Content & Creative",
-    desc: "Copy that converts, visuals that stop the scroll, content calendars that hold the line. Human voice, AI amplified.",
+    desc: "Copy that earns attention, visuals with a point of view, content systems that stay consistent at volume. Human voice, AI amplified.",
     tags: ["Copywriting", "Campaign Creative", "Content Strategy", "Production"],
   },
   {
@@ -218,7 +218,7 @@ const services = [
 </style>
 
 <script>
-  import { gsap } from "../lib/gsap";
+  import { reveal } from "../lib/reveal";
   import { prefersReducedMotion, isCoarsePointer } from "../lib/motion";
 
   const root = document.querySelector<HTMLElement>("[data-cookie-side]");
@@ -227,19 +227,8 @@ const services = [
   function initCookieSide(root: HTMLElement) {
     const cards = Array.from(root.querySelectorAll<HTMLElement>("[data-cookie-card]"));
 
-    // Scroll-reveal: stagger in on enter.
-    gsap.from(cards, {
-      opacity: 0,
-      y: 40,
-      stagger: 0.1,
-      duration: 0.7,
-      ease: "power2.out",
-      scrollTrigger: {
-        trigger: root.querySelector(".cookie-side__grid"),
-        start: "top 78%",
-        once: true,
-      },
-    });
+    // Scroll-reveal: stagger in on enter (shared page recipe).
+    reveal(cards, { trigger: root.querySelector(".cookie-side__grid") });
 
     if (prefersReducedMotion() || isCoarsePointer()) return;
 

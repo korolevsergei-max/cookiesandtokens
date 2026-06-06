@@ -49,7 +49,10 @@ function CustomEaseRegistry() {
 export const ease = {
   soft: "expo.out",
   settle: "power3.inOut",
+  inOut: "power3.inOut", // alias of settle (matches --ease-in-out-soft)
   back: "back.out(1.6)",
+  reveal: "power2.out", // the canonical scroll-reveal ease (used by reveal.ts)
+  pop: "back.out(1.4)", // gentle overshoot for emphasis (stats, venn)
   linear: "none",
 } as const;
 

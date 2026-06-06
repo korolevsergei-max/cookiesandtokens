@@ -73,22 +73,19 @@
 
     <!-- Cookie (disc + chips) — in front, enters from the left -->
     <div class="collision__shape collision__cookie" data-coll="cookie">
-      <svg viewBox="0 0 100 100" role="img" aria-label="">
-        <defs>
-          <mask id="coll-bite">
-            <rect width="100" height="100" fill="#fff"></rect>
-            <circle cx="84" cy="19" r="19" fill="#000"></circle>
-          </mask>
-        </defs>
-        <g mask="url(#coll-bite)">
-          <circle cx="50" cy="51" r="40" fill="#A974E8"></circle>
+      <svg viewBox="0 0 100 100" aria-hidden="true" focusable="false">
+        <!-- Bite created using an exact SVG path rather than a <mask> or solid
+             circle hack, so it stays truly transparent while remaining robust
+             under the GSAP transforms this shape carries. -->
+        <g>
+          <path d="M 67.9657167986033 8.653417848516003 A 46 46 0 1 0 93.35671439405724 35.631352793685835 A 21.85 21.85 0 0 1 67.9657167986033 8.653417848516003 Z" fill="#A974E8" />
         </g>
         <g fill="#F5EFE6">
-          <circle cx="35" cy="44" r="5"></circle>
-          <circle cx="59" cy="40" r="4.2"></circle>
-          <circle cx="41" cy="66" r="5.6"></circle>
-          <circle cx="63" cy="63" r="4.6"></circle>
-          <circle cx="51" cy="54" r="3.4"></circle>
+          <circle cx="32.75" cy="42.95" r="5.75"></circle>
+          <circle cx="60.35" cy="38.35" r="4.83"></circle>
+          <circle cx="39.65" cy="68.25" r="6.44"></circle>
+          <circle cx="64.95" cy="64.8" r="5.29"></circle>
+          <circle cx="51.15" cy="54.45" r="3.91"></circle>
         </g>
       </svg>
     </div>
@@ -97,14 +94,14 @@
     <div class="collision__layer collision__crumbs" data-coll="crumbs" data-depth>
       <svg viewBox="0 0 100 100" fill="none">
         <g fill="#A974E8">
-          <circle cx="92" cy="31" r="3"></circle>
-          <circle cx="97" cy="22" r="2"></circle>
-          <circle cx="88" cy="11" r="2.6"></circle>
-          <circle cx="98" cy="35" r="1.8"></circle>
+          <circle cx="98.3" cy="28" r="3.45"></circle>
+          <circle cx="104.05" cy="17.65" r="2.3"></circle>
+          <circle cx="93.7" cy="5" r="2.99"></circle>
+          <circle cx="105.2" cy="32.6" r="2.07"></circle>
         </g>
         <g fill="#C39BF0">
-          <circle cx="83" cy="6" r="2.1"></circle>
-          <circle cx="94" cy="14" r="1.5"></circle>
+          <circle cx="87.95" cy="-0.75" r="2.42"></circle>
+          <circle cx="100.6" cy="8.45" r="1.72"></circle>
         </g>
       </svg>
     </div>

@@ -2,13 +2,6 @@
   <!-- The combined lockup mark: teal token (octagon) with the purple cookie
        overlapping its left edge — the Venn that the Collision scene resolves
        onto. #lockup-token and #lockup-cookie are addressable end-state targets. -->
-  <defs>
-    <mask id="mark-bite">
-      <rect width="150" height="110" fill="#fff"/>
-      <circle cx="66" cy="33" r="15.2" fill="#000"/>
-    </mask>
-  </defs>
-
   <!-- Token octagon (behind) -->
   <g id="lockup-token">
     <path d="M73 21 H100 L119 40 V67 L100 86 H73 L54 67 V40 Z"
@@ -17,15 +10,15 @@
 
   <!-- Cookie (in front, overlapping the octagon's left side) -->
   <g id="lockup-cookie">
-    <g mask="url(#mark-bite)">
-      <circle cx="40" cy="55" r="32" fill="#A974E8"/>
-    </g>
+    <!-- Bite created using an exact SVG path rather than a <mask> or solid
+         circle hack, so it stays truly transparent while remaining robust. -->
+    <path d="M 55.13169166977478 17.85438974741512 A 40 40 0 1 0 76.88713185963697 44.63031613493782 A 18 18 0 0 1 55.13169166977478 17.85438974741512 Z" fill="#A974E8" />
     <g fill="#F5EFE6">
-      <circle cx="28" cy="49" r="4"/>
-      <circle cx="47" cy="46" r="3.4"/>
-      <circle cx="33" cy="67" r="4.4"/>
-      <circle cx="51" cy="65" r="3.6"/>
-      <circle cx="41" cy="57" r="2.7"/>
+      <circle cx="22" cy="46" r="5"/>
+      <circle cx="46" cy="42" r="4.3"/>
+      <circle cx="28" cy="68" r="5.5"/>
+      <circle cx="53" cy="65" r="4.5"/>
+      <circle cx="38" cy="56" r="3.4"/>
     </g>
     <g fill="#A974E8">
       <circle cx="73" cy="43" r="2.4"/>

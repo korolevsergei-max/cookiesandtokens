@@ -27,6 +27,7 @@ const beliefs = [
   "Human taste is the moat. AI is the engine.",
   "Speed is a creative advantage. And an operational one.",
   "We never ship anything we wouldn't put our name on.",
+  "We compete on better, not cheaper.",
   "The best prompt is a great brief.",
 ];
 ---
@@ -264,7 +265,7 @@ const beliefs = [
 </style>
 
 <script>
-  import { gsap } from "../lib/gsap";
+  import { reveal } from "../lib/reveal";
   import { prefersReducedMotion } from "../lib/motion";
 
   const root = document.querySelector<HTMLElement>("[data-about]");
@@ -273,28 +274,10 @@ const beliefs = [
   function initAbout(root: HTMLElement) {
     if (prefersReducedMotion()) return;
 
-    gsap.from(root.querySelector(".about__intro"), {
-      opacity: 0, y: 30, duration: 0.7, ease: "power2.out",
-      scrollTrigger: { trigger: root, start: "top 72%", once: true },
+    reveal(root.querySelector(".about__intro"));
+    reveal(root.querySelectorAll<HTMLElement>(".about__founder"), {
+      trigger: root.querySelector("[data-founders]"),
     });
-
-    const founders = Array.from(root.querySelectorAll<HTMLElement>(".about__founder"));
-    gsap.from(founders, {
-      opacity: 0, y: 30, stagger: 0.12, duration: 0.65, ease: "power2.out",
-      scrollTrigger: {
-        trigger: root.querySelector("[data-founders]"),
-        start: "top 80%",
-        once: true,
-      },
-    });
-
-    gsap.from(root.querySelector("[data-beliefs]"), {
-      opacity: 0, y: 28, duration: 0.6, ease: "power2.out",
-      scrollTrigger: {
-        trigger: root.querySelector("[data-beliefs]"),
-        start: "top 82%",
-        once: true,
-      },
-    });
+    reveal(root.querySelector("[data-beliefs]"));
   }
 </script>
