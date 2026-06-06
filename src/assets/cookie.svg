@@ -11,7 +11,7 @@
        Disc + sub-parts scaled 1.15x about (50,51) so the cookie reads at the
        same (slightly larger) size as the token octagon. -->
   <g id="cookie-body">
-    <path d="M 67.9657167986033 8.653417848516003 A 46 46 0 1 0 93.35671439405724 35.631352793685835 A 21.85 21.85 0 0 1 67.9657167986033 8.653417848516003 Z" fill="#A974E8" />
+    <path d="M 67.97 8.65 A 46 46 0 1 0 93.36 35.63 A 21.85 21.85 0 0 1 67.97 8.65 Z" fill="#A974E8" />
   </g>
 
   <g id="cookie-chips" fill="#F5EFE6">
