@@ -1,0 +1,603 @@
+---
+/**
+ * Hero — "Choose Your Path" (signature interactive #1).
+ *
+ * Full-viewport stage where the purple cookie (human craft) and the teal token
+ * (machine) overlap into a Venn. Three hotzones — cookie / venn / token —
+ * double as the site's primary navigation: hover/focus reveals what each
+ * represents and morphs the custom cursor; click smooth-scrolls to that section.
+ *
+ * Motion (cursor parallax, idle float, active pop) is added by the client
+ * script and fully guarded for prefers-reduced-motion + coarse pointers. The
+ * markup is the accessible baseline: three real <button>s in a labelled group.
+ */
+import cookieRaw from "../assets/cookie.svg?raw";
+import tokenRaw from "../assets/token.svg?raw";
+
+// Each path: caption copy + accent + the section it navigates to.
+const paths = [
+  {
+    key: "cookie",
+    eyebrow: "The Cookie",
+    title: "Human Craft",
+    desc: "Brand · Content · Creative Strategy",
+    target: "#cookie",
+    cursor: "cookie",
+    cursorLabel: "Craft",
+  },
+  {
+    key: "venn",
+    eyebrow: "The Overlap",
+    title: "The Full Package",
+    desc: "Where craft × tech becomes outcomes",
+    target: "#collision",
+    cursor: "link",
+    cursorLabel: "All",
+  },
+  {
+    key: "token",
+    eyebrow: "The Token",
+    title: "Machine Intelligence",
+    desc: "AI Workflows · Automation · Tech Stack",
+    target: "#token",
+    cursor: "token",
+    cursorLabel: "Tech",
+  },
+] as const;
+---
+
+<section id="hero" class="hero" data-hero data-active="" aria-label="Cookies and Tokens — choose your path">
+  <!-- Ambient backdrop: octagon-dot grid + soft brand blobs -->
+  <div class="hero__bg" aria-hidden="true">
+    <span class="hero__blob hero__blob--purple"></span>
+    <span class="hero__blob hero__blob--teal"></span>
+  </div>
+
+  <div class="hero__inner">
+    <p class="eyebrow hero__brand">Cookies &amp; Tokens</p>
+
+    <h1 class="hero__headline">
+      AI-supercharged<br />
+      <span class="text-gradient-overlap">human craft.</span>
+    </h1>
+
+    <p class="hero__sub">
+      We pair the best creatives with the best AI — for better outcomes, at
+      better value. Not cheaper. Better.
+    </p>
+
+    <!-- The interactive stage = the navigation -->
+    <div class="hero__stage" data-stage role="group" aria-label="Choose your path">
+      <p class="eyebrow hero__prompt" aria-hidden="true">Choose your path</p>
+
+      <div class="hero__shapes" data-shapes aria-hidden="true">
+        <div class="hero__shape hero__shape--cookie" data-shape="cookie">
+          <div class="hero__shape-inner" set:html={cookieRaw} />
+        </div>
+        <div class="hero__shape hero__shape--token" data-shape="token">
+          <div class="hero__shape-inner" set:html={tokenRaw} />
+        </div>
+        <span class="hero__lens" data-lens></span>
+      </div>
+
+      <!-- Hotzones: real buttons, tile the stage left → center → right -->
+      <div class="hero__zones">
+        {
+          paths.map((p) => (
+            <button
+              type="button"
+              class:list={["hero__zone", `hero__zone--${p.key}`]}
+              data-zone={p.key}
+              data-target={p.target}
+              data-cursor={p.cursor}
+              data-cursor-label={p.cursorLabel}
+              aria-label={`${p.title}: ${p.desc}. Scroll to section.`}
+            >
+              <span class="hero__zone-tag">{p.title}</span>
+            </button>
+          ))
+        }
+      </div>
+    </div>
+
+    <!-- Dynamic caption: crossfades to the active path (or default prompt) -->
+    <div class="hero__caption" data-caption>
+      <p class="hero__cap" data-cap="default">
+        <span class="hero__cap-title">Two halves. One studio.</span>
+        <span class="hero__cap-desc">Hover a shape to explore — or just start scrolling.</span>
+      </p>
+      {
+        paths.map((p) => (
+          <p class="hero__cap" data-cap={p.key}>
+            <span class="hero__cap-eyebrow">{p.eyebrow}</span>
+            <span class="hero__cap-title">{p.title}</span>
+            <span class="hero__cap-desc">{p.desc}</span>
+          </p>
+        ))
+      }
+    </div>
+
+    <a href="#manifesto" class="hero__scrollcue" data-cursor="link" data-scrollcue>
+      <span>Scroll</span>
+      <span class="hero__scrollcue-line" aria-hidden="true"></span>
+    </a>
+  </div>
+</section>
+
+<style>
+  .hero {
+    position: relative;
+    min-height: 100svh;
+    display: grid;
+    place-items: center;
+    padding-inline: var(--spacing-gutter);
+    padding-block: clamp(4rem, 8vh, 6rem);
+    overflow: clip;
+    isolation: isolate;
+  }
+
+  /* ---------- Ambient backdrop ---------- */
+  .hero__bg {
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    pointer-events: none;
+    /* faint octagon-dot grid */
+    background-image: radial-gradient(
+      color-mix(in srgb, var(--color-cream) 8%, transparent) 1px,
+      transparent 1.4px
+    );
+    background-size: 26px 26px;
+    -webkit-mask-image: radial-gradient(120% 80% at 50% 42%, #000 35%, transparent 78%);
+    mask-image: radial-gradient(120% 80% at 50% 42%, #000 35%, transparent 78%);
+  }
+  .hero__blob {
+    position: absolute;
+    width: 46vmax;
+    height: 46vmax;
+    border-radius: 50%;
+    filter: blur(90px);
+    opacity: 0.28;
+    will-change: transform;
+  }
+  .hero__blob--purple {
+    top: -14vmax;
+    left: -10vmax;
+    background: radial-gradient(circle, var(--color-purple) 0%, transparent 65%);
+  }
+  .hero__blob--teal {
+    bottom: -16vmax;
+    right: -12vmax;
+    background: radial-gradient(circle, var(--color-teal) 0%, transparent 65%);
+  }
+
+  /* ---------- Layout ---------- */
+  .hero__inner {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: clamp(1rem, 2.4vh, 1.75rem);
+    width: 100%;
+    max-width: 64rem;
+  }
+  .hero__brand {
+    color: color-mix(in srgb, var(--color-cream) 60%, transparent);
+  }
+  .hero__headline {
+    font-size: var(--text-display-lg);
+    line-height: var(--text-display-lg--line-height);
+    letter-spacing: var(--text-display-lg--letter-spacing);
+    font-weight: 600;
+  }
+  .hero__sub {
+    max-width: 36rem;
+    font-size: var(--text-lead);
+    line-height: var(--text-lead--line-height);
+    color: color-mix(in srgb, var(--color-cream) 72%, transparent);
+  }
+
+  /* ---------- Stage ---------- */
+  .hero__stage {
+    position: relative;
+    width: min(92vw, 540px);
+    height: clamp(200px, 30vh, 320px);
+    margin-block: clamp(0.25rem, 1.5vh, 1rem);
+  }
+  .hero__prompt {
+    position: absolute;
+    inset-inline: 0;
+    top: -1.5rem;
+    color: color-mix(in srgb, var(--color-cream) 38%, transparent);
+    transition: opacity var(--duration-base) var(--ease-out-soft);
+  }
+  [data-hero]:not([data-active=""]) .hero__prompt {
+    opacity: 0;
+  }
+
+  .hero__shapes {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+  }
+  .hero__shape {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    display: grid;
+    place-items: center;
+    will-change: transform;
+    transition:
+      opacity var(--duration-base) var(--ease-out-soft),
+      filter var(--duration-base) var(--ease-out-soft);
+  }
+  .hero__shape--cookie {
+    left: 0;
+    width: 58%;
+    z-index: 2;
+  }
+  .hero__shape--token {
+    right: 0;
+    width: 54%;
+    z-index: 1;
+  }
+  .hero__shape-inner {
+    width: min(100%, 300px);
+    will-change: transform;
+  }
+  .hero__shape-inner :global(svg) {
+    width: 100%;
+    height: auto;
+    display: block;
+  }
+
+  /* Gradient lens sitting in the overlap */
+  .hero__lens {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 38%;
+    aspect-ratio: 1;
+    /* Centered via margins (relative to parent width) so GSAP's transform
+       drift/scale composes without fighting a CSS translate. */
+    margin-left: -19%;
+    margin-top: -19%;
+    border-radius: 50%;
+    background: var(--gradient-overlap);
+    filter: blur(26px);
+    opacity: 0.22;
+    z-index: 3;
+    mix-blend-mode: screen;
+    will-change: opacity, transform;
+    transition: opacity var(--duration-slow) var(--ease-out-soft);
+  }
+
+  /* Active-state glow / dim — keyed off the hero root data-active */
+  [data-hero][data-active="cookie"] .hero__shape--cookie {
+    filter: drop-shadow(0 0 34px color-mix(in srgb, var(--color-purple) 60%, transparent));
+  }
+  [data-hero][data-active="cookie"] .hero__shape--token {
+    opacity: 0.4;
+    filter: saturate(0.6) brightness(0.85);
+  }
+  [data-hero][data-active="token"] .hero__shape--token {
+    filter: drop-shadow(0 0 34px color-mix(in srgb, var(--color-teal) 60%, transparent));
+  }
+  [data-hero][data-active="token"] .hero__shape--cookie {
+    opacity: 0.4;
+    filter: saturate(0.6) brightness(0.85);
+  }
+  [data-hero][data-active="venn"] .hero__shape {
+    filter: drop-shadow(0 0 26px color-mix(in srgb, var(--color-purple) 30%, transparent));
+  }
+  [data-hero][data-active="venn"] .hero__lens {
+    opacity: 0.9;
+  }
+
+  /* ---------- Hotzones ---------- */
+  .hero__zones {
+    position: absolute;
+    inset: 0;
+    z-index: 4;
+  }
+  .hero__zone {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    background: transparent;
+    border: 0;
+    padding: 0;
+    margin: 0;
+    appearance: none;
+  }
+  /* Tile: cookie 0–42% · venn 42–58% · token 58–100% */
+  .hero__zone--cookie {
+    left: 0;
+    width: 42%;
+  }
+  .hero__zone--venn {
+    left: 42%;
+    width: 16%;
+  }
+  .hero__zone--token {
+    left: 58%;
+    width: 42%;
+  }
+  /* Accessible label that only surfaces on keyboard focus */
+  .hero__zone-tag {
+    position: absolute;
+    inset-inline: 0;
+    bottom: -2.25rem;
+    font-size: 0.75rem;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: var(--color-cream);
+    opacity: 0;
+    transition: opacity var(--duration-fast) var(--ease-out-soft);
+    pointer-events: none;
+  }
+  .hero__zone:focus-visible {
+    outline: none;
+  }
+  .hero__zone:focus-visible .hero__zone-tag {
+    opacity: 1;
+  }
+  .hero__zone--cookie:focus-visible ~ .hero__zone .hero__zone-tag,
+  .hero__zone:focus-visible {
+    outline: none;
+  }
+  /* A ring around the active shape when its zone is keyboard-focused */
+  .hero__zone:focus-visible::before {
+    content: "";
+    position: absolute;
+    inset: 8% 8%;
+    border: 1.5px dashed color-mix(in srgb, var(--color-teal) 70%, transparent);
+    border-radius: var(--radius-card);
+  }
+
+  /* ---------- Caption ---------- */
+  .hero__caption {
+    position: relative;
+    width: 100%;
+    max-width: 34rem;
+    height: 4.25rem;
+  }
+  .hero__cap {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.15rem;
+    opacity: 0;
+    translate: 0 8px;
+    transition:
+      opacity var(--duration-base) var(--ease-out-soft),
+      translate var(--duration-base) var(--ease-out-soft);
+    pointer-events: none;
+  }
+  [data-hero][data-active=""] .hero__cap[data-cap="default"],
+  [data-hero][data-active="cookie"] .hero__cap[data-cap="cookie"],
+  [data-hero][data-active="venn"] .hero__cap[data-cap="venn"],
+  [data-hero][data-active="token"] .hero__cap[data-cap="token"] {
+    opacity: 1;
+    translate: 0 0;
+  }
+  .hero__cap-eyebrow {
+    font-size: var(--text-eyebrow);
+    letter-spacing: var(--text-eyebrow--letter-spacing);
+    text-transform: uppercase;
+    color: color-mix(in srgb, var(--color-cream) 45%, transparent);
+  }
+  .hero__cap[data-cap="cookie"] .hero__cap-eyebrow {
+    color: var(--color-purple);
+  }
+  .hero__cap[data-cap="token"] .hero__cap-eyebrow {
+    color: var(--color-teal);
+  }
+  .hero__cap[data-cap="venn"] .hero__cap-eyebrow {
+    background: var(--gradient-overlap);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+  .hero__cap-title {
+    font-family: var(--font-display);
+    font-weight: 600;
+    font-size: clamp(1.25rem, 3vw, 1.75rem);
+    line-height: 1.1;
+  }
+  .hero__cap-desc {
+    font-size: 0.95rem;
+    color: color-mix(in srgb, var(--color-cream) 60%, transparent);
+  }
+
+  /* ---------- Scroll cue ---------- */
+  .hero__scrollcue {
+    margin-top: clamp(0.5rem, 2vh, 1.5rem);
+    display: inline-flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.6rem;
+    font-size: 0.7rem;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: color-mix(in srgb, var(--color-cream) 45%, transparent);
+    text-decoration: none;
+    transition: color var(--duration-fast) var(--ease-out-soft);
+  }
+  .hero__scrollcue:hover {
+    color: var(--color-cream);
+  }
+  .hero__scrollcue-line {
+    width: 1px;
+    height: 2.5rem;
+    background: linear-gradient(
+      to bottom,
+      color-mix(in srgb, var(--color-cream) 60%, transparent),
+      transparent
+    );
+    position: relative;
+    overflow: hidden;
+  }
+  .hero__scrollcue-line::after {
+    content: "";
+    position: absolute;
+    inset-inline: 0;
+    top: -50%;
+    height: 50%;
+    background: var(--color-teal);
+    animation: hero-scroll 1.8s var(--ease-in-out-soft) infinite;
+  }
+  @keyframes hero-scroll {
+    0% {
+      transform: translateY(0);
+      opacity: 0;
+    }
+    30% {
+      opacity: 1;
+    }
+    100% {
+      transform: translateY(300%);
+      opacity: 0;
+    }
+  }
+
+  /* Tighten composition on short / small viewports */
+  @media (max-height: 720px) {
+    .hero__stage {
+      height: clamp(170px, 26vh, 240px);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .hero__scrollcue-line::after {
+      animation: none;
+    }
+  }
+</style>
+
+<script>
+  import { gsap, ease } from "../lib/gsap";
+  import { scrollTo } from "../lib/lenis";
+  import { prefersReducedMotion, isCoarsePointer } from "../lib/motion";
+
+  type ZoneKey = "cookie" | "venn" | "token";
+
+  const hero = document.querySelector<HTMLElement>("[data-hero]");
+  if (hero) initHero(hero);
+
+  function initHero(hero: HTMLElement) {
+    const stage = hero.querySelector<HTMLElement>("[data-stage]")!;
+    const cookie = hero.querySelector<HTMLElement>('[data-shape="cookie"]')!;
+    const token = hero.querySelector<HTMLElement>('[data-shape="token"]')!;
+    const lens = hero.querySelector<HTMLElement>("[data-lens]")!;
+    const cookieInner = cookie.querySelector<HTMLElement>(".hero__shape-inner")!;
+    const tokenInner = token.querySelector<HTMLElement>(".hero__shape-inner")!;
+    const zones = Array.from(
+      hero.querySelectorAll<HTMLButtonElement>("[data-zone]")
+    );
+    const scrollcue = hero.querySelector<HTMLAnchorElement>("[data-scrollcue]");
+
+    const reduced = prefersReducedMotion();
+    const coarse = isCoarsePointer();
+
+    /* ---------- Active state (hover / focus) ---------- */
+    let active: ZoneKey | "" = "";
+    const setActive = (next: ZoneKey | "") => {
+      if (active === next) return;
+      active = next;
+      hero.dataset.active = next;
+      pop();
+    };
+
+    zones.forEach((zone) => {
+      const key = zone.dataset.zone as ZoneKey;
+      zone.addEventListener("pointerenter", () => setActive(key));
+      zone.addEventListener("focus", () => setActive(key));
+      zone.addEventListener("blur", () => setActive(""));
+      zone.addEventListener("click", () => {
+        const target = zone.dataset.target;
+        if (target && document.querySelector(target)) scrollTo(target);
+      });
+    });
+    // Clearing on hover-out is stage-level so moving between zones doesn't flicker.
+    stage.addEventListener("pointerleave", () => {
+      if (!zones.some((z) => z.matches(":focus-visible"))) setActive("");
+    });
+
+    if (scrollcue) {
+      scrollcue.addEventListener("click", (e) => {
+        e.preventDefault();
+        scrollTo("#manifesto");
+      });
+    }
+
+    /* ---------- Active "pop" (scale) — JS so it composes with the float ---------- */
+    function pop() {
+      if (reduced) return;
+      const scaleFor = (k: ZoneKey) =>
+        active === k ? 1.08 : active === "venn" ? 1.03 : active === "" ? 1 : 0.95;
+      gsap.to(cookieInner, { scale: scaleFor("cookie"), duration: 0.5, ease: ease.soft });
+      gsap.to(tokenInner, { scale: scaleFor("token"), duration: 0.5, ease: ease.soft });
+    }
+
+    /* ---------- Reduced motion / touch: stop here (states still work) ---------- */
+    if (reduced) return;
+
+    /* ---------- Idle float (breathing) ---------- */
+    gsap.to(cookieInner, {
+      yPercent: -4,
+      rotation: 2.5,
+      duration: 3.6,
+      ease: "sine.inOut",
+      repeat: -1,
+      yoyo: true,
+    });
+    gsap.to(tokenInner, {
+      yPercent: 4,
+      rotation: -3,
+      duration: 4.2,
+      ease: "sine.inOut",
+      repeat: -1,
+      yoyo: true,
+      delay: 0.4,
+    });
+    gsap.to(lens, {
+      scale: 1.12,
+      duration: 5,
+      ease: "sine.inOut",
+      repeat: -1,
+      yoyo: true,
+    });
+
+    /* ---------- Cursor parallax (depth) ---------- */
+    if (coarse) return;
+
+    const qCookieX = gsap.quickTo(cookie, "x", { duration: 0.7, ease: "power3" });
+    const qCookieY = gsap.quickTo(cookie, "y", { duration: 0.7, ease: "power3" });
+    const qTokenX = gsap.quickTo(token, "x", { duration: 0.8, ease: "power3" });
+    const qTokenY = gsap.quickTo(token, "y", { duration: 0.8, ease: "power3" });
+    const qLensX = gsap.quickTo(lens, "xPercent", { duration: 0.9, ease: "power3" });
+    const qLensY = gsap.quickTo(lens, "yPercent", { duration: 0.9, ease: "power3" });
+
+    const onMove = (e: PointerEvent) => {
+      const r = hero.getBoundingClientRect();
+      const nx = (e.clientX - r.left) / r.width - 0.5; // -0.5 .. 0.5
+      const ny = (e.clientY - r.top) / r.height - 0.5;
+      // Cookie (foreground) moves more; token (background) less, slightly opposed.
+      qCookieX(nx * 34);
+      qCookieY(ny * 26);
+      qTokenX(nx * -22);
+      qTokenY(ny * 18);
+      // lens is centered by CSS margins; this is a small drift on top.
+      qLensX(nx * 6);
+      qLensY(ny * 6);
+    };
+    hero.addEventListener("pointermove", onMove, { passive: true });
+    hero.addEventListener("pointerleave", () => {
+      qCookieX(0); qCookieY(0); qTokenX(0); qTokenY(0);
+      qLensX(0); qLensY(0);
+    });
+  }
+</script>

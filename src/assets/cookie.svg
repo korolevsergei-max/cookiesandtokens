@@ -1,0 +1,36 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" role="img" aria-label="Cookie">
+  <!-- Purple cookie "cookie" = human craft side. Sub-parts are independently
+       grouped so the collision scene can parallax them at different rates:
+         #cookie-body   – the disc with a bite masked out (top-right)
+         #cookie-chips  – the light chip holes
+         #cookie-crumbs – the crumb cloud near the bite
+  -->
+  <defs>
+    <!-- Bite mask: white shows, black circle removes the bite from the disc. -->
+    <mask id="cookie-bite">
+      <rect width="100" height="100" fill="#fff"/>
+      <circle cx="84" cy="19" r="19" fill="#000"/>
+    </mask>
+  </defs>
+
+  <g id="cookie-body" mask="url(#cookie-bite)">
+    <circle cx="50" cy="51" r="40" fill="#A974E8"/>
+  </g>
+
+  <g id="cookie-chips" fill="#F5EFE6">
+    <circle cx="35" cy="44" r="5"/>
+    <circle cx="59" cy="40" r="4.2"/>
+    <circle cx="41" cy="66" r="5.6"/>
+    <circle cx="63" cy="63" r="4.6"/>
+    <circle cx="51" cy="54" r="3.4"/>
+  </g>
+
+  <g id="cookie-crumbs" fill="#A974E8">
+    <circle cx="92" cy="31" r="3"/>
+    <circle cx="97" cy="22" r="2"/>
+    <circle cx="88" cy="11" r="2.6"/>
+    <circle cx="98" cy="35" r="1.8"/>
+    <circle cx="83" cy="6" r="2.1" fill="#C39BF0"/>
+    <circle cx="94" cy="14" r="1.5" fill="#C39BF0"/>
+  </g>
+</svg>

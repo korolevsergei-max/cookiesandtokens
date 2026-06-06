@@ -1,0 +1,236 @@
+---
+/**
+ * CTA — "Let's bake something"
+ * Big closing section. Email link + calendar link + the combined lockup.
+ * Dark navy, centered, gradient headline.
+ */
+import logoLockupDarkRaw from "../assets/logo-lockup-dark.svg?raw";
+---
+
+<section
+  id="cta"
+  class="cta section-shell"
+  data-cta
+  data-tone="dark"
+  aria-labelledby="cta-title"
+>
+  <div class="cta__inner">
+    <p class="eyebrow cta__eyebrow">Let's Work Together</p>
+
+    <h2 id="cta-title" class="cta__headline">
+      Let's bake<br />
+      <span class="text-gradient-overlap">something.</span>
+    </h2>
+
+    <p class="cta__sub">
+      Whether you need craft, machine intelligence, or the full package —
+      let's talk. No decks, no demos. Just a conversation about what
+      you're building and how we can help.
+    </p>
+
+    <div class="cta__actions">
+      <a
+        href="mailto:hello@cookiesandtokens.co"
+        class="cta__btn cta__btn--primary"
+        data-cursor="link"
+      >
+        <span>Say hello</span>
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+          <path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </a>
+      <a
+        href="https://cal.com/cookiesandtokens"
+        target="_blank"
+        rel="noopener noreferrer"
+        class="cta__btn cta__btn--secondary"
+        data-cursor="link"
+      >
+        Book a 30-min intro
+      </a>
+    </div>
+
+    <div class="cta__lockup" data-cta-lockup>
+      <span class="cta__lockup-mark" set:html={logoLockupDarkRaw} />
+    </div>
+  </div>
+
+  <!-- Ambient -->
+  <div class="cta__bg" aria-hidden="true">
+    <span class="cta__blob cta__blob--purple"></span>
+    <span class="cta__blob cta__blob--teal"></span>
+    <span class="cta__grid"></span>
+  </div>
+</section>
+
+<style>
+  .cta {
+    position: relative;
+    min-height: 80vh;
+    background-color: var(--color-navy);
+    color: var(--color-cream);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    overflow: clip;
+    isolation: isolate;
+  }
+
+  .cta__bg {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+  }
+  .cta__blob {
+    position: absolute;
+    width: 52vmax;
+    height: 52vmax;
+    border-radius: 50%;
+    filter: blur(130px);
+    opacity: 0.18;
+  }
+  .cta__blob--purple {
+    top: -20vmax; left: -15vmax;
+    background: radial-gradient(circle, var(--color-purple) 0%, transparent 65%);
+  }
+  .cta__blob--teal {
+    bottom: -18vmax; right: -15vmax;
+    background: radial-gradient(circle, var(--color-teal) 0%, transparent 65%);
+  }
+  .cta__grid {
+    position: absolute;
+    inset: 0;
+    background-image: radial-gradient(
+      color-mix(in srgb, var(--color-cream) 6%, transparent) 1px,
+      transparent 1.4px
+    );
+    background-size: 28px 28px;
+    -webkit-mask-image: radial-gradient(100% 80% at 50% 50%, #000 30%, transparent 80%);
+    mask-image: radial-gradient(100% 80% at 50% 50%, #000 30%, transparent 80%);
+  }
+
+  .cta__inner {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: clamp(1.25rem, 3vh, 2rem);
+    width: 100%;
+    max-width: 52rem;
+  }
+
+  .cta__eyebrow {
+    color: color-mix(in srgb, var(--color-cream) 42%, transparent);
+  }
+  .cta__headline {
+    font-size: var(--text-display-xl);
+    line-height: var(--text-display-xl--line-height);
+    letter-spacing: var(--text-display-xl--letter-spacing);
+  }
+  .cta__sub {
+    font-size: var(--text-lead);
+    line-height: var(--text-lead--line-height);
+    color: color-mix(in srgb, var(--color-cream) 65%, transparent);
+    max-width: 34rem;
+  }
+
+  /* ---------- Actions ---------- */
+  .cta__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    justify-content: center;
+    margin-top: 0.5rem;
+  }
+  .cta__btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.8rem 1.75rem;
+    border-radius: var(--radius-pill);
+    font-size: 1rem;
+    font-weight: 500;
+    text-decoration: none;
+    transition:
+      transform   var(--duration-fast) var(--ease-out-soft),
+      background  var(--duration-fast) var(--ease-out-soft),
+      color       var(--duration-fast) var(--ease-out-soft),
+      box-shadow  var(--duration-fast) var(--ease-out-soft);
+  }
+  .cta__btn:hover {
+    transform: translateY(-2px);
+  }
+  .cta__btn--primary {
+    background: var(--gradient-overlap);
+    color: var(--color-navy);
+    box-shadow: 0 4px 24px color-mix(in srgb, var(--color-purple) 30%, transparent);
+  }
+  .cta__btn--primary:hover {
+    box-shadow: 0 6px 30px color-mix(in srgb, var(--color-purple) 45%, transparent);
+  }
+  .cta__btn--secondary {
+    background: color-mix(in srgb, var(--color-cream) 10%, transparent);
+    border: 1px solid color-mix(in srgb, var(--color-cream) 22%, transparent);
+    color: var(--color-cream);
+  }
+  .cta__btn--secondary:hover {
+    background: color-mix(in srgb, var(--color-cream) 16%, transparent);
+    border-color: color-mix(in srgb, var(--color-cream) 38%, transparent);
+  }
+
+  /* ---------- Lockup ---------- */
+  .cta__lockup {
+    margin-top: clamp(1.5rem, 4vh, 3rem);
+    opacity: 0.18;
+    will-change: opacity;
+    transition: opacity var(--duration-slow) var(--ease-out-soft);
+  }
+  .cta__lockup:hover {
+    opacity: 0.35;
+  }
+  .cta__lockup-mark {
+    display: block;
+    width: clamp(120px, 22vw, 200px);
+    height: auto;
+  }
+  .cta__lockup-mark :global(svg) {
+    width: 100%;
+    height: auto;
+    display: block;
+  }
+</style>
+
+<script>
+  import { gsap } from "../lib/gsap";
+  import { prefersReducedMotion } from "../lib/motion";
+
+  const root = document.querySelector<HTMLElement>("[data-cta]");
+  if (root) initCTA(root);
+
+  function initCTA(root: HTMLElement) {
+    if (prefersReducedMotion()) return;
+
+    const inner = root.querySelector<HTMLElement>(".cta__inner");
+    gsap.from(inner, {
+      opacity: 0, y: 40, duration: 0.9, ease: "power2.out",
+      scrollTrigger: { trigger: root, start: "top 68%", once: true },
+    });
+
+    // Lockup subtle float
+    const lockup = root.querySelector<HTMLElement>("[data-cta-lockup]");
+    if (lockup) {
+      gsap.to(lockup, {
+        y: -10,
+        duration: 4.5,
+        ease: "sine.inOut",
+        repeat: -1,
+        yoyo: true,
+        delay: 0.5,
+      });
+    }
+  }
+</script>

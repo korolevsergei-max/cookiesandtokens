@@ -1,0 +1,61 @@
+---
+import "../styles/global.css";
+
+interface Props {
+  title?: string;
+  description?: string;
+  image?: string;
+}
+
+const {
+  title = "Cookies & Tokens — AI-supercharged human craft",
+  description = "A creative agency that pairs the best people with the best AI — for better outcomes at better value.",
+  image = "/og-image.png",
+} = Astro.props;
+
+const canonical = new URL(Astro.url.pathname, Astro.site ?? Astro.url);
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="generator" content={Astro.generator} />
+
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonical} />
+    <meta name="theme-color" content="#11112E" />
+
+    <!-- Open Graph / Twitter -->
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:image" content={new URL(image, canonical)} />
+    <meta name="twitter:card" content="summary_large_image" />
+
+    <!-- Fonts: Fontshare (Clash Display + General Sans). Preconnect for speed. -->
+    <link rel="preconnect" href="https://api.fontshare.com" crossorigin />
+    <link rel="preconnect" href="https://cdn.fontshare.com" crossorigin />
+    <link
+      rel="stylesheet"
+      href="https://api.fontshare.com/v2/css?f[]=clash-display@500,600,700&f[]=general-sans@400,500,600&display=swap"
+    />
+
+    <!-- Prevent flash: set lenis class before paint (removed in reduced-motion by JS) -->
+    <script is:inline>
+      document.documentElement.classList.add("lenis", "lenis-smooth");
+    </script>
+  </head>
+  <body>
+    <slot />
+
+    <!-- Global shell: GSAP register + Lenis + cursor + grain. Auto-boots. -->
+    <script>
+      import "../lib/boot";
+    </script>
+  </body>
+</html>

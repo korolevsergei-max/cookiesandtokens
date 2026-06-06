@@ -1,0 +1,38 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 470 130" role="img" aria-label="Cookies &amp; Tokens">
+  <!-- Full lockup for DARK backgrounds: cream wordmark. Mark + two-line wordmark.
+       Wordmark is set in the display font; if Clash Display isn't loaded it
+       falls back gracefully. For pixel-exact wordmark use the source PNG. -->
+  <defs>
+    <mask id="lockup-d-bite">
+      <rect width="130" height="130" fill="#fff"/>
+      <circle cx="73" cy="38" r="16" fill="#000"/>
+    </mask>
+  </defs>
+
+  <!-- Mark -->
+  <g transform="translate(4,8)">
+    <path d="M80 24 H110 L131 45 V75 L110 96 H80 L59 75 V45 Z"
+      stroke="#3FD9C0" stroke-width="8" stroke-linejoin="round" fill="none"/>
+    <g mask="url(#lockup-d-bite)">
+      <circle cx="44" cy="60" r="35" fill="#A974E8"/>
+    </g>
+    <g fill="#F5EFE6">
+      <circle cx="31" cy="53" r="4.4"/>
+      <circle cx="52" cy="50" r="3.7"/>
+      <circle cx="37" cy="73" r="4.8"/>
+      <circle cx="56" cy="71" r="3.9"/>
+      <circle cx="45" cy="62" r="2.9"/>
+    </g>
+    <g fill="#A974E8">
+      <circle cx="80" cy="47" r="2.6"/>
+      <circle cx="85" cy="39" r="1.7"/>
+      <circle cx="77" cy="30" r="2.3" fill="#C39BF0"/>
+    </g>
+  </g>
+
+  <!-- Wordmark -->
+  <g fill="#F5EFE6" font-family="'Clash Display','Satoshi',sans-serif" font-weight="600" letter-spacing="1">
+    <text x="156" y="62" font-size="44">COOKIES</text>
+    <text x="156" y="108" font-size="44">&amp; TOKENS</text>
+  </g>
+</svg>

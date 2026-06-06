@@ -1,0 +1,309 @@
+@import "tailwindcss";
+
+/* ============================================================================
+   Cookies & Tokens — Design System tokens (Tailwind v4 @theme)
+   Brand thesis: AI-supercharged human craft.
+   Cookie (purple) = human craft · Token (teal) = machine · Overlap = full package.
+   ========================================================================== */
+@theme {
+  /* --- Color: brand core --- */
+  --color-navy: #11112e; /* primary dark base */
+  --color-navy-800: #181842;
+  --color-navy-700: #20204f;
+  --color-navy-600: #2c2c66;
+
+  --color-purple: #a974e8; /* cookie — human craft */
+  --color-purple-bright: #c39bf0;
+  --color-purple-deep: #8b54d4;
+
+  --color-teal: #3fd9c0; /* token — machine */
+  --color-teal-bright: #6fe8d4;
+  --color-teal-deep: #1fb8a0;
+
+  --color-cream: #f5efe6; /* light-section base */
+  --color-cream-200: #ece3d4;
+
+  --color-ink: #11112e; /* text on light */
+  --color-ink-muted: #5a5a72;
+
+  /* --- Typography --- */
+  --font-display: "Clash Display", "Satoshi", ui-sans-serif, system-ui, sans-serif;
+  --font-body: "General Sans", "Satoshi", ui-sans-serif, system-ui, sans-serif;
+
+  /* Fluid display scale — clamp(min, fluid, max) */
+  --text-display-xl: clamp(3rem, 9vw, 8.5rem);
+  --text-display-xl--line-height: 0.95;
+  --text-display-xl--letter-spacing: -0.03em;
+  --text-display-lg: clamp(2.5rem, 6.5vw, 6rem);
+  --text-display-lg--line-height: 0.98;
+  --text-display-lg--letter-spacing: -0.025em;
+  --text-display-md: clamp(2rem, 4.5vw, 4rem);
+  --text-display-md--line-height: 1.04;
+  --text-display-md--letter-spacing: -0.02em;
+  --text-lead: clamp(1.125rem, 1.8vw, 1.5rem);
+  --text-lead--line-height: 1.5;
+  --text-eyebrow: 0.8125rem;
+  --text-eyebrow--line-height: 1.2;
+  --text-eyebrow--letter-spacing: 0.22em;
+
+  /* --- Spacing rhythm (section gutters) --- */
+  --spacing-section: clamp(5rem, 12vh, 10rem);
+  --spacing-gutter: clamp(1.25rem, 5vw, 6rem);
+
+  /* --- Radii --- */
+  --radius-card: 1.25rem;
+  --radius-pill: 999px;
+
+  /* --- Motion: easings + durations (the "feel") --- */
+  --ease-out-soft: cubic-bezier(0.22, 1, 0.36, 1); /* expo-ish settle */
+  --ease-in-out-soft: cubic-bezier(0.65, 0, 0.35, 1);
+  --ease-out-back: cubic-bezier(0.34, 1.56, 0.64, 1); /* subtle overshoot */
+  --duration-fast: 0.25s;
+  --duration-base: 0.5s;
+  --duration-slow: 0.8s;
+
+  /* --- Brand gradient (overlap moments only) --- */
+  --gradient-overlap: linear-gradient(
+    100deg,
+    var(--color-purple) 0%,
+    var(--color-teal) 100%
+  );
+}
+
+/* ============================================================================
+   Fonts — Fontshare (loaded via <link> in BaseLayout). Fallback face metrics
+   kept close to avoid layout shift.
+   ========================================================================== */
+
+/* ============================================================================
+   Base layer
+   ========================================================================== */
+@layer base {
+  :root {
+    color-scheme: dark;
+    --cursor-size: 14px;
+  }
+
+  html {
+    /* Lenis drives scrolling; keep native smooth off to avoid double-easing. */
+    scroll-behavior: auto;
+    -webkit-text-size-adjust: 100%;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+  }
+
+  body {
+    background-color: var(--color-navy);
+    color: var(--color-cream);
+    font-family: var(--font-body);
+    font-feature-settings: "ss01", "cv01";
+    overflow-x: clip;
+  }
+
+  h1, h2, h3, h4 {
+    font-family: var(--font-display);
+    font-weight: 600;
+    text-wrap: balance;
+  }
+
+  ::selection {
+    background-color: var(--color-purple);
+    color: var(--color-navy);
+  }
+
+  /* Visible, on-brand focus for keyboard users */
+  :focus-visible {
+    outline: 2px solid var(--color-teal);
+    outline-offset: 3px;
+    border-radius: 4px;
+  }
+
+  /* Lenis recommended setup */
+  html.lenis,
+  html.lenis body {
+    height: auto;
+  }
+  .lenis.lenis-smooth {
+    scroll-behavior: auto !important;
+  }
+  .lenis.lenis-stopped {
+    overflow: clip;
+  }
+}
+
+/* ============================================================================
+   Utilities / component primitives
+   ========================================================================== */
+@layer components {
+  .text-gradient-overlap {
+    background: var(--gradient-overlap);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+
+  .eyebrow {
+    font-family: var(--font-body);
+    font-size: var(--text-eyebrow);
+    line-height: var(--text-eyebrow--line-height);
+    letter-spacing: var(--text-eyebrow--letter-spacing);
+    text-transform: uppercase;
+    font-weight: 500;
+  }
+
+  /* Standard section wrapper rhythm */
+  .section-shell {
+    padding-inline: var(--spacing-gutter);
+    padding-block: var(--spacing-section);
+  }
+}
+
+/* ============================================================================
+   Film grain overlay (canvas, from grain.ts)
+   ========================================================================== */
+.ct-grain {
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 9998;
+  pointer-events: none;
+  mix-blend-mode: overlay;
+  will-change: opacity;
+}
+
+/* ============================================================================
+   Custom cursor (from cursor.ts). Hidden on coarse pointers (never created).
+   ========================================================================== */
+html.ct-cursor-active,
+html.ct-cursor-active * {
+  cursor: none !important;
+}
+
+.ct-cursor {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity var(--duration-fast) var(--ease-out-soft);
+}
+.ct-cursor.is-visible {
+  opacity: 1;
+}
+
+.ct-cursor__dot,
+.ct-cursor__ring,
+.ct-cursor__label {
+  position: fixed;
+  top: 0;
+  left: 0;
+  /* translate3d positions it; offset back by half via margin trick below */
+  pointer-events: none;
+}
+
+.ct-cursor__dot {
+  width: 6px;
+  height: 6px;
+  margin: -3px 0 0 -3px;
+  border-radius: 50%;
+  background: var(--color-cream);
+  transition:
+    width var(--duration-fast) var(--ease-out-soft),
+    height var(--duration-fast) var(--ease-out-soft),
+    opacity var(--duration-fast) var(--ease-out-soft);
+}
+
+.ct-cursor__ring {
+  width: 36px;
+  height: 36px;
+  margin: -18px 0 0 -18px;
+  border-radius: 50%;
+  border: 1.5px solid color-mix(in srgb, var(--color-cream) 55%, transparent);
+  transition:
+    width var(--duration-base) var(--ease-out-soft),
+    height var(--duration-base) var(--ease-out-soft),
+    border-color var(--duration-base) var(--ease-out-soft),
+    background-color var(--duration-base) var(--ease-out-soft);
+}
+
+.ct-cursor__label {
+  display: grid;
+  place-items: center;
+  width: 0;
+  height: 0;
+  margin: 0;
+  font-family: var(--font-body);
+  font-size: 0.6875rem;
+  font-weight: 500;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--color-navy);
+  opacity: 0;
+  transition: opacity var(--duration-fast) var(--ease-out-soft);
+}
+.ct-cursor.has-label .ct-cursor__label {
+  opacity: 1;
+}
+
+/* Pressed */
+.ct-cursor.is-down .ct-cursor__ring {
+  width: 28px;
+  height: 28px;
+  margin: -14px 0 0 -14px;
+}
+
+/* State: link — ring grows, dot hides */
+.ct-cursor[data-state="link"] .ct-cursor__ring {
+  width: 56px;
+  height: 56px;
+  margin: -28px 0 0 -28px;
+  background: color-mix(in srgb, var(--color-cream) 10%, transparent);
+}
+.ct-cursor[data-state="link"] .ct-cursor__dot {
+  opacity: 0;
+}
+
+/* State: cookie (purple) */
+.ct-cursor[data-state="cookie"] .ct-cursor__ring {
+  width: 64px;
+  height: 64px;
+  margin: -32px 0 0 -32px;
+  border-color: var(--color-purple);
+  background: color-mix(in srgb, var(--color-purple) 20%, transparent);
+}
+.ct-cursor[data-state="cookie"] .ct-cursor__dot {
+  background: var(--color-purple);
+}
+
+/* State: token (teal) */
+.ct-cursor[data-state="token"] .ct-cursor__ring {
+  width: 64px;
+  height: 64px;
+  margin: -32px 0 0 -32px;
+  border-color: var(--color-teal);
+  background: color-mix(in srgb, var(--color-teal) 18%, transparent);
+}
+.ct-cursor[data-state="token"] .ct-cursor__dot {
+  background: var(--color-teal);
+}
+
+/* State: hidden */
+.ct-cursor[data-state="hidden"] {
+  opacity: 0 !important;
+}
+
+/* ============================================================================
+   Reduced motion — global guard. Section scripts also check matchMedia.
+   ========================================================================== */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+}

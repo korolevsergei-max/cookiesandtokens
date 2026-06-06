@@ -1,0 +1,416 @@
+---
+/**
+ * Overlap — "The Full Package"
+ * Gradient section. An interactive Venn where clicking each region reveals
+ * what lives there, and the overlap makes the differentiator visceral.
+ *
+ * Three regions: Cookie-only (Craft, no AI), Token-only (AI, no craft),
+ * Overlap (Cookies & Tokens — the real thing).
+ */
+
+const regions = [
+  {
+    id: "craft-only",
+    zone: "cookie",
+    label: "Pure Craft",
+    accent: "purple",
+    body: "Traditional agencies. Deep expertise, slow delivery, no AI leverage. Premium craft, but the speed and scale of 2019.",
+    verdict: "Great people. Missing a gear.",
+  },
+  {
+    id: "overlap",
+    zone: "venn",
+    label: "Cookies & Tokens",
+    accent: "gradient",
+    body: "Human craft supercharged by the best AI — at every stage. Better briefs, faster iterations, more at-bats. The taste to know what's good.",
+    verdict: "This is what we do.",
+    featured: true,
+  },
+  {
+    id: "ai-only",
+    zone: "token",
+    label: "Pure AI",
+    accent: "teal",
+    body: "AI tools and automation. Fast output, zero judgment. Generic when it counts, and no one on the other end who cares.",
+    verdict: "Scale without craft.",
+  },
+] as const;
+---
+
+<section
+  id="overlap"
+  class="overlap section-shell"
+  data-overlap
+  data-tone="gradient"
+  aria-labelledby="overlap-title"
+>
+  <div class="overlap__header">
+    <p class="eyebrow overlap__eyebrow">The Overlap</p>
+    <h2 id="overlap-title" class="overlap__headline">
+      The&nbsp;<span class="text-gradient-overlap">Full&nbsp;Package.</span>
+    </h2>
+    <p class="overlap__sub">
+      Every agency falls somewhere in this Venn. Most are stuck in one circle.
+      We live in the overlap.
+    </p>
+  </div>
+
+  <!-- Interactive Venn diagram -->
+  <div class="overlap__venn" data-venn aria-label="Venn diagram: choose a region to learn more">
+    <!-- SVG Venn shapes -->
+    <svg class="overlap__venn-svg" viewBox="0 0 360 220" aria-hidden="true">
+      <defs>
+        <radialGradient id="grad-cookie" cx="35%" cy="50%">
+          <stop offset="0%" stop-color="#A974E8" stop-opacity="0.35"/>
+          <stop offset="100%" stop-color="#A974E8" stop-opacity="0"/>
+        </radialGradient>
+        <radialGradient id="grad-token" cx="65%" cy="50%">
+          <stop offset="0%" stop-color="#3FD9C0" stop-opacity="0.35"/>
+          <stop offset="100%" stop-color="#3FD9C0" stop-opacity="0"/>
+        </radialGradient>
+        <radialGradient id="grad-overlap" cx="50%" cy="50%">
+          <stop offset="0%" stop-color="#C39BF0" stop-opacity="0.5"/>
+          <stop offset="100%" stop-color="#3FD9C0" stop-opacity="0.3"/>
+        </radialGradient>
+      </defs>
+      <!-- Cookie circle -->
+      <circle class="venn-circle venn-circle--cookie" cx="140" cy="110" r="90" data-venn-circle="cookie"/>
+      <!-- Token circle -->
+      <circle class="venn-circle venn-circle--token" cx="220" cy="110" r="90" data-venn-circle="token"/>
+    </svg>
+
+    <!-- Clickable hotzone buttons (tiled over the SVG) -->
+    <div class="overlap__zones">
+      {regions.map((r) => (
+        <button
+          type="button"
+          class:list={[
+            "overlap__zone",
+            `overlap__zone--${r.zone}`,
+            r.featured && "overlap__zone--featured",
+          ]}
+          data-region={r.id}
+          data-cursor={r.zone === "venn" ? "link" : r.zone}
+          aria-pressed="false"
+          aria-label={`${r.label}: ${r.body}`}
+        >
+          <span class="overlap__zone-label">{r.label}</span>
+        </button>
+      ))}
+    </div>
+  </div>
+
+  <!-- Detail panels — one per region, shown on click -->
+  <div class="overlap__panels" data-panels>
+    {regions.map((r) => (
+      <div
+        class:list={["overlap__panel", `overlap__panel--${r.accent}`, r.featured && "overlap__panel--featured"]}
+        data-panel={r.id}
+        hidden
+        role="region"
+        aria-label={r.label}
+      >
+        <p class:list={["overlap__panel-label eyebrow", `overlap__panel-label--${r.accent}`]}>
+          {r.label}
+        </p>
+        <p class="overlap__panel-body">{r.body}</p>
+        <p class="overlap__panel-verdict">{r.verdict}</p>
+      </div>
+    ))}
+
+    <!-- Default hint (no selection yet) -->
+    <div class="overlap__panel-hint" data-panel-hint>
+      <p>Click a region to see what lives there.</p>
+    </div>
+  </div>
+
+  <!-- Backdrop blobs -->
+  <div class="overlap__bg" aria-hidden="true">
+    <span class="overlap__blob overlap__blob--purple"></span>
+    <span class="overlap__blob overlap__blob--teal"></span>
+  </div>
+</section>
+
+<style>
+  .overlap {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: clamp(2rem, 6vh, 4rem);
+    background: linear-gradient(160deg, var(--color-navy) 0%, var(--color-navy-700) 100%);
+    overflow: clip;
+    isolation: isolate;
+    text-align: center;
+  }
+
+  .overlap__bg {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    z-index: 0;
+  }
+  .overlap__blob {
+    position: absolute;
+    width: 50vmax;
+    height: 50vmax;
+    border-radius: 50%;
+    filter: blur(100px);
+    opacity: 0.12;
+  }
+  .overlap__blob--purple {
+    top: -10vmax; left: -10vmax;
+    background: radial-gradient(circle, var(--color-purple) 0%, transparent 60%);
+  }
+  .overlap__blob--teal {
+    bottom: -10vmax; right: -10vmax;
+    background: radial-gradient(circle, var(--color-teal) 0%, transparent 60%);
+  }
+
+  .overlap__header {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+  }
+  .overlap__eyebrow {
+    color: color-mix(in srgb, var(--color-cream) 45%, transparent);
+  }
+  .overlap__headline {
+    font-size: var(--text-display-lg);
+    line-height: var(--text-display-lg--line-height);
+    letter-spacing: var(--text-display-lg--letter-spacing);
+  }
+  .overlap__sub {
+    max-width: 32rem;
+    font-size: var(--text-lead);
+    line-height: var(--text-lead--line-height);
+    color: color-mix(in srgb, var(--color-cream) 65%, transparent);
+  }
+
+  /* ---------- Venn diagram ---------- */
+  .overlap__venn {
+    position: relative;
+    z-index: 1;
+    width: min(92vw, 440px);
+  }
+  .overlap__venn-svg {
+    width: 100%;
+    height: auto;
+    display: block;
+  }
+
+  .venn-circle {
+    fill: transparent;
+    stroke-width: 2;
+    transition:
+      fill var(--duration-base) var(--ease-out-soft),
+      stroke var(--duration-base) var(--ease-out-soft);
+  }
+  .venn-circle--cookie {
+    stroke: color-mix(in srgb, var(--color-purple) 50%, transparent);
+    fill: url(#grad-cookie);
+  }
+  .venn-circle--token {
+    stroke: color-mix(in srgb, var(--color-teal) 50%, transparent);
+    fill: url(#grad-token);
+  }
+
+  /* Active states */
+  [data-venn][data-active="craft-only"] .venn-circle--cookie {
+    stroke: var(--color-purple);
+    filter: drop-shadow(0 0 12px color-mix(in srgb, var(--color-purple) 50%, transparent));
+  }
+  [data-venn][data-active="ai-only"] .venn-circle--token {
+    stroke: var(--color-teal);
+    filter: drop-shadow(0 0 12px color-mix(in srgb, var(--color-teal) 50%, transparent));
+  }
+  [data-venn][data-active="overlap"] .venn-circle--cookie,
+  [data-venn][data-active="overlap"] .venn-circle--token {
+    stroke: color-mix(in srgb, var(--color-purple) 70%, transparent);
+    filter: drop-shadow(0 0 16px color-mix(in srgb, var(--color-purple) 40%, transparent));
+  }
+
+  .overlap__zones {
+    position: absolute;
+    inset: 0;
+    display: flex;
+  }
+  .overlap__zone {
+    flex: 1;
+    background: transparent;
+    border: 0;
+    padding: 0;
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-end;
+    padding-bottom: 12%;
+    gap: 0.3rem;
+    transition: background var(--duration-fast) var(--ease-out-soft);
+  }
+  .overlap__zone-label {
+    font-family: var(--font-display);
+    font-size: clamp(0.7rem, 1.5vw, 0.85rem);
+    font-weight: 600;
+    letter-spacing: -0.01em;
+    color: color-mix(in srgb, var(--color-cream) 55%, transparent);
+    pointer-events: none;
+    transition: color var(--duration-fast) var(--ease-out-soft);
+  }
+  .overlap__zone--venn .overlap__zone-label {
+    font-size: clamp(0.75rem, 1.8vw, 1rem);
+    color: var(--color-cream);
+  }
+  .overlap__zone[aria-pressed="true"] .overlap__zone-label,
+  .overlap__zone:hover .overlap__zone-label {
+    color: var(--color-cream);
+  }
+  .overlap__zone--cookie[aria-pressed="true"] .overlap__zone-label {
+    color: var(--color-purple-bright);
+  }
+  .overlap__zone--token[aria-pressed="true"] .overlap__zone-label {
+    color: var(--color-teal-bright);
+  }
+  .overlap__zone--venn[aria-pressed="true"] .overlap__zone-label {
+    background: var(--gradient-overlap);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+
+  /* ---------- Panels ---------- */
+  .overlap__panels {
+    position: relative;
+    z-index: 1;
+    width: min(92vw, 520px);
+    min-height: 8rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .overlap__panel {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.75rem;
+    padding: clamp(1.25rem, 3vw, 2rem);
+    border-radius: var(--radius-card);
+    border: 1px solid color-mix(in srgb, var(--color-cream) 10%, transparent);
+    background: color-mix(in srgb, var(--color-navy-600) 60%, transparent);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    text-align: center;
+    width: 100%;
+    animation: panel-in 0.35s var(--ease-out-soft) both;
+  }
+  .overlap__panel--purple {
+    border-color: color-mix(in srgb, var(--color-purple) 25%, transparent);
+  }
+  .overlap__panel--teal {
+    border-color: color-mix(in srgb, var(--color-teal) 25%, transparent);
+  }
+  .overlap__panel--gradient {
+    border-color: color-mix(in srgb, var(--color-purple) 30%, transparent);
+    background: linear-gradient(
+      120deg,
+      color-mix(in srgb, var(--color-purple) 12%, transparent),
+      color-mix(in srgb, var(--color-teal) 10%, transparent)
+    );
+  }
+  @keyframes panel-in {
+    from { opacity: 0; transform: translateY(12px) scale(0.97); }
+    to   { opacity: 1; transform: none; }
+  }
+  .overlap__panel-label {
+    font-size: 0.75rem;
+  }
+  .overlap__panel-label--purple { color: var(--color-purple-bright); }
+  .overlap__panel-label--teal   { color: var(--color-teal-bright); }
+  .overlap__panel-label--gradient {
+    background: var(--gradient-overlap);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+  .overlap__panel-body {
+    font-size: clamp(0.9rem, 1.6vw, 1.0625rem);
+    line-height: 1.6;
+    color: color-mix(in srgb, var(--color-cream) 78%, transparent);
+    max-width: 30rem;
+  }
+  .overlap__panel-verdict {
+    font-family: var(--font-display);
+    font-weight: 600;
+    font-size: clamp(0.9rem, 1.8vw, 1.1rem);
+    color: var(--color-cream);
+    letter-spacing: -0.01em;
+  }
+
+  .overlap__panel-hint {
+    font-size: 0.9rem;
+    color: color-mix(in srgb, var(--color-cream) 35%, transparent);
+  }
+</style>
+
+<script>
+  import { gsap } from "../lib/gsap";
+  import { prefersReducedMotion } from "../lib/motion";
+
+  const root = document.querySelector<HTMLElement>("[data-overlap]");
+  if (root) initOverlap(root);
+
+  function initOverlap(root: HTMLElement) {
+    const venn = root.querySelector<HTMLElement>("[data-venn]")!;
+    const zones = Array.from(root.querySelectorAll<HTMLButtonElement>("[data-region]"));
+    const panels = Array.from(root.querySelectorAll<HTMLElement>("[data-panel]"));
+    const hint = root.querySelector<HTMLElement>("[data-panel-hint]");
+
+    let active: string | null = null;
+
+    const showPanel = (id: string) => {
+      panels.forEach((p) => p.hidden = true);
+      if (hint) hint.hidden = true;
+      const target = panels.find((p) => p.dataset.panel === id);
+      if (target) target.hidden = false;
+    };
+
+    const clearPanel = () => {
+      panels.forEach((p) => p.hidden = true);
+      if (hint) hint.hidden = false;
+    };
+
+    zones.forEach((zone) => {
+      zone.addEventListener("click", () => {
+        const id = zone.dataset.region!;
+        if (active === id) {
+          active = null;
+          zone.setAttribute("aria-pressed", "false");
+          venn.removeAttribute("data-active");
+          clearPanel();
+        } else {
+          zones.forEach((z) => z.setAttribute("aria-pressed", "false"));
+          zone.setAttribute("aria-pressed", "true");
+          active = id;
+          venn.dataset.active = id;
+          showPanel(id);
+        }
+      });
+    });
+
+    // Scroll reveal
+    if (!prefersReducedMotion()) {
+      gsap.from(root.querySelector(".overlap__header"), {
+        opacity: 0, y: 40, duration: 0.7, ease: "power2.out",
+        scrollTrigger: { trigger: root, start: "top 72%", once: true },
+      });
+      gsap.from(venn, {
+        opacity: 0, scale: 0.92, duration: 0.8, ease: "back.out(1.4)", delay: 0.15,
+        scrollTrigger: { trigger: root, start: "top 72%", once: true },
+      });
+    }
+  }
+</script>

@@ -1,0 +1,258 @@
+---
+/**
+ * Proof / Outcomes — pre-client framing: "what good looks like"
+ * Outcome stats with counter animation + a scrolling marquee of disciplines.
+ * Light cream section for tonal rhythm.
+ */
+
+const stats = [
+  { value: "3×",  label: "faster campaign delivery", accent: "teal"   },
+  { value: "60%", label: "more creative iterations tested", accent: "purple" },
+  { value: "100%",label: "human-reviewed outputs",    accent: "teal"   },
+  { value: "0",   label: "compromise on craft",       accent: "purple" },
+];
+
+const marqueeItems = [
+  "Brand Strategy", "AI Workflows", "Content Strategy", "Campaign Creative",
+  "Automation", "Creative Direction", "AI SaaS", "Measurement",
+  "Visual Identity", "Prompt Engineering", "Copywriting", "Performance Creative",
+];
+---
+
+<section
+  id="proof"
+  class="proof"
+  data-proof
+  data-tone="light"
+  aria-labelledby="proof-title"
+>
+  <div class="proof__content section-shell">
+    <p class="eyebrow proof__eyebrow">What Good Looks Like</p>
+    <h2 id="proof-title" class="proof__headline">
+      Outcomes, not&nbsp;<span class="proof__accent">outputs.</span>
+    </h2>
+    <p class="proof__sub">
+      We measure everything. Here's the kind of performance the
+      Cookies&nbsp;&amp;&nbsp;Tokens model is built to deliver.
+    </p>
+
+    <dl class="proof__stats" data-proof-stats>
+      {stats.map((s) => (
+        <div class:list={["proof__stat", `proof__stat--${s.accent}`]} data-stat>
+          <dt class:list={["proof__stat-value", `proof__stat-value--${s.accent}`]}>
+            {s.value}
+          </dt>
+          <dd class="proof__stat-label">{s.label}</dd>
+        </div>
+      ))}
+    </dl>
+  </div>
+
+  <!-- Scrolling discipline marquee -->
+  <div class="proof__marquee" aria-label="Our disciplines" role="marquee">
+    <div class="proof__marquee-track" aria-hidden="true">
+      <!-- Duplicated for seamless loop -->
+      {[...marqueeItems, ...marqueeItems].map((item) => (
+        <span class="proof__marquee-item">
+          <span class="proof__marquee-dot" aria-hidden="true"></span>
+          {item}
+        </span>
+      ))}
+    </div>
+  </div>
+
+  <div class="proof__bg" aria-hidden="true">
+    <span class="proof__blob proof__blob--purple"></span>
+    <span class="proof__blob proof__blob--teal"></span>
+  </div>
+</section>
+
+<style>
+  .proof {
+    position: relative;
+    background-color: var(--color-cream);
+    color: var(--color-ink);
+    overflow: clip;
+    isolation: isolate;
+  }
+
+  .proof__bg {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+  }
+  .proof__blob {
+    position: absolute;
+    width: 48vmax;
+    height: 48vmax;
+    border-radius: 50%;
+    filter: blur(120px);
+    opacity: 0.07;
+  }
+  .proof__blob--purple {
+    top: -12vmax; left: -12vmax;
+    background: radial-gradient(circle, var(--color-purple) 0%, transparent 60%);
+  }
+  .proof__blob--teal {
+    bottom: -12vmax; right: -12vmax;
+    background: radial-gradient(circle, var(--color-teal) 0%, transparent 60%);
+  }
+
+  .proof__content {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: clamp(1.5rem, 4vh, 2.5rem);
+    max-width: 64rem;
+    margin-inline: auto;
+  }
+  .proof__eyebrow { color: var(--color-purple-deep); }
+  .proof__headline {
+    font-size: var(--text-display-lg);
+    line-height: var(--text-display-lg--line-height);
+    letter-spacing: var(--text-display-lg--letter-spacing);
+    color: var(--color-ink);
+  }
+  .proof__accent { color: var(--color-purple); }
+  .proof__sub {
+    font-size: var(--text-lead);
+    line-height: var(--text-lead--line-height);
+    color: var(--color-ink-muted);
+    max-width: 34rem;
+  }
+
+  /* ---------- Stats ---------- */
+  .proof__stats {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 200px), 1fr));
+    gap: 1.5rem;
+    width: 100%;
+    margin: 0;
+  }
+  .proof__stat {
+    display: flex;
+    flex-direction: column;
+    gap: 0.3rem;
+    padding: clamp(1.25rem, 2.5vw, 1.75rem);
+    background: white;
+    border-radius: var(--radius-card);
+    border: 1px solid var(--color-cream-200);
+    transition: transform var(--duration-base) var(--ease-out-soft);
+  }
+  .proof__stat:hover {
+    transform: translateY(-2px);
+  }
+  .proof__stat--purple {
+    border-top: 3px solid var(--color-purple);
+  }
+  .proof__stat--teal {
+    border-top: 3px solid var(--color-teal);
+  }
+  .proof__stat-value {
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: clamp(2.5rem, 5vw, 3.5rem);
+    line-height: 1;
+    letter-spacing: -0.03em;
+  }
+  .proof__stat-value--purple { color: var(--color-purple); }
+  .proof__stat-value--teal   { color: var(--color-teal-deep); }
+  .proof__stat-label {
+    font-size: 0.875rem;
+    line-height: 1.4;
+    color: var(--color-ink-muted);
+    margin: 0;
+  }
+
+  /* ---------- Marquee ---------- */
+  .proof__marquee {
+    position: relative;
+    z-index: 1;
+    width: 100%;
+    padding-block: clamp(1.5rem, 3vh, 2.5rem);
+    border-top: 1px solid var(--color-cream-200);
+    overflow: clip;
+    mask-image: linear-gradient(
+      to right,
+      transparent 0%,
+      #000 8%,
+      #000 92%,
+      transparent 100%
+    );
+    -webkit-mask-image: linear-gradient(
+      to right,
+      transparent 0%,
+      #000 8%,
+      #000 92%,
+      transparent 100%
+    );
+  }
+  .proof__marquee-track {
+    display: flex;
+    gap: 0;
+    width: max-content;
+    animation: marquee 28s linear infinite;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .proof__marquee-track { animation: none; }
+  }
+  @keyframes marquee {
+    from { transform: translateX(0); }
+    to   { transform: translateX(-50%); }
+  }
+  .proof__marquee-item {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding-inline: 1.5rem;
+    font-family: var(--font-display);
+    font-size: clamp(0.875rem, 1.4vw, 1.0625rem);
+    font-weight: 500;
+    letter-spacing: -0.01em;
+    color: var(--color-ink-muted);
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+  .proof__marquee-dot {
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    flex-shrink: 0;
+    background: var(--color-purple);
+    opacity: 0.5;
+  }
+  .proof__marquee-item:nth-child(3n) .proof__marquee-dot {
+    background: var(--color-teal);
+  }
+</style>
+
+<script>
+  import { gsap } from "../lib/gsap";
+  import { prefersReducedMotion } from "../lib/motion";
+
+  const root = document.querySelector<HTMLElement>("[data-proof]");
+  if (root) initProof(root);
+
+  function initProof(root: HTMLElement) {
+    if (prefersReducedMotion()) return;
+
+    gsap.from(root.querySelectorAll(".proof__headline, .proof__sub"), {
+      opacity: 0, y: 30, stagger: 0.12, duration: 0.7, ease: "power2.out",
+      scrollTrigger: { trigger: root, start: "top 72%", once: true },
+    });
+
+    const stats = Array.from(root.querySelectorAll<HTMLElement>("[data-stat]"));
+    gsap.from(stats, {
+      opacity: 0, y: 36, scale: 0.94,
+      stagger: 0.1, duration: 0.65, ease: "back.out(1.4)",
+      scrollTrigger: {
+        trigger: root.querySelector("[data-proof-stats]"),
+        start: "top 78%",
+        once: true,
+      },
+    });
+  }
+</script>

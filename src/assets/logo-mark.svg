@@ -1,0 +1,37 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 150 110" role="img" aria-label="Cookies &amp; Tokens mark">
+  <!-- The combined lockup mark: teal token (octagon) with the purple cookie
+       overlapping its left edge — the Venn that the Collision scene resolves
+       onto. #lockup-token and #lockup-cookie are addressable end-state targets. -->
+  <defs>
+    <mask id="mark-bite">
+      <rect width="150" height="110" fill="#fff"/>
+      <circle cx="66" cy="33" r="15.2" fill="#000"/>
+    </mask>
+  </defs>
+
+  <!-- Token octagon (behind) -->
+  <g id="lockup-token">
+    <path d="M73 21 H100 L119 40 V67 L100 86 H73 L54 67 V40 Z"
+      stroke="#3FD9C0" stroke-width="7.5" stroke-linejoin="round" fill="none"/>
+  </g>
+
+  <!-- Cookie (in front, overlapping the octagon's left side) -->
+  <g id="lockup-cookie">
+    <g mask="url(#mark-bite)">
+      <circle cx="40" cy="55" r="32" fill="#A974E8"/>
+    </g>
+    <g fill="#F5EFE6">
+      <circle cx="28" cy="49" r="4"/>
+      <circle cx="47" cy="46" r="3.4"/>
+      <circle cx="33" cy="67" r="4.4"/>
+      <circle cx="51" cy="65" r="3.6"/>
+      <circle cx="41" cy="57" r="2.7"/>
+    </g>
+    <g fill="#A974E8">
+      <circle cx="73" cy="43" r="2.4"/>
+      <circle cx="77" cy="36" r="1.6"/>
+      <circle cx="70" cy="27" r="2.1" fill="#C39BF0"/>
+      <circle cx="79" cy="46" r="1.4" fill="#C39BF0"/>
+    </g>
+  </g>
+</svg>

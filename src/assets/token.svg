@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" fill="none" role="img" aria-label="Token octagon">
+  <!-- Teal octagon "token" = the machine / AI side. Single stroked path so the
+       outline can be drawn-on (stroke-dasharray) and the whole shape scaled.
+       Flat-top regular octagon, corner inset = (max-min)/(2+sqrt2). -->
+  <path id="token-ring"
+    d="M33 9 H67 L91 33 V67 L67 91 H33 L9 67 V33 Z"
+    stroke="#3FD9C0" stroke-width="9" stroke-linejoin="round" stroke-linecap="round"/>
+</svg>

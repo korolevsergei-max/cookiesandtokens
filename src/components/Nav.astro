@@ -1,0 +1,209 @@
+---
+/**
+ * Nav — sticky mini-nav that appears once the hero scrolls out of view.
+ * Collapses the hero's three zones into compact jump links + a single CTA.
+ * Visibility driven by IntersectionObserver on #hero; GSAP handles the slide.
+ */
+import logoMarkRaw from "../assets/logo-mark.svg?raw";
+
+const links = [
+  { label: "Craft",    href: "#cookie"    },
+  { label: "Machine",  href: "#token"     },
+  { label: "Together", href: "#overlap"   },
+  { label: "Process",  href: "#process"   },
+  { label: "About",    href: "#about"     },
+];
+---
+
+<header class="site-nav" data-nav aria-label="Site navigation">
+  <div class="site-nav__inner">
+    <a href="#hero" class="site-nav__logo" data-cursor="link" aria-label="Back to top">
+      <span class="site-nav__mark" set:html={logoMarkRaw} />
+      <span class="site-nav__wordmark">Cookies&nbsp;&amp;&nbsp;Tokens</span>
+    </a>
+
+    <nav class="site-nav__links">
+      {links.map((l) => (
+        <a href={l.href} class="site-nav__link" data-cursor="link">
+          {l.label}
+        </a>
+      ))}
+    </nav>
+
+    <a href="#cta" class="site-nav__cta" data-cursor="link">
+      Work with us
+    </a>
+  </div>
+</header>
+
+<style>
+  .site-nav {
+    position: fixed;
+    top: 0;
+    inset-inline: 0;
+    z-index: 1000;
+    translate: 0 -100%;
+    opacity: 0;
+    will-change: translate, opacity;
+    /* transition handled by GSAP; CSS fallback for reduced-motion */
+    transition:
+      translate 0.4s cubic-bezier(0.22, 1, 0.36, 1),
+      opacity   0.4s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  .site-nav.is-visible {
+    translate: 0 0;
+    opacity: 1;
+  }
+
+  .site-nav__inner {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding-inline: var(--spacing-gutter);
+    padding-block: 0.75rem;
+    background: color-mix(in srgb, var(--color-navy) 88%, transparent);
+    backdrop-filter: blur(18px) saturate(1.4);
+    -webkit-backdrop-filter: blur(18px) saturate(1.4);
+    border-bottom: 1px solid color-mix(in srgb, var(--color-cream) 8%, transparent);
+  }
+
+  .site-nav__logo {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    text-decoration: none;
+    color: var(--color-cream);
+    flex-shrink: 0;
+  }
+  .site-nav__mark {
+    width: 36px;
+    height: auto;
+    display: block;
+    flex-shrink: 0;
+  }
+  .site-nav__mark :global(svg) {
+    width: 100%;
+    height: auto;
+    display: block;
+  }
+  .site-nav__wordmark {
+    font-family: var(--font-display);
+    font-weight: 600;
+    font-size: 0.9rem;
+    letter-spacing: -0.01em;
+    white-space: nowrap;
+  }
+
+  .site-nav__links {
+    display: flex;
+    align-items: center;
+    gap: 0.15rem;
+    margin-inline: auto;
+    flex-wrap: wrap;
+  }
+  .site-nav__link {
+    padding: 0.35rem 0.65rem;
+    font-size: 0.8125rem;
+    font-weight: 500;
+    letter-spacing: 0.01em;
+    color: color-mix(in srgb, var(--color-cream) 65%, transparent);
+    text-decoration: none;
+    border-radius: var(--radius-pill);
+    transition:
+      color       var(--duration-fast) var(--ease-out-soft),
+      background  var(--duration-fast) var(--ease-out-soft);
+  }
+  .site-nav__link:hover {
+    color: var(--color-cream);
+    background: color-mix(in srgb, var(--color-cream) 8%, transparent);
+  }
+
+  .site-nav__cta {
+    flex-shrink: 0;
+    padding: 0.45rem 1.1rem;
+    font-size: 0.8125rem;
+    font-weight: 500;
+    letter-spacing: 0.01em;
+    color: var(--color-navy);
+    background: var(--color-teal);
+    border-radius: var(--radius-pill);
+    text-decoration: none;
+    transition:
+      background  var(--duration-fast) var(--ease-out-soft),
+      transform   var(--duration-fast) var(--ease-out-soft);
+    white-space: nowrap;
+  }
+  .site-nav__cta:hover {
+    background: var(--color-teal-bright);
+    transform: scale(1.03);
+  }
+
+  @media (max-width: 640px) {
+    .site-nav__links { display: none; }
+    .site-nav__wordmark { display: none; }
+  }
+</style>
+
+<script>
+  import { gsap, ease } from "../lib/gsap";
+  import { scrollTo } from "../lib/lenis";
+  import { prefersReducedMotion } from "../lib/motion";
+
+  const nav = document.querySelector<HTMLElement>("[data-nav]");
+  const hero = document.querySelector<HTMLElement>("#hero");
+  if (nav && hero) initNav(nav, hero);
+
+  function initNav(nav: HTMLElement, hero: HTMLElement) {
+    const reduced = prefersReducedMotion();
+    let visible = false;
+
+    const show = (instant = false) => {
+      if (visible) return;
+      visible = true;
+      if (reduced) {
+        nav.classList.add("is-visible");
+        return;
+      }
+      gsap.to(nav, {
+        y: 0,
+        opacity: 1,
+        duration: instant ? 0 : 0.5,
+        ease: ease.soft,
+      });
+    };
+
+    const hide = (instant = false) => {
+      if (!visible) return;
+      visible = false;
+      if (reduced) {
+        nav.classList.remove("is-visible");
+        return;
+      }
+      gsap.to(nav, {
+        y: "-100%",
+        opacity: 0,
+        duration: instant ? 0 : 0.3,
+        ease: ease.inOut,
+      });
+    };
+
+    // Start hidden (reset any residual GSAP state).
+    gsap.set(nav, { y: "-100%", opacity: 0 });
+
+    const obs = new IntersectionObserver(
+      ([entry]) => (entry.isIntersecting ? hide() : show()),
+      { threshold: 0 }
+    );
+    obs.observe(hero);
+
+    // Smooth-scroll click handlers.
+    nav.querySelectorAll<HTMLAnchorElement>("a[href^='#']").forEach((a) => {
+      a.addEventListener("click", (e) => {
+        e.preventDefault();
+        const target = a.getAttribute("href");
+        if (target) scrollTo(target);
+      });
+    });
+  }
+</script>

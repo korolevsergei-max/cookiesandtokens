@@ -1,0 +1,258 @@
+---
+/**
+ * TokenSide — "Machine Intelligence"
+ * The Token half: AI workflows, automation, custom tech stack, AI SaaS, measurement.
+ * Dark navy; teal accents. Intentional mirror of CookieSide layout.
+ */
+
+const services = [
+  {
+    number: "01",
+    title: "AI Workflows",
+    desc: "Custom AI pipelines built around your creative process — not the other way around. Prompt libraries, approval chains, quality gates.",
+    tags: ["Prompting", "Pipelines", "Quality Gates", "LLM Integration"],
+  },
+  {
+    number: "02",
+    title: "Automation",
+    desc: "Repetitive tasks automated. Brief generation, asset resizing, reporting, scheduling — machine-handled so humans can focus on what machines can't.",
+    tags: ["Briefs", "Reporting", "Scheduling", "Asset Ops"],
+  },
+  {
+    number: "03",
+    title: "Custom Tech Stack",
+    desc: "The right tools, connected and working together. We select, integrate, and maintain the AI stack that fits your team — not the one that's trending.",
+    tags: ["Tool Selection", "Integration", "Maintenance", "Training"],
+  },
+  {
+    number: "04",
+    title: "AI SaaS",
+    desc: "From image generation to LLM copilots — we implement and optimise the AI software layer that powers your creative output.",
+    tags: ["Midjourney", "Claude", "Runway", "Custom GPTs"],
+  },
+  {
+    number: "05",
+    title: "Measurement",
+    desc: "Attribution, analytics, and the metrics that actually reflect creative performance. Know what's working, iterate faster.",
+    tags: ["Attribution", "Dashboards", "Creative Analytics", "A/B"],
+  },
+];
+---
+
+<section
+  id="token"
+  class="token-side"
+  data-token-side
+  data-tone="dark"
+  aria-labelledby="token-title"
+>
+  <div class="token-side__header section-shell">
+    <p class="eyebrow token-side__eyebrow">The Token</p>
+    <h2 id="token-title" class="token-side__headline">
+      Machine<br /><span class="token-side__accent">Intelligence.</span>
+    </h2>
+    <p class="token-side__sub">
+      The best AI isn't magic — it's infrastructure. We build the workflows,
+      automation, and tech stack that make your creative team 10× more
+      effective without losing an ounce of quality.
+    </p>
+  </div>
+
+  <div class="token-side__grid section-shell">
+    {services.map((s) => (
+      <article class="token-card" data-token-card>
+        <span class="token-card__num">{s.number}</span>
+        <h3 class="token-card__title">{s.title}</h3>
+        <p class="token-card__desc">{s.desc}</p>
+        <ul class="token-card__tags" aria-label="Service tags">
+          {s.tags.map((t) => <li class="token-card__tag">{t}</li>)}
+        </ul>
+        <span class="token-card__glow" aria-hidden="true"></span>
+      </article>
+    ))}
+  </div>
+
+  <!-- Teal accent blob -->
+  <div class="token-side__bg" aria-hidden="true">
+    <span class="token-side__blob"></span>
+  </div>
+</section>
+
+<style>
+  .token-side {
+    position: relative;
+    background-color: var(--color-navy-800);
+    color: var(--color-cream);
+    overflow: clip;
+    isolation: isolate;
+  }
+
+  .token-side__bg {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+  }
+  .token-side__blob {
+    position: absolute;
+    bottom: -20vmax;
+    left: -20vmax;
+    width: 55vmax;
+    height: 55vmax;
+    border-radius: 50%;
+    background: radial-gradient(circle, var(--color-teal) 0%, transparent 60%);
+    filter: blur(120px);
+    opacity: 0.1;
+  }
+
+  .token-side__header {
+    position: relative;
+    z-index: 1;
+    padding-bottom: 0;
+    max-width: 52rem;
+  }
+  .token-side__eyebrow {
+    color: var(--color-teal);
+  }
+  .token-side__headline {
+    font-size: var(--text-display-xl);
+    line-height: var(--text-display-xl--line-height);
+    letter-spacing: var(--text-display-xl--letter-spacing);
+    margin-top: 0.5rem;
+  }
+  .token-side__accent {
+    color: var(--color-teal);
+  }
+  .token-side__sub {
+    max-width: 34rem;
+    font-size: var(--text-lead);
+    line-height: var(--text-lead--line-height);
+    color: color-mix(in srgb, var(--color-cream) 65%, transparent);
+    margin-top: 1rem;
+  }
+
+  /* ---------- Card grid ---------- */
+  .token-side__grid {
+    position: relative;
+    z-index: 1;
+    padding-top: 2rem;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 280px), 1fr));
+    gap: 1.25rem;
+  }
+
+  .token-card {
+    position: relative;
+    padding: clamp(1.5rem, 3vw, 2.25rem);
+    background: color-mix(in srgb, var(--color-navy-700) 70%, transparent);
+    border: 1px solid color-mix(in srgb, var(--color-teal) 14%, transparent);
+    border-radius: var(--radius-card);
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    overflow: clip;
+    transition:
+      border-color var(--duration-base) var(--ease-out-soft),
+      transform    var(--duration-base) var(--ease-out-soft);
+    will-change: transform;
+  }
+  .token-card:hover {
+    border-color: color-mix(in srgb, var(--color-teal) 45%, transparent);
+    transform: translateY(-3px);
+  }
+
+  .token-card__glow {
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    background: radial-gradient(
+      circle at var(--gx, 50%) var(--gy, 50%),
+      color-mix(in srgb, var(--color-teal) 10%, transparent) 0%,
+      transparent 65%
+    );
+    opacity: 0;
+    transition: opacity var(--duration-base) var(--ease-out-soft);
+    pointer-events: none;
+  }
+  .token-card:hover .token-card__glow {
+    opacity: 1;
+  }
+
+  .token-card__num {
+    font-family: var(--font-display);
+    font-size: 0.75rem;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    color: var(--color-teal);
+  }
+  .token-card__title {
+    font-family: var(--font-display);
+    font-size: clamp(1.25rem, 2.5vw, 1.6rem);
+    font-weight: 600;
+    letter-spacing: -0.015em;
+    line-height: 1.1;
+  }
+  .token-card__desc {
+    font-size: 0.9375rem;
+    line-height: 1.6;
+    color: color-mix(in srgb, var(--color-cream) 62%, transparent);
+    flex: 1;
+  }
+
+  .token-card__tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.35rem;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    margin-top: auto;
+  }
+  .token-card__tag {
+    padding: 0.2rem 0.6rem;
+    font-size: 0.7rem;
+    font-weight: 500;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--color-teal-deep);
+    background: color-mix(in srgb, var(--color-teal) 10%, transparent);
+    border-radius: var(--radius-pill);
+  }
+</style>
+
+<script>
+  import { gsap } from "../lib/gsap";
+  import { prefersReducedMotion, isCoarsePointer } from "../lib/motion";
+
+  const root = document.querySelector<HTMLElement>("[data-token-side]");
+  if (root) initTokenSide(root);
+
+  function initTokenSide(root: HTMLElement) {
+    const cards = Array.from(root.querySelectorAll<HTMLElement>("[data-token-card]"));
+
+    gsap.from(cards, {
+      opacity: 0,
+      y: 40,
+      stagger: 0.08,
+      duration: 0.7,
+      ease: "power2.out",
+      scrollTrigger: {
+        trigger: root.querySelector(".token-side__grid"),
+        start: "top 78%",
+        once: true,
+      },
+    });
+
+    if (prefersReducedMotion() || isCoarsePointer()) return;
+
+    cards.forEach((card) => {
+      card.addEventListener("pointermove", (e: PointerEvent) => {
+        const r = card.getBoundingClientRect();
+        const x = ((e.clientX - r.left) / r.width) * 100;
+        const y = ((e.clientY - r.top) / r.height) * 100;
+        card.style.setProperty("--gx", `${x}%`);
+        card.style.setProperty("--gy", `${y}%`);
+      });
+    });
+  }
+</script>

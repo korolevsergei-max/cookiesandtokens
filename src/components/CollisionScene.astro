@@ -1,0 +1,429 @@
+---
+/**
+ * CollisionScene — the centerpiece (signature scroll moment #2).
+ *
+ * A pinned, scroll-scrubbed scene: the purple cookie (human craft) runs in from
+ * the left and the teal token (machine) from the right, scale up, and overlap
+ * into the Venn — landing exactly on the combined logo lockup. Labels resolve
+ * "Craft / Tech / = Outcomes" and a headline lands.
+ *
+ * Progressive enhancement is the spine of this file:
+ *   • The CSS *default* (resting) state IS the resolved lockup — shapes at their
+ *     lockup offsets, lens glowing, labels + headline visible. So with no JS, or
+ *     under prefers-reduced-motion, the user simply sees the finished Venn.
+ *   • When motion is allowed, the GSAP timeline uses .from() tweens to start the
+ *     shapes off-screen / small / hidden and scrubs them *to* that resting state.
+ *
+ * Centering trick (mirrors Hero's lens): each layer is positioned at the stage
+ * centre via margins, so its no-transform state = its lockup rest. GSAP then
+ * only ever applies pure transform offsets, which compose cleanly with .from().
+ *
+ * Responsive choreography is handled by gsap.matchMedia: desktop converges
+ * left↔right; mobile converges top↕bottom into the same horizontal lockup.
+ */
+---
+
+<section
+  id="collision"
+  class="collision"
+  data-collision
+  data-tone="dark"
+  aria-labelledby="collision-title"
+>
+  <!-- Ambient backdrop: octagon-dot grid + soft brand blobs (parallax layer) -->
+  <div class="collision__bg" data-coll-bg aria-hidden="true">
+    <span class="collision__blob collision__blob--purple" data-coll-blob="p"></span>
+    <span class="collision__blob collision__blob--teal" data-coll-blob="t"></span>
+  </div>
+
+  <p class="eyebrow collision__eyebrow">The Collision</p>
+
+  <!-- The stage: shapes converge here. Decorative — the meaning is in the copy. -->
+  <div class="collision__stage" data-coll-stage aria-hidden="true">
+    <!-- Token (octagon) — behind, enters from the right -->
+    <div class="collision__shape collision__token" data-coll="token">
+      <svg viewBox="0 0 100 100" fill="none">
+        <path
+          d="M33 9 H67 L91 33 V67 L67 91 H33 L9 67 V33 Z"
+          stroke="#3FD9C0"
+          stroke-width="9"
+          stroke-linejoin="round"
+          stroke-linecap="round"
+        ></path>
+      </svg>
+    </div>
+
+    <!-- Token facets — small teal accents that trail the token (parallax depth) -->
+    <div class="collision__layer collision__facets" data-coll="facets" data-depth>
+      <svg viewBox="0 0 100 100" fill="none">
+        <g stroke="#6FE8D4" stroke-width="2.4" stroke-linecap="round" opacity="0.9">
+          <path d="M88 24 l7 -6"></path>
+          <path d="M93 52 l8 0"></path>
+          <path d="M86 78 l7 6"></path>
+        </g>
+        <g fill="#3FD9C0">
+          <circle cx="97" cy="38" r="1.8"></circle>
+          <circle cx="98" cy="66" r="1.4"></circle>
+        </g>
+      </svg>
+    </div>
+
+    <!-- Overlap lens: the purple→teal glow that brightens as they meet -->
+    <span class="collision__lens" data-coll="lens"></span>
+
+    <!-- Cookie (disc + chips) — in front, enters from the left -->
+    <div class="collision__shape collision__cookie" data-coll="cookie">
+      <svg viewBox="0 0 100 100" role="img" aria-label="">
+        <defs>
+          <mask id="coll-bite">
+            <rect width="100" height="100" fill="#fff"></rect>
+            <circle cx="84" cy="19" r="19" fill="#000"></circle>
+          </mask>
+        </defs>
+        <g mask="url(#coll-bite)">
+          <circle cx="50" cy="51" r="40" fill="#A974E8"></circle>
+        </g>
+        <g fill="#F5EFE6">
+          <circle cx="35" cy="44" r="5"></circle>
+          <circle cx="59" cy="40" r="4.2"></circle>
+          <circle cx="41" cy="66" r="5.6"></circle>
+          <circle cx="63" cy="63" r="4.6"></circle>
+          <circle cx="51" cy="54" r="3.4"></circle>
+        </g>
+      </svg>
+    </div>
+
+    <!-- Crumbs / sprinkles — trail the cookie at a different rate (parallax depth) -->
+    <div class="collision__layer collision__crumbs" data-coll="crumbs" data-depth>
+      <svg viewBox="0 0 100 100" fill="none">
+        <g fill="#A974E8">
+          <circle cx="92" cy="31" r="3"></circle>
+          <circle cx="97" cy="22" r="2"></circle>
+          <circle cx="88" cy="11" r="2.6"></circle>
+          <circle cx="98" cy="35" r="1.8"></circle>
+        </g>
+        <g fill="#C39BF0">
+          <circle cx="83" cy="6" r="2.1"></circle>
+          <circle cx="94" cy="14" r="1.5"></circle>
+        </g>
+      </svg>
+    </div>
+
+    <!-- Resolving labels: Craft (cookie) · Tech (token) · = Outcomes (overlap) -->
+    <span class="collision__label collision__label--craft" data-coll-label="craft">Craft</span>
+    <span class="collision__label collision__label--tech" data-coll-label="tech">Tech</span>
+    <span class="collision__label collision__label--out text-gradient-overlap" data-coll-label="out">
+      = Outcomes
+    </span>
+  </div>
+
+  <!-- The payoff copy — the verbal resolution of the visual collision -->
+  <div class="collision__copy">
+    <h2 id="collision-title" class="collision__headline" data-coll-h>
+      This overlap is the whole&nbsp;idea.
+    </h2>
+    <p class="collision__sub" data-coll-sub>
+      Human craft, supercharged by the best AI. The full package — where better
+      outcomes meet better value.
+    </p>
+  </div>
+</section>
+
+<style>
+  .collision {
+    position: relative;
+    min-height: 100svh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+    gap: clamp(1rem, 3vh, 2rem);
+    padding: clamp(3rem, 8vh, 5.5rem) var(--spacing-gutter);
+    background-color: var(--color-navy);
+    overflow: clip;
+    isolation: isolate;
+  }
+
+  /* ---------- Ambient backdrop ---------- */
+  .collision__bg {
+    position: absolute;
+    inset: -12%;
+    z-index: 0;
+    pointer-events: none;
+    background-image: radial-gradient(
+      color-mix(in srgb, var(--color-cream) 7%, transparent) 1px,
+      transparent 1.4px
+    );
+    background-size: 28px 28px;
+    -webkit-mask-image: radial-gradient(110% 75% at 50% 50%, #000 30%, transparent 80%);
+    mask-image: radial-gradient(110% 75% at 50% 50%, #000 30%, transparent 80%);
+    will-change: transform;
+  }
+  .collision__blob {
+    position: absolute;
+    width: 48vmax;
+    height: 48vmax;
+    border-radius: 50%;
+    filter: blur(100px);
+    opacity: 0.22;
+    will-change: transform;
+  }
+  .collision__blob--purple {
+    top: -6vmax;
+    left: -8vmax;
+    background: radial-gradient(circle, var(--color-purple) 0%, transparent 65%);
+  }
+  .collision__blob--teal {
+    bottom: -8vmax;
+    right: -8vmax;
+    background: radial-gradient(circle, var(--color-teal) 0%, transparent 65%);
+  }
+
+  /* ---------- Eyebrow ---------- */
+  .collision__eyebrow {
+    position: relative;
+    z-index: 2;
+    color: color-mix(in srgb, var(--color-cream) 42%, transparent);
+  }
+
+  /* ---------- Stage ---------- */
+  .collision__stage {
+    --coll-shape: clamp(160px, 26vw, 300px);
+    position: relative;
+    z-index: 1;
+    width: min(92vw, 760px);
+    height: min(52vh, 420px);
+  }
+
+  /* Shared centering: each layer sits at stage centre via margins, so its
+     no-transform state is the lockup rest. GSAP applies pure offsets on top. */
+  .collision__shape,
+  .collision__layer {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: var(--coll-shape);
+    height: var(--coll-shape);
+    display: grid;
+    place-items: center;
+    margin-top: calc(var(--coll-shape) * -0.5);
+    will-change: transform, opacity;
+  }
+  .collision__shape :global(svg),
+  .collision__layer :global(svg) {
+    width: 100%;
+    height: auto;
+    display: block;
+    overflow: visible;
+  }
+
+  /* Lockup rest offsets (cookie left of centre, token right, overlapping) */
+  .collision__cookie {
+    margin-left: calc(var(--coll-shape) * -0.82);
+    z-index: 4;
+    filter: drop-shadow(0 18px 40px color-mix(in srgb, var(--color-purple) 28%, transparent));
+  }
+  .collision__token {
+    margin-left: calc(var(--coll-shape) * -0.18);
+    z-index: 2;
+    filter: drop-shadow(0 18px 40px color-mix(in srgb, var(--color-teal) 26%, transparent));
+  }
+  /* Crumbs ride with the cookie; facets ride with the token */
+  .collision__crumbs {
+    margin-left: calc(var(--coll-shape) * -0.82);
+    z-index: 5;
+  }
+  .collision__facets {
+    margin-left: calc(var(--coll-shape) * -0.18);
+    z-index: 3;
+    opacity: 0.85;
+  }
+
+  /* Overlap lens — centred on the stage (the meeting point) */
+  .collision__lens {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: calc(var(--coll-shape) * 0.95);
+    height: calc(var(--coll-shape) * 0.95);
+    margin-top: calc(var(--coll-shape) * -0.475);
+    margin-left: calc(var(--coll-shape) * -0.475);
+    border-radius: 50%;
+    background: var(--gradient-overlap);
+    filter: blur(28px);
+    opacity: 0.85;
+    z-index: 3;
+    mix-blend-mode: screen;
+    will-change: transform, opacity;
+  }
+
+  /* ---------- Labels ---------- */
+  .collision__label {
+    position: absolute;
+    z-index: 6;
+    font-family: var(--font-display);
+    font-weight: 600;
+    font-size: clamp(0.95rem, 1.6vw, 1.4rem);
+    letter-spacing: -0.01em;
+    white-space: nowrap;
+    will-change: transform, opacity;
+  }
+  .collision__label--craft {
+    top: 4%;
+    left: 4%;
+    color: var(--color-purple-bright);
+  }
+  .collision__label--tech {
+    top: 4%;
+    right: 4%;
+    color: var(--color-teal-bright);
+  }
+  /* Centred via left/right (not transform) so GSAP's y/scale compose cleanly. */
+  .collision__label--out {
+    bottom: 1%;
+    left: 0;
+    right: 0;
+    text-align: center;
+    font-size: clamp(1.1rem, 2vw, 1.7rem);
+  }
+
+  /* ---------- Copy ---------- */
+  .collision__copy {
+    position: relative;
+    z-index: 2;
+    max-width: 40rem;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    gap: clamp(0.6rem, 1.5vh, 1rem);
+  }
+  .collision__headline {
+    font-size: var(--text-display-md);
+    line-height: var(--text-display-md--line-height);
+    letter-spacing: var(--text-display-md--letter-spacing);
+  }
+  .collision__sub {
+    font-size: var(--text-lead);
+    line-height: var(--text-lead--line-height);
+    color: color-mix(in srgb, var(--color-cream) 66%, transparent);
+    max-width: 34rem;
+    margin-inline: auto;
+  }
+
+  /* Tighten on short viewports so the pinned scene never clips */
+  @media (max-height: 720px) {
+    .collision__stage {
+      height: min(46vh, 320px);
+      --coll-shape: clamp(140px, 22vw, 240px);
+    }
+  }
+</style>
+
+<script>
+  import { initGsap, gsap, ScrollTrigger } from "../lib/gsap";
+
+  const root = document.querySelector<HTMLElement>("[data-collision]");
+  if (root) initCollision(root);
+
+  function initCollision(root: HTMLElement) {
+    // Ensure ScrollTrigger is registered regardless of script execution order.
+    initGsap();
+
+    const q = <T extends Element = HTMLElement>(sel: string) =>
+      root.querySelector<T>(sel)!;
+
+    const bg = q("[data-coll-bg]");
+    const blobP = q('[data-coll-blob="p"]');
+    const blobT = q('[data-coll-blob="t"]');
+    const cookie = q('[data-coll="cookie"]');
+    const token = q('[data-coll="token"]');
+    const crumbs = q('[data-coll="crumbs"]');
+    const facets = q('[data-coll="facets"]');
+    const lens = q('[data-coll="lens"]');
+    const lblCraft = q('[data-coll-label="craft"]');
+    const lblTech = q('[data-coll-label="tech"]');
+    const lblOut = q('[data-coll-label="out"]');
+    const headline = q("[data-coll-h]");
+    const sub = q("[data-coll-sub]");
+
+    // gsap.matchMedia drives responsive choreography AND honours reduced motion:
+    // neither branch runs when the user prefers reduced motion (no-preference is
+    // false), so the CSS resting state — the resolved lockup — simply shows.
+    const mm = gsap.matchMedia();
+
+    const build = (vertical: boolean) => () => {
+      // Off-screen entry vectors. Horizontal: left ↔ right. Vertical (mobile):
+      // top ↕ bottom, converging into the same horizontal lockup rest.
+      const fromCookie = vertical
+        ? { yPercent: -210, scale: 0.42, rotate: -22, autoAlpha: 0 }
+        : { xPercent: -215, scale: 0.42, rotate: -34, autoAlpha: 0 };
+      const fromToken = vertical
+        ? { yPercent: 210, scale: 0.42, rotate: 22, autoAlpha: 0 }
+        : { xPercent: 215, scale: 0.42, rotate: 34, autoAlpha: 0 };
+      // Depth layers trail further out + smaller → parallax against the shapes.
+      const fromCrumbs = vertical
+        ? { yPercent: -300, scale: 0.3, rotate: -50, autoAlpha: 0 }
+        : { xPercent: -290, scale: 0.3, rotate: -50, autoAlpha: 0 };
+      const fromFacets = vertical
+        ? { yPercent: 300, scale: 0.3, rotate: 50, autoAlpha: 0 }
+        : { xPercent: 290, scale: 0.3, rotate: 50, autoAlpha: 0 };
+
+      const tl = gsap.timeline({
+        defaults: { ease: "none" },
+        scrollTrigger: {
+          trigger: root,
+          start: "top top",
+          end: vertical ? "+=140%" : "+=190%",
+          pin: true,
+          pinSpacing: true,
+          anticipatePin: 1,
+          scrub: 1,
+          invalidateOnRefresh: true,
+        },
+      });
+
+      // Background depth: grid + blobs drift slowly across the whole scrub.
+      tl.fromTo(bg, { yPercent: -4 }, { yPercent: 4 }, 0)
+        .fromTo(blobP, { xPercent: -8, yPercent: -6 }, { xPercent: 7, yPercent: 8 }, 0)
+        .fromTo(blobT, { xPercent: 8, yPercent: 6 }, { xPercent: -7, yPercent: -8 }, 0);
+
+      // Depth layers converge first/slowest (they trail the shapes in).
+      tl.from(crumbs, { ...fromCrumbs, ease: "power1.in", duration: 0.62 }, 0)
+        .from(facets, { ...fromFacets, ease: "power1.in", duration: 0.6 }, 0.03);
+
+      // The shapes run in, scale up, and settle into the lockup.
+      tl.from(cookie, { ...fromCookie, ease: "power2.inOut", duration: 0.5 }, 0)
+        .from(token, { ...fromToken, ease: "power2.inOut", duration: 0.5 }, 0);
+
+      // Impact: a small scale pop as they meet, then settle.
+      tl.to([cookie, token], { scale: 1.04, duration: 0.06, ease: "power2.out" }, 0.5)
+        .to([cookie, token], { scale: 1, duration: 0.14, ease: "power2.inOut" }, 0.56);
+
+      // Overlap lens brightens as they meet, then a matching pulse. The brighten
+      // ends exactly where the pulse begins (0.62) so the two scale tweens never
+      // animate the lens simultaneously.
+      tl.from(lens, { autoAlpha: 0, scale: 0.5, ease: "power2.out", duration: 0.22 }, 0.4)
+        .to(lens, { scale: 1.14, duration: 0.06, ease: "power2.out" }, 0.62)
+        .to(lens, { scale: 1, duration: 0.14, ease: "power2.inOut" }, 0.68);
+
+      // Labels resolve: Craft, Tech, then the "= Outcomes" payoff.
+      tl.from(lblCraft, { autoAlpha: 0, y: 16, ease: "power2.out", duration: 0.18 }, 0.56)
+        .from(lblTech, { autoAlpha: 0, y: 16, ease: "power2.out", duration: 0.18 }, 0.6)
+        .from(
+          lblOut,
+          { autoAlpha: 0, y: 22, scale: 0.85, ease: "back.out(1.7)", duration: 0.2 },
+          0.7
+        );
+
+      // Headline lands last.
+      tl.from(headline, { autoAlpha: 0, y: 30, ease: "power3.out", duration: 0.16 }, 0.8)
+        .from(sub, { autoAlpha: 0, y: 22, ease: "power3.out", duration: 0.14 }, 0.86);
+    };
+
+    mm.add("(min-width: 769px) and (prefers-reduced-motion: no-preference)", build(false));
+    mm.add("(max-width: 768px) and (prefers-reduced-motion: no-preference)", build(true));
+
+    // Pin offsets depend on font/layout settling; keep them honest.
+    ScrollTrigger.refresh();
+  }
+</script>

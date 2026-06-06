@@ -1,0 +1,221 @@
+---
+/**
+ * Footer — minimal, on-brand.
+ * Wordmark, nav links, socials, "Made by humans + machines" line, year.
+ */
+import logoMarkRaw from "../assets/logo-mark.svg?raw";
+
+const year = new Date().getFullYear();
+
+const links = [
+  { label: "Craft",    href: "#cookie"    },
+  { label: "Machine",  href: "#token"     },
+  { label: "Overlap",  href: "#overlap"   },
+  { label: "Process",  href: "#process"   },
+  { label: "About",    href: "#about"     },
+  { label: "Work with us", href: "#cta"   },
+];
+
+const socials = [
+  { label: "LinkedIn", href: "https://linkedin.com/company/cookiesandtokens", abbr: "in" },
+  { label: "Instagram", href: "https://instagram.com/cookiesandtokens", abbr: "ig" },
+  { label: "X / Twitter", href: "https://x.com/cookiesntokens", abbr: "x" },
+];
+---
+
+<footer class="site-footer" role="contentinfo">
+  <div class="site-footer__inner">
+    <!-- Wordmark -->
+    <div class="site-footer__brand">
+      <a href="#hero" class="site-footer__logo" data-cursor="link" aria-label="Back to top — Cookies & Tokens">
+        <span class="site-footer__mark" set:html={logoMarkRaw} />
+        <span class="site-footer__wordmark">
+          Cookies&nbsp;&amp;&nbsp;Tokens
+        </span>
+      </a>
+      <p class="site-footer__tagline">AI-supercharged human craft.</p>
+    </div>
+
+    <!-- Navigation -->
+    <nav class="site-footer__nav" aria-label="Footer navigation">
+      <ul class="site-footer__links">
+        {links.map((l) => (
+          <li>
+            <a href={l.href} class="site-footer__link" data-cursor="link">
+              {l.label}
+            </a>
+          </li>
+        ))}
+      </ul>
+    </nav>
+
+    <!-- Socials -->
+    <div class="site-footer__socials">
+      {socials.map((s) => (
+        <a
+          href={s.href}
+          target="_blank"
+          rel="noopener noreferrer"
+          class="site-footer__social"
+          data-cursor="link"
+          aria-label={s.label}
+        >
+          {s.abbr}
+        </a>
+      ))}
+    </div>
+  </div>
+
+  <!-- Bottom bar -->
+  <div class="site-footer__bottom">
+    <p class="site-footer__made">
+      Made by&nbsp;
+      <span class="site-footer__made-purple">humans</span>
+      &nbsp;+&nbsp;
+      <span class="site-footer__made-teal">machines</span>.
+    </p>
+    <p class="site-footer__copy">
+      &copy; {year} Cookies &amp; Tokens. All rights reserved.
+    </p>
+  </div>
+</footer>
+
+<style>
+  .site-footer {
+    background-color: var(--color-navy);
+    border-top: 1px solid color-mix(in srgb, var(--color-cream) 8%, transparent);
+    padding-inline: var(--spacing-gutter);
+  }
+
+  .site-footer__inner {
+    display: flex;
+    flex-wrap: wrap;
+    gap: clamp(2rem, 5vw, 4rem);
+    align-items: flex-start;
+    padding-block: clamp(3rem, 6vh, 5rem);
+    max-width: 72rem;
+    margin-inline: auto;
+  }
+
+  /* ---------- Brand ---------- */
+  .site-footer__brand {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    flex: 1;
+    min-width: 180px;
+  }
+  .site-footer__logo {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    text-decoration: none;
+    color: var(--color-cream);
+  }
+  .site-footer__mark {
+    width: 36px;
+    flex-shrink: 0;
+  }
+  .site-footer__mark :global(svg) {
+    width: 100%;
+    height: auto;
+    display: block;
+  }
+  .site-footer__wordmark {
+    font-family: var(--font-display);
+    font-weight: 600;
+    font-size: 0.95rem;
+    letter-spacing: -0.01em;
+    white-space: nowrap;
+  }
+  .site-footer__tagline {
+    font-size: 0.8125rem;
+    color: color-mix(in srgb, var(--color-cream) 38%, transparent);
+    margin-left: calc(36px + 0.6rem);
+  }
+
+  /* ---------- Nav ---------- */
+  .site-footer__nav { flex: 1; min-width: 160px; }
+  .site-footer__links {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+  }
+  .site-footer__link {
+    font-size: 0.875rem;
+    color: color-mix(in srgb, var(--color-cream) 55%, transparent);
+    text-decoration: none;
+    transition: color var(--duration-fast) var(--ease-out-soft);
+  }
+  .site-footer__link:hover { color: var(--color-cream); }
+
+  /* ---------- Socials ---------- */
+  .site-footer__socials {
+    display: flex;
+    gap: 0.5rem;
+    align-items: flex-start;
+    padding-top: 0.1rem;
+  }
+  .site-footer__social {
+    width: 2.25rem;
+    height: 2.25rem;
+    border-radius: 50%;
+    display: grid;
+    place-items: center;
+    font-size: 0.75rem;
+    font-weight: 600;
+    font-family: var(--font-display);
+    letter-spacing: -0.01em;
+    text-decoration: none;
+    text-transform: lowercase;
+    color: color-mix(in srgb, var(--color-cream) 55%, transparent);
+    border: 1px solid color-mix(in srgb, var(--color-cream) 12%, transparent);
+    transition:
+      color       var(--duration-fast) var(--ease-out-soft),
+      background  var(--duration-fast) var(--ease-out-soft),
+      border-color var(--duration-fast) var(--ease-out-soft);
+  }
+  .site-footer__social:hover {
+    color: var(--color-cream);
+    background: color-mix(in srgb, var(--color-cream) 8%, transparent);
+    border-color: color-mix(in srgb, var(--color-cream) 26%, transparent);
+  }
+
+  /* ---------- Bottom bar ---------- */
+  .site-footer__bottom {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: center;
+    gap: 0.75rem;
+    padding-block: 1.25rem;
+    border-top: 1px solid color-mix(in srgb, var(--color-cream) 7%, transparent);
+    max-width: 72rem;
+    margin-inline: auto;
+  }
+  .site-footer__made,
+  .site-footer__copy {
+    font-size: 0.8125rem;
+    color: color-mix(in srgb, var(--color-cream) 35%, transparent);
+    margin: 0;
+  }
+  .site-footer__made-purple { color: var(--color-purple); }
+  .site-footer__made-teal   { color: var(--color-teal); }
+</style>
+
+<script>
+  import { scrollTo } from "../lib/lenis";
+
+  document
+    .querySelectorAll<HTMLAnchorElement>(".site-footer a[href^='#']")
+    .forEach((a) => {
+      a.addEventListener("click", (e) => {
+        e.preventDefault();
+        const target = a.getAttribute("href");
+        if (target) scrollTo(target);
+      });
+    });
+</script>

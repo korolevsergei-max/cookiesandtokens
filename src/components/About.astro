@@ -1,0 +1,299 @@
+---
+/**
+ * About — "Humans + Machines"
+ * Philosophy, founders (stylized placeholders per open items), and the
+ * "AI-native creatives" positioning.
+ * Dark navy section for tonal rhythm.
+ */
+
+const founders = [
+  {
+    initials: "E",
+    accent: "purple",
+    role: "Creative",
+    name: "Founder, Creative",
+    bio: "10+ years leading brand and creative strategy for DTC and B2B. Believes great creative starts with a point of view — and AI makes the iteration loop fast enough to actually find it.",
+  },
+  {
+    initials: "A",
+    accent: "teal",
+    role: "AI & Tech",
+    name: "Founder, AI & Tech",
+    bio: "Built AI workflows for creative teams at scale. Convinced that the best use of machine intelligence is removing friction between a great idea and a finished asset.",
+  },
+] as const;
+
+const beliefs = [
+  "Human taste is the moat. AI is the engine.",
+  "Speed is a creative advantage — AI gives us more at-bats.",
+  "We never ship anything we wouldn't put our name on.",
+  "The best prompt is a great brief.",
+];
+---
+
+<section
+  id="about"
+  class="about section-shell"
+  data-about
+  data-tone="dark"
+  aria-labelledby="about-title"
+>
+  <div class="about__intro">
+    <p class="eyebrow about__eyebrow">About</p>
+    <h2 id="about-title" class="about__headline">
+      Humans&nbsp;<span class="text-gradient-overlap">+</span>&nbsp;Machines.
+    </h2>
+    <p class="about__lead">
+      We're AI-native creatives who believe the future of this industry isn't
+      human&nbsp;<em>vs.</em>&nbsp;machine — it's human&nbsp;<em>×</em>&nbsp;machine.
+    </p>
+    <p class="about__body">
+      Cookies &amp; Tokens was built by people who love craft and love
+      technology equally. We've worked inside brand teams, inside agencies,
+      inside AI companies. We've seen what happens when great creatives
+      get proper tooling — and we couldn't unsee it.
+    </p>
+  </div>
+
+  <!-- Founders -->
+  <div class="about__founders" data-founders>
+    {founders.map((f) => (
+      <article class:list={["about__founder", `about__founder--${f.accent}`]}>
+        <div class:list={["about__founder-avatar", `about__founder-avatar--${f.accent}`]}>
+          <span class="about__founder-initials">{f.initials}</span>
+        </div>
+        <div class="about__founder-info">
+          <p class:list={["eyebrow about__founder-role", `about__founder-role--${f.accent}`]}>
+            {f.role}
+          </p>
+          <h3 class="about__founder-name">{f.name}</h3>
+          <p class="about__founder-bio">{f.bio}</p>
+        </div>
+      </article>
+    ))}
+  </div>
+
+  <!-- Beliefs -->
+  <div class="about__beliefs" data-beliefs>
+    <p class="eyebrow about__beliefs-label">What we believe</p>
+    <ul class="about__beliefs-list">
+      {beliefs.map((b) => (
+        <li class="about__belief">
+          <span class="about__belief-mark" aria-hidden="true">—</span>
+          {b}
+        </li>
+      ))}
+    </ul>
+  </div>
+
+  <div class="about__bg" aria-hidden="true">
+    <span class="about__blob about__blob--purple"></span>
+    <span class="about__blob about__blob--teal"></span>
+  </div>
+</section>
+
+<style>
+  .about {
+    position: relative;
+    background-color: var(--color-navy-800);
+    color: var(--color-cream);
+    display: flex;
+    flex-direction: column;
+    gap: clamp(3rem, 7vh, 5rem);
+    overflow: clip;
+    isolation: isolate;
+  }
+
+  .about__bg {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+  }
+  .about__blob {
+    position: absolute;
+    width: 46vmax;
+    height: 46vmax;
+    border-radius: 50%;
+    filter: blur(110px);
+    opacity: 0.1;
+  }
+  .about__blob--purple {
+    top: -8vmax; right: -12vmax;
+    background: radial-gradient(circle, var(--color-purple) 0%, transparent 65%);
+  }
+  .about__blob--teal {
+    bottom: -8vmax; left: -12vmax;
+    background: radial-gradient(circle, var(--color-teal) 0%, transparent 65%);
+  }
+
+  /* ---------- Intro ---------- */
+  .about__intro {
+    position: relative;
+    z-index: 1;
+    max-width: 46rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+  .about__eyebrow {
+    color: color-mix(in srgb, var(--color-cream) 40%, transparent);
+  }
+  .about__headline {
+    font-size: var(--text-display-lg);
+    line-height: var(--text-display-lg--line-height);
+    letter-spacing: var(--text-display-lg--letter-spacing);
+  }
+  .about__lead {
+    font-size: var(--text-lead);
+    line-height: var(--text-lead--line-height);
+    color: color-mix(in srgb, var(--color-cream) 78%, transparent);
+    font-style: normal;
+  }
+  .about__lead em { font-style: normal; font-weight: 600; }
+  .about__body {
+    font-size: 1rem;
+    line-height: 1.7;
+    color: color-mix(in srgb, var(--color-cream) 58%, transparent);
+    max-width: 42rem;
+  }
+
+  /* ---------- Founders ---------- */
+  .about__founders {
+    position: relative;
+    z-index: 1;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 320px), 1fr));
+    gap: 1.25rem;
+  }
+  .about__founder {
+    display: flex;
+    gap: 1.25rem;
+    align-items: flex-start;
+    padding: clamp(1.25rem, 2.5vw, 1.75rem);
+    border-radius: var(--radius-card);
+    border: 1px solid transparent;
+    transition: border-color var(--duration-base) var(--ease-out-soft);
+  }
+  .about__founder--purple {
+    background: color-mix(in srgb, var(--color-purple) 8%, transparent);
+    border-color: color-mix(in srgb, var(--color-purple) 18%, transparent);
+  }
+  .about__founder--teal {
+    background: color-mix(in srgb, var(--color-teal) 6%, transparent);
+    border-color: color-mix(in srgb, var(--color-teal) 16%, transparent);
+  }
+
+  .about__founder-avatar {
+    width: 3.25rem;
+    height: 3.25rem;
+    border-radius: 50%;
+    display: grid;
+    place-items: center;
+    flex-shrink: 0;
+  }
+  .about__founder-avatar--purple {
+    background: color-mix(in srgb, var(--color-purple) 22%, transparent);
+    border: 1px solid color-mix(in srgb, var(--color-purple) 35%, transparent);
+  }
+  .about__founder-avatar--teal {
+    background: color-mix(in srgb, var(--color-teal) 18%, transparent);
+    border: 1px solid color-mix(in srgb, var(--color-teal) 30%, transparent);
+  }
+  .about__founder-initials {
+    font-family: var(--font-display);
+    font-size: 1.25rem;
+    font-weight: 700;
+  }
+
+  .about__founder-info {
+    display: flex;
+    flex-direction: column;
+    gap: 0.3rem;
+    flex: 1;
+  }
+  .about__founder-role { font-size: 0.7rem; }
+  .about__founder-role--purple { color: var(--color-purple-bright); }
+  .about__founder-role--teal   { color: var(--color-teal-bright); }
+  .about__founder-name {
+    font-family: var(--font-display);
+    font-size: 1.05rem;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+  }
+  .about__founder-bio {
+    font-size: 0.875rem;
+    line-height: 1.6;
+    color: color-mix(in srgb, var(--color-cream) 58%, transparent);
+  }
+
+  /* ---------- Beliefs ---------- */
+  .about__beliefs {
+    position: relative;
+    z-index: 1;
+    max-width: 40rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+  .about__beliefs-label {
+    color: color-mix(in srgb, var(--color-cream) 38%, transparent);
+  }
+  .about__beliefs-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+  }
+  .about__belief {
+    display: flex;
+    gap: 0.75rem;
+    font-size: clamp(1rem, 1.8vw, 1.125rem);
+    line-height: 1.5;
+    color: color-mix(in srgb, var(--color-cream) 80%, transparent);
+    font-family: var(--font-display);
+    font-weight: 500;
+  }
+  .about__belief-mark {
+    color: var(--color-teal);
+    flex-shrink: 0;
+  }
+</style>
+
+<script>
+  import { gsap } from "../lib/gsap";
+  import { prefersReducedMotion } from "../lib/motion";
+
+  const root = document.querySelector<HTMLElement>("[data-about]");
+  if (root) initAbout(root);
+
+  function initAbout(root: HTMLElement) {
+    if (prefersReducedMotion()) return;
+
+    gsap.from(root.querySelector(".about__intro"), {
+      opacity: 0, y: 30, duration: 0.7, ease: "power2.out",
+      scrollTrigger: { trigger: root, start: "top 72%", once: true },
+    });
+
+    const founders = Array.from(root.querySelectorAll<HTMLElement>(".about__founder"));
+    gsap.from(founders, {
+      opacity: 0, y: 30, stagger: 0.12, duration: 0.65, ease: "power2.out",
+      scrollTrigger: {
+        trigger: root.querySelector("[data-founders]"),
+        start: "top 80%",
+        once: true,
+      },
+    });
+
+    gsap.from(root.querySelector("[data-beliefs]"), {
+      opacity: 0, y: 28, duration: 0.6, ease: "power2.out",
+      scrollTrigger: {
+        trigger: root.querySelector("[data-beliefs]"),
+        start: "top 82%",
+        once: true,
+      },
+    });
+  }
+</script>

@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" role="img" aria-label="Cookies &amp; Tokens">
+  <!-- Favicon: the token octagon on the navy brand base. Stroke thickened so it
+       stays legible at 16px. -->
+  <rect width="100" height="100" rx="22" fill="#11112E"/>
+  <path d="M37 22 H63 L78 37 V63 L63 78 H37 L22 63 V37 Z"
+    stroke="#3FD9C0" stroke-width="11" stroke-linejoin="round" fill="none"/>
+</svg>
