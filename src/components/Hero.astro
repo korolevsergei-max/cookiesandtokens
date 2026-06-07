@@ -242,7 +242,10 @@ const paths = [
      larger) size as the token octagon, which fills slightly less of its box. */
   .hero__shape--cookie {
     left: 0;
-    width: 56%;
+    /* Wider than the token box: the cookie viewBox carries extra padding
+       (-8 -8 124 124) for its crumb cloud, so a larger box is needed for the
+       disc itself to read a touch bigger than the token octagon. */
+    width: 62%;
     z-index: 2;
   }
   .hero__shape--token {

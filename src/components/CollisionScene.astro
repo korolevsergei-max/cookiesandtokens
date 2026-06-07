@@ -74,11 +74,14 @@
     <!-- Cookie (disc + chips) — in front, enters from the left -->
     <div class="collision__shape collision__cookie" data-coll="cookie">
       <svg viewBox="0 0 100 100" aria-hidden="true" focusable="false">
-        <!-- Bite created using an exact SVG path rather than a <mask> or solid
-             circle hack, so it stays truly transparent while remaining robust
-             under the GSAP transforms this shape carries. -->
+        <!-- Bite = opaque navy circle over the disc (not a <mask> nor a single
+             concave two-arc path). The cookie always sits on the navy background,
+             so this reads identically while staying robust under the GSAP
+             transforms this shape carries — concave path fills and mask refs can
+             silently drop in WebKit/Safari under GPU compositing. -->
         <g>
-          <path d="M 67.97 8.65 A 46 46 0 1 0 93.36 35.63 A 21.85 21.85 0 0 1 67.97 8.65 Z" fill="#A974E8" />
+          <circle cx="50" cy="51" r="46" fill="#A974E8" />
+          <circle cx="72.23" cy="30.08" r="21.85" fill="#11112e" />
         </g>
         <g fill="#F5EFE6">
           <circle cx="32.75" cy="42.95" r="5.75"></circle>
