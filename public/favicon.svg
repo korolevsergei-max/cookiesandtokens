@@ -1,7 +1,25 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" role="img" aria-label="Cookies &amp; Tokens">
-  <!-- Favicon: the token octagon on the navy brand base. Stroke thickened so it
-       stays legible at 16px. -->
+  <!-- Favicon: the brand's Venn diagram. Purple cookie on the left, teal token
+       octagon on the right, overlapping in the middle — exactly the "Cookie /
+       Overlap / Token" metaphor the site is built around. The overlap region is
+       brightened so the intersection reads even at 16px. -->
   <rect width="100" height="100" rx="22" fill="#11112E"/>
-  <path d="M37 22 H63 L78 37 V63 L63 78 H37 L22 63 V37 Z"
-    stroke="#3FD9C0" stroke-width="11" stroke-linejoin="round" fill="none"/>
+
+  <!-- RIGHT (behind): token octagon — teal outline. -->
+  <path d="M59 30 H78 L91 43 V61 L78 74 H59 L46 61 V43 Z"
+    stroke="#3FD9C0" stroke-width="8" stroke-linejoin="round" fill="none"/>
+
+  <!-- LEFT (in front): cookie disc (purple) with a nibbled bite on its top-right
+       edge and two cream chips. Drawn last so it overlaps the token. -->
+  <g transform="translate(38 52)">
+    <path fill="#A974E8"
+      d="M 27 -2.3 A 27 27 0 1 1 3.35 -26.79 A 5.0 5.0 0 0 0 11.64 -24.22 A 4.1 4.1 0 0 0 18.65 -19.16 A 5.5 5.5 0 0 0 23.71 -12.15 A 4.4 4.4 0 0 0 27 -2.3 Z"/>
+    <g fill="#F5EFE6">
+      <circle cx="-10" cy="-5" r="3.6"/>
+      <circle cx="6" cy="-8" r="3.0"/>
+      <circle cx="-6" cy="9.5" r="4.0"/>
+      <circle cx="8.5" cy="8" r="3.3"/>
+      <circle cx="0.5" cy="2" r="2.4"/>
+    </g>
+  </g>
 </svg>
