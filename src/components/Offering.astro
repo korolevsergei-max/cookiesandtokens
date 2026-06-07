@@ -1,0 +1,313 @@
+---
+/**
+ * Offering — one of the three things we do (Creative / Growth / Software).
+ *
+ * Reusable, props-driven version of the original CookieSide/TokenSide card
+ * sections. Each instance is a full section with its own header + card grid.
+ * Tone ("light" cream / "dark" navy) and accent ("purple" / "teal") alternate
+ * down the page for rhythm. Cards are scroll-revealed and cursor-glow reactive
+ * (same recipe as the rest of the site, guarded for reduced-motion / touch).
+ */
+
+interface Card {
+  number: string;
+  title: string;
+  desc: string;
+  tags: string[];
+}
+
+interface Props {
+  id: string;
+  eyebrow: string;
+  /** Headline line 1, then accented line 2 (mirrors the site headline pattern). */
+  titleLead: string;
+  titleAccent: string;
+  sub: string;
+  cards: Card[];
+  tone?: "light" | "dark";
+  accent?: "purple" | "teal";
+}
+
+const {
+  id,
+  eyebrow,
+  titleLead,
+  titleAccent,
+  sub,
+  cards,
+  tone = "light",
+  accent = "purple",
+} = Astro.props;
+
+const titleId = `${id}-title`;
+---
+
+<section
+  id={id}
+  class:list={["offering", `offering--${tone}`, `offering--${accent}`]}
+  data-offering
+  data-tone={tone}
+  aria-labelledby={titleId}
+>
+  <div class="offering__header section-shell">
+    <p class="eyebrow offering__eyebrow">{eyebrow}</p>
+    <h2 id={titleId} class="offering__headline">
+      {titleLead}<br /><span class="offering__accent">{titleAccent}</span>
+    </h2>
+    <p class="offering__sub">{sub}</p>
+  </div>
+
+  <div class="offering__grid section-shell">
+    {cards.map((c) => (
+      <article class="offering-card" data-offering-card>
+        <span class="offering-card__num">{c.number}</span>
+        <h3 class="offering-card__title">{c.title}</h3>
+        <p class="offering-card__desc">{c.desc}</p>
+        <ul class="offering-card__tags" aria-label="What this includes">
+          {c.tags.map((t) => <li class="offering-card__tag">{t}</li>)}
+        </ul>
+        <span class="offering-card__glow" aria-hidden="true"></span>
+      </article>
+    ))}
+  </div>
+
+  <!-- Accent blob -->
+  <div class="offering__bg" aria-hidden="true">
+    <span class="offering__blob"></span>
+  </div>
+</section>
+
+<style>
+  .offering {
+    position: relative;
+    overflow: clip;
+    isolation: isolate;
+  }
+  .offering--light {
+    background-color: var(--color-cream);
+    color: var(--color-ink);
+  }
+  .offering--dark {
+    background-color: var(--color-navy-800);
+    color: var(--color-cream);
+  }
+
+  /* ---------- Accent blob ---------- */
+  .offering__bg {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+  }
+  .offering__blob {
+    position: absolute;
+    width: 55vmax;
+    height: 55vmax;
+    border-radius: 50%;
+    filter: blur(120px);
+  }
+  /* Alternate the blob corner by tone so it doesn't repeat identically. */
+  .offering--light .offering__blob {
+    top: -20vmax;
+    right: -20vmax;
+    opacity: 0.08;
+  }
+  .offering--dark .offering__blob {
+    bottom: -20vmax;
+    left: -20vmax;
+    opacity: 0.1;
+  }
+  .offering--purple .offering__blob {
+    background: radial-gradient(circle, var(--color-purple) 0%, transparent 60%);
+  }
+  .offering--teal .offering__blob {
+    background: radial-gradient(circle, var(--color-teal) 0%, transparent 60%);
+  }
+
+  /* ---------- Header ---------- */
+  .offering__header {
+    position: relative;
+    z-index: 1;
+    padding-bottom: 0;
+    max-width: 52rem;
+  }
+  .offering--purple .offering__eyebrow {
+    color: var(--color-purple-deep);
+  }
+  .offering--teal .offering__eyebrow {
+    color: var(--color-teal);
+  }
+  .offering__headline {
+    font-size: var(--text-display-xl);
+    line-height: var(--text-display-xl--line-height);
+    letter-spacing: var(--text-display-xl--letter-spacing);
+    margin-top: 0.5rem;
+  }
+  .offering--light .offering__headline { color: var(--color-ink); }
+  .offering--dark .offering__headline { color: var(--color-cream); }
+  .offering--purple .offering__accent { color: var(--color-purple); }
+  .offering--teal .offering__accent { color: var(--color-teal); }
+  .offering__sub {
+    max-width: 36rem;
+    font-size: var(--text-lead);
+    line-height: var(--text-lead--line-height);
+    margin-top: 1rem;
+  }
+  .offering--light .offering__sub { color: var(--color-ink-muted); }
+  .offering--dark .offering__sub {
+    color: color-mix(in srgb, var(--color-cream) 78%, transparent);
+  }
+
+  /* ---------- Card grid ---------- */
+  .offering__grid {
+    position: relative;
+    z-index: 1;
+    padding-top: 2rem;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 280px), 1fr));
+    gap: 1.25rem;
+  }
+
+  .offering-card {
+    position: relative;
+    padding: clamp(1.5rem, 3vw, 2.25rem);
+    border-radius: var(--radius-card);
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    overflow: clip;
+    transition:
+      border-color var(--duration-base) var(--ease-out-soft),
+      transform    var(--duration-base) var(--ease-out-soft);
+    will-change: transform;
+  }
+  .offering-card:hover {
+    transform: translateY(-3px);
+  }
+  .offering--light .offering-card {
+    background: var(--color-cream-200);
+  }
+  .offering--dark .offering-card {
+    background: color-mix(in srgb, var(--color-navy-700) 70%, transparent);
+  }
+  .offering--purple .offering-card {
+    border: 1px solid color-mix(in srgb, var(--color-purple) 14%, transparent);
+  }
+  .offering--teal .offering-card {
+    border: 1px solid color-mix(in srgb, var(--color-teal) 14%, transparent);
+  }
+  .offering--purple .offering-card:hover {
+    border-color: color-mix(in srgb, var(--color-purple) 45%, transparent);
+  }
+  .offering--teal .offering-card:hover {
+    border-color: color-mix(in srgb, var(--color-teal) 45%, transparent);
+  }
+
+  .offering-card__glow {
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    opacity: 0;
+    transition: opacity var(--duration-base) var(--ease-out-soft);
+    pointer-events: none;
+  }
+  .offering--purple .offering-card__glow {
+    background: radial-gradient(
+      circle at var(--gx, 50%) var(--gy, 50%),
+      color-mix(in srgb, var(--color-purple) 12%, transparent) 0%,
+      transparent 65%
+    );
+  }
+  .offering--teal .offering-card__glow {
+    background: radial-gradient(
+      circle at var(--gx, 50%) var(--gy, 50%),
+      color-mix(in srgb, var(--color-teal) 10%, transparent) 0%,
+      transparent 65%
+    );
+  }
+  .offering-card:hover .offering-card__glow {
+    opacity: 1;
+  }
+
+  .offering-card__num {
+    font-family: var(--font-display);
+    font-size: 0.75rem;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+  }
+  .offering--purple .offering-card__num { color: var(--color-purple); }
+  .offering--teal .offering-card__num { color: var(--color-teal); }
+  .offering-card__title {
+    font-family: var(--font-display);
+    font-size: clamp(1.25rem, 2.5vw, 1.6rem);
+    font-weight: 600;
+    letter-spacing: -0.015em;
+    line-height: 1.1;
+  }
+  .offering--light .offering-card__title { color: var(--color-ink); }
+  .offering--dark .offering-card__title { color: var(--color-cream); }
+  .offering-card__desc {
+    font-size: 0.9375rem;
+    line-height: 1.6;
+    flex: 1;
+  }
+  .offering--light .offering-card__desc { color: var(--color-ink-muted); }
+  .offering--dark .offering-card__desc {
+    color: color-mix(in srgb, var(--color-cream) 70%, transparent);
+  }
+
+  .offering-card__tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.35rem;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    margin-top: auto;
+  }
+  .offering-card__tag {
+    padding: 0.2rem 0.6rem;
+    font-size: 0.7rem;
+    font-weight: 500;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    border-radius: var(--radius-pill);
+  }
+  .offering--purple .offering-card__tag {
+    color: var(--color-purple-deep);
+    background: color-mix(in srgb, var(--color-purple) 10%, transparent);
+  }
+  .offering--teal .offering-card__tag {
+    color: var(--color-teal-bright);
+    background: color-mix(in srgb, var(--color-teal) 12%, transparent);
+  }
+</style>
+
+<script>
+  import { reveal } from "../lib/reveal";
+  import { prefersReducedMotion, isCoarsePointer } from "../lib/motion";
+
+  // Each Offering section is independent; wire them all up.
+  const roots = Array.from(document.querySelectorAll<HTMLElement>("[data-offering]"));
+  roots.forEach(initOffering);
+
+  function initOffering(root: HTMLElement) {
+    const cards = Array.from(root.querySelectorAll<HTMLElement>("[data-offering-card]"));
+
+    // Scroll-reveal: stagger in on enter (shared page recipe).
+    reveal(cards, { trigger: root.querySelector(".offering__grid") });
+
+    if (prefersReducedMotion() || isCoarsePointer()) return;
+
+    // Cursor-proximity glow via CSS custom properties.
+    cards.forEach((card) => {
+      card.addEventListener("pointermove", (e: PointerEvent) => {
+        const r = card.getBoundingClientRect();
+        const x = ((e.clientX - r.left) / r.width) * 100;
+        const y = ((e.clientY - r.top) / r.height) * 100;
+        card.style.setProperty("--gx", `${x}%`);
+        card.style.setProperty("--gy", `${y}%`);
+      });
+    });
+  }
+</script>

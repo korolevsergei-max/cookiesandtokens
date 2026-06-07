@@ -1,35 +1,33 @@
 ---
 /**
- * CookieSide — "Human Craft"
- * The Cookie half of the agency: brand, content, creative strategy, campaigns.
+ * CookieSide — "What We Do"
+ * The three offerings: Creative, Growth & Digital Marketing, Software.
  * Light cream section for tonal rhythm; purple accents.
  * Cards are cursor-reactive (proximity glow via JS) and scroll-revealed.
  */
 
+// Signposts to the three full offering sections below.
 const services = [
   {
     number: "01",
-    title: "Brand & Identity",
-    desc: "Strategy, naming, visual identity, brand guidelines. The full system that makes you instantly recognisable and hard to copy.",
-    tags: ["Strategy", "Naming", "Visual Identity", "Guidelines"],
+    title: "Creative",
+    desc: "Brand, identity, content, and creative strategy with a real point of view. Human taste sets the direction. AI helps us explore wider and produce faster.",
+    tags: ["Brand", "Identity", "Content", "Creative Strategy"],
+    href: "#creative",
   },
   {
     number: "02",
-    title: "Content & Creative",
-    desc: "Copy that earns attention, visuals with a point of view, content systems that stay consistent at volume. Human voice, AI amplified.",
-    tags: ["Copywriting", "Campaign Creative", "Content Strategy", "Production"],
+    title: "Growth & Digital Marketing",
+    desc: "Driving growth across every channel. Email, PR, community and local posting, growth hacking, plus paid media. Organic and paid, working as one engine.",
+    tags: ["Email", "PR", "Organic", "Paid Media"],
+    href: "#growth",
   },
   {
     number: "03",
-    title: "Creative Direction",
-    desc: "Point of view, visual language, creative concepts. The taste layer that makes AI outputs feel unmistakably yours.",
-    tags: ["Concept", "Art Direction", "Visual Language", "Oversight"],
-  },
-  {
-    number: "04",
-    title: "Campaigns",
-    desc: "Full creative campaigns. Concept to launch. Paid, organic, always on. Craft at every touchpoint, at the speed AI enables.",
-    tags: ["Paid Creative", "Organic", "Launch", "Always-On"],
+    title: "Software Development",
+    desc: "Full web apps, native iOS and Android, and custom software or SaaS for whatever you need to run. We also stand up AI agents to handle your workflows.",
+    tags: ["Web Apps", "iOS & Android", "Custom SaaS", "AI Agents"],
+    href: "#software",
   },
 ];
 ---
@@ -42,28 +40,34 @@ const services = [
   aria-labelledby="cookie-title"
 >
   <div class="cookie-side__header section-shell">
-    <p class="eyebrow cookie-side__eyebrow">The Cookie</p>
+    <p class="eyebrow cookie-side__eyebrow">What We Do</p>
     <h2 id="cookie-title" class="cookie-side__headline">
-      Human<br /><span class="cookie-side__accent">Craft.</span>
+      Three things,<br /><span class="cookie-side__accent">one studio.</span>
     </h2>
     <p class="cookie-side__sub">
-      Great creatives don't need AI to be great. But with it, they're
-      unstoppable. Wider exploration, faster iteration, more time for the
-      decisions that actually define a brand.
+      Creative, growth, and software. Most teams pick one. We do all three, so
+      the brand, the channels that grow it, and the software behind it move
+      together instead of fighting each other.
     </p>
   </div>
 
   <div class="cookie-side__grid section-shell">
     {services.map((s) => (
-      <article class="cookie-card" data-cookie-card>
+      <a class="cookie-card" data-cookie-card href={s.href} data-cursor="link">
         <span class="cookie-card__num">{s.number}</span>
         <h3 class="cookie-card__title">{s.title}</h3>
         <p class="cookie-card__desc">{s.desc}</p>
         <ul class="cookie-card__tags" aria-label="Service tags">
           {s.tags.map((t) => <li class="cookie-card__tag">{t}</li>)}
         </ul>
+        <span class="cookie-card__more" aria-hidden="true">
+          Explore
+          <svg width="14" height="14" viewBox="0 0 16 16" fill="none">
+            <path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </span>
         <span class="cookie-card__glow" aria-hidden="true"></span>
-      </article>
+      </a>
     ))}
   </div>
 
@@ -147,6 +151,8 @@ const services = [
     flex-direction: column;
     gap: 0.75rem;
     overflow: clip;
+    text-decoration: none;
+    color: inherit;
     transition:
       border-color var(--duration-base) var(--ease-out-soft),
       transform    var(--duration-base) var(--ease-out-soft);
@@ -155,6 +161,24 @@ const services = [
   .cookie-card:hover {
     border-color: color-mix(in srgb, var(--color-purple) 45%, transparent);
     transform: translateY(-3px);
+  }
+
+  .cookie-card__more {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    margin-top: 1rem;
+    font-family: var(--font-display);
+    font-size: 0.8125rem;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+    color: var(--color-purple-deep);
+  }
+  .cookie-card__more svg {
+    transition: transform var(--duration-base) var(--ease-out-soft);
+  }
+  .cookie-card:hover .cookie-card__more svg {
+    transform: translateX(3px);
   }
 
   .cookie-card__glow {
@@ -220,6 +244,7 @@ const services = [
 <script>
   import { reveal } from "../lib/reveal";
   import { prefersReducedMotion, isCoarsePointer } from "../lib/motion";
+  import { scrollTo } from "../lib/lenis";
 
   const root = document.querySelector<HTMLElement>("[data-cookie-side]");
   if (root) initCookieSide(root);
@@ -229,6 +254,17 @@ const services = [
 
     // Scroll-reveal: stagger in on enter (shared page recipe).
     reveal(cards, { trigger: root.querySelector(".cookie-side__grid") });
+
+    // Signpost cards smooth-scroll to their offering section (same recipe as Nav).
+    cards.forEach((card) => {
+      card.addEventListener("click", (e) => {
+        const target = card.getAttribute("href");
+        if (target?.startsWith("#")) {
+          e.preventDefault();
+          scrollTo(target);
+        }
+      });
+    });
 
     if (prefersReducedMotion() || isCoarsePointer()) return;
 
