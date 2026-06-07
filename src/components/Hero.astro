@@ -19,17 +19,17 @@ const paths = [
   {
     key: "cookie",
     eyebrow: "The Cookie",
-    title: "Human Craft",
-    desc: "Brand · Content · Creative Strategy",
+    title: "What We Make",
+    desc: "Creative · Growth · Software",
     target: "#cookie",
     cursor: "cookie",
-    cursorLabel: "Craft",
+    cursorLabel: "Make",
   },
   {
     key: "venn",
     eyebrow: "The Overlap",
-    title: "The Full Package",
-    desc: "Where craft meets machine. And outcomes follow.",
+    title: "Human × AI",
+    desc: "Where deep experience meets AI. Better work, faster.",
     target: "#collision",
     cursor: "link",
     cursorLabel: "Overlap",
@@ -37,11 +37,11 @@ const paths = [
   {
     key: "token",
     eyebrow: "The Token",
-    title: "Machine Intelligence",
-    desc: "AI Workflows · Revenue Ops · Automation · Software Development",
+    title: "How We Work",
+    desc: "Human craft, supercharged by AI",
     target: "#token",
     cursor: "token",
-    cursorLabel: "Machine",
+    cursorLabel: "Work",
   },
 ] as const;
 ---
@@ -57,15 +57,15 @@ const paths = [
     <p class="eyebrow hero__brand">Cookies &amp; Tokens</p>
 
     <h1 class="hero__headline">
-      The taste of a studio.<br />
-      <span class="text-gradient-overlap">The speed of a machine.</span>
+      Human craft.<br />
+      <span class="text-gradient-overlap">AI supercharged.</span>
     </h1>
 
     <p class="hero__sub">
-      We pair human creatives with AI to build brand, content, software, and
-      revenue engines that compound. Design, code, and automation under one
-      roof. Human craft, machine intelligence, one studio, driving value no one
-      thought possible.
+      One studio for creative, growth, and software. We bring deep experience
+      and a creative mindset, then supercharge it with AI to ship better work,
+      faster. The cookie is the human. The token is the AI. Together they drive
+      value no one thought possible.
     </p>
 
     <!-- The interactive stage = the navigation -->
@@ -105,7 +105,7 @@ const paths = [
     <!-- Dynamic caption: crossfades to the active path (or default prompt) -->
     <div class="hero__caption" data-caption>
       <p class="hero__cap" data-cap="default">
-        <span class="hero__cap-title">Two halves. One studio.</span>
+        <span class="hero__cap-title">The human and the AI. One studio.</span>
         <span class="hero__cap-desc">Hover a shape to explore, or scroll to see it all.</span>
       </p>
       {
@@ -242,11 +242,13 @@ const paths = [
      larger) size as the token octagon, which fills slightly less of its box. */
   .hero__shape--cookie {
     left: 0;
-    /* Wider than the token box: the cookie viewBox carries extra padding
-       (-8 -8 124 124) for its crumb cloud, so a larger box is needed for the
-       disc itself to read a touch bigger than the token octagon. */
-    width: 62%;
+    width: 56%;
     z-index: 2;
+    /* The cookie viewBox (-8 -8 124 124) carries ~24% padding around the disc
+       for the crumb cloud, so at an equal size cap the disc reads smaller than
+       the token octagon (whose viewBox hugs the shape). Scale this shape's cap
+       up to compensate so the disc lands a touch larger than the octagon. */
+    --shape-size: calc((var(--stage-h) - 56px) * 1.22);
   }
   .hero__shape--token {
     right: 0;
@@ -255,7 +257,9 @@ const paths = [
   }
   /* The SVGs are square (1:1). Cap the rendered size by BOTH the box width
      and the stage height so a shape can never grow taller than the stage and
-     bleed into the sub / caption rows above and below it. */
+     bleed into the sub / caption rows above and below it. (--shape-size is
+     inherited from the stage, but the cookie overrides it to offset its
+     viewBox padding — see .hero__shape--cookie.) */
   .hero__shape-inner {
     width: min(100%, var(--shape-size, 300px));
     will-change: transform;

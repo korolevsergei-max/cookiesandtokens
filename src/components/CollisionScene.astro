@@ -74,14 +74,14 @@
     <!-- Cookie (disc + chips) — in front, enters from the left -->
     <div class="collision__shape collision__cookie" data-coll="cookie">
       <svg viewBox="0 0 100 100" aria-hidden="true" focusable="false">
-        <!-- Bite = opaque navy circle over the disc (not a <mask> nor a single
-             concave two-arc path). The cookie always sits on the navy background,
-             so this reads identically while staying robust under the GSAP
-             transforms this shape carries — concave path fills and mask refs can
-             silently drop in WebKit/Safari under GPU compositing. -->
+        <!-- Bite = TRUE transparent hole via fill-rule="evenodd" (outer disc circle
+             + inner bite circle, both complete closed circles). Not a navy fill
+             (which would show as a dark blob over the overlap glow), not a <mask>,
+             and not a self-intersecting concave two-arc path (which WebKit/Safari
+             drop under the GSAP transforms this shape carries). Transparent so it
+             reads correctly over the brightening overlap lens. -->
         <g>
-          <circle cx="50" cy="51" r="46" fill="#A974E8" />
-          <circle cx="72.23" cy="30.08" r="21.85" fill="#11112e" />
+          <path fill="#A974E8" fill-rule="evenodd" d="M 50 51 m -46 0 a 46 46 0 1 0 92 0 a 46 46 0 1 0 -92 0 Z M 72.23 30.08 m -21.85 0 a 21.85 21.85 0 1 1 43.7 0 a 21.85 21.85 0 1 1 -43.7 0 Z" />
         </g>
         <g fill="#F5EFE6">
           <circle cx="32.75" cy="42.95" r="5.75"></circle>
@@ -110,10 +110,10 @@
     </div>
 
     <!-- Resolving labels: Craft (cookie) · Tech (token) · = Outcomes (overlap) -->
-    <span class="collision__label collision__label--craft" data-coll-label="craft">Craft</span>
-    <span class="collision__label collision__label--tech" data-coll-label="tech">Tech</span>
+    <span class="collision__label collision__label--craft" data-coll-label="craft">Human</span>
+    <span class="collision__label collision__label--tech" data-coll-label="tech">AI</span>
     <span class="collision__label collision__label--out text-gradient-overlap" data-coll-label="out">
-      = Outcomes
+      = More
     </span>
   </div>
 

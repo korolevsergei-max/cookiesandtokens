@@ -5,16 +5,15 @@
          #cookie-chips  – the light chip holes
          #cookie-crumbs – the crumb cloud near the bite
   -->
-  <!-- Bite is painted as a navy circle over the disc (not an SVG <mask>, and not a
-       single concave two-arc path): the cookie always sits on the navy background,
-       so an opaque navy circle reads identically to a real cut-out while staying
-       robust under GPU compositing — both <mask> refs and self-bounded concave
-       path fills can silently drop in WebKit/Safari under transforms.
-       Disc r=46 about (50,51) so the cookie reads at the same (slightly larger)
-       size as the token octagon; bite r=21.85 at (72.23,30.08) carves the top-right. -->
+  <!-- Bite is a TRUE transparent hole, cut with fill-rule="evenodd" on a single
+       path: an outer disc circle plus an inner bite circle. Both subpaths are
+       complete closed circles (not a self-intersecting concave two-arc path, and
+       not a <mask>) — WebKit/Safari render this reliably under GPU compositing,
+       and because the hole is genuinely transparent it reads correctly over ANY
+       background (flat navy here, the glowing lens in the collision scene, etc.).
+       Disc r=46 about (50,51); bite r=21.85 at (72.23,30.08) carves the top-right. -->
   <g id="cookie-body">
-    <circle cx="50" cy="51" r="46" fill="#A974E8" />
-    <circle cx="72.23" cy="30.08" r="21.85" fill="#11112e" />
+    <path fill="#A974E8" fill-rule="evenodd" d="M 50 51 m -46 0 a 46 46 0 1 0 92 0 a 46 46 0 1 0 -92 0 Z M 72.23 30.08 m -21.85 0 a 21.85 21.85 0 1 1 43.7 0 a 21.85 21.85 0 1 1 -43.7 0 Z" />
   </g>
 
   <g id="cookie-chips" fill="#F5EFE6">
