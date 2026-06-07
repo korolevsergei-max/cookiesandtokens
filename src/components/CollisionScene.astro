@@ -74,14 +74,14 @@
     <!-- Cookie (disc + chips) — in front, enters from the left -->
     <div class="collision__shape collision__cookie" data-coll="cookie">
       <svg viewBox="0 0 100 100" aria-hidden="true" focusable="false">
-        <!-- Bite = TRUE transparent hole via fill-rule="evenodd" (outer disc circle
-             + inner bite circle, both complete closed circles). Not a navy fill
-             (which would show as a dark blob over the overlap glow), not a <mask>,
-             and not a self-intersecting concave two-arc path (which WebKit/Safari
-             drop under the GSAP transforms this shape carries). Transparent so it
-             reads correctly over the brightening overlap lens. -->
+        <!-- Disc as ONE closed path: smooth r=46 rim with the top-right edge
+             replaced by small inward scallop arcs (the nibbled bite). A single
+             non-self-intersecting outline — transparent bite (no navy fill blob,
+             no <mask>, no evenodd hole, no deep two-arc scoop), so it reads
+             correctly over the brightening overlap lens and renders reliably in
+             WebKit/Safari under the GSAP transforms this shape carries. -->
         <g>
-          <path fill="#A974E8" fill-rule="evenodd" d="M 50 51 m -46 0 a 46 46 0 1 0 92 0 a 46 46 0 1 0 -92 0 Z M 72.23 30.08 m -21.85 0 a 21.85 21.85 0 1 1 43.7 0 a 21.85 21.85 0 1 1 -43.7 0 Z" />
+          <path fill="#A974E8" d="M 95.55 44.60 A 46 46 0 1 1 56.40 5.45 A 8.5 8.5 0 0 0 70.53 9.83 A 7.0 7.0 0 0 0 82.53 18.47 A 9.5 9.5 0 0 0 91.17 30.47 A 7.5 7.5 0 0 0 95.55 44.60 Z" />
         </g>
         <g fill="#F5EFE6">
           <circle cx="32.75" cy="42.95" r="5.75"></circle>
@@ -123,8 +123,9 @@
       This overlap is the whole&nbsp;idea.
     </h2>
     <p class="collision__sub" data-coll-sub>
-      When craft and machine share one system, every campaign moves faster,
-      every operation runs leaner, and every dollar works harder.
+      The cookie is the human: deep experience and a creative mindset. The
+      token is the AI that supercharges it. Together they make better creative,
+      sharper growth, and stronger software, faster than either could alone.
     </p>
   </div>
 </section>

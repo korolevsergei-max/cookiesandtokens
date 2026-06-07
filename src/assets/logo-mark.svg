@@ -10,11 +10,11 @@
 
   <!-- Cookie (in front, overlapping the octagon's left side) -->
   <g id="lockup-cookie">
-    <!-- Bite = TRUE transparent hole via fill-rule="evenodd" (outer disc circle +
-         inner bite circle, both complete closed circles). Transparent so the teal
-         octagon shows through the bite; robust where the old self-intersecting
-         concave two-arc path could drop. Disc (38,54) r40; bite (70,28) r18. -->
-    <path fill="#A974E8" fill-rule="evenodd" d="M 38 54 m -40 0 a 40 40 0 1 0 80 0 a 40 40 0 1 0 -80 0 Z M 70 28 m -18 0 a 18 18 0 1 1 36 0 a 18 18 0 1 1 -36 0 Z" />
+    <!-- Disc as ONE closed path: smooth r=40 rim (centre 38,54) with the top-right
+         edge replaced by small inward scallop arcs (the nibbled bite). Single
+         non-self-intersecting outline, so the bite is transparent and the teal
+         octagon shows through it; robust where the old two-arc scoop could drop. -->
+    <path fill="#A974E8" d="M 77.61 48.43 A 40 40 0 1 1 43.57 14.39 A 7.39 7.39 0 0 0 55.85 18.20 A 6.09 6.09 0 0 0 66.28 25.72 A 8.26 8.26 0 0 0 73.80 36.15 A 6.52 6.52 0 0 0 77.61 48.43 Z" />
     <g fill="#F5EFE6">
       <circle cx="22" cy="46" r="5"/>
       <circle cx="46" cy="42" r="4.3"/>
