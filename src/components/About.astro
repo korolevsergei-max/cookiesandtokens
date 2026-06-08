@@ -1,34 +1,26 @@
 ---
 /**
  * About — "Humans + Machines"
- * Philosophy, founders (stylized placeholders per open items), and the
+ * Philosophy, team pedigree (credential chips, no named individuals), and the
  * "AI-native creatives" positioning.
  * Dark navy section for tonal rhythm.
  */
 
-const founders = [
-  {
-    initials: "·",
-    accent: "purple",
-    role: "Founder, Creative & Growth",
-    name: "[Founder name]",
-    bio: "[X]+ years leading brand, creative, and growth for [recognizable brands or categories]. [One concrete credential or result.] Believes great work starts with a point of view, and AI makes the loop fast enough to actually find it.",
-  },
-  {
-    initials: "·",
-    accent: "teal",
-    role: "Founder, Software & AI",
-    name: "[Founder name]",
-    bio: "Builds full web and mobile apps, custom software, and AI agents. [One concrete credential.] Convinced the best use of AI is removing the friction between a great idea and a shipped product.",
-  },
-] as const;
+// Team pedigree — backgrounds the senior team brings, no named individuals.
+const credentials = [
+  "Software Engineering",
+  "Organic Growth",
+  "Tier-1 Strategy",
+  "Brand & Creative",
+  "Applied AI",
+];
 
 const beliefs = [
   "Human taste is the moat. AI is the engine.",
   "We understand the problem before we touch the solution.",
   "We never ship anything we would not put our name on.",
   "Better, not cheaper.",
-  "You get the founders and senior people, not juniors on your account.",
+  "You get senior specialists and the people who run the studio, not juniors on your account.",
   "Creative, growth, and software belong under one roof, and the real world feeds all three.",
 ];
 ---
@@ -56,22 +48,17 @@ const beliefs = [
     </p>
   </div>
 
-  <!-- Founders -->
-  <div class="about__founders" data-founders>
-    {founders.map((f) => (
-      <article class:list={["about__founder", `about__founder--${f.accent}`]}>
-        <div class:list={["about__founder-avatar", `about__founder-avatar--${f.accent}`]}>
-          <span class="about__founder-initials">{f.initials}</span>
-        </div>
-        <div class="about__founder-info">
-          <p class:list={["eyebrow about__founder-role", `about__founder-role--${f.accent}`]}>
-            {f.role}
-          </p>
-          <h3 class="about__founder-name">{f.name}</h3>
-          <p class="about__founder-bio">{f.bio}</p>
-        </div>
-      </article>
-    ))}
+  <!-- Pedigree -->
+  <div class="about__pedigree" data-pedigree>
+    <p class="about__body about__pedigree-text">
+      The team is led by managing directors and senior operators — specialists,
+      not generalists, with experience across software development, driving
+      organic growth, and tier-one strategy consulting. People who have done the
+      work at the highest level, now with AI in their hands.
+    </p>
+    <ul class="about__creds" aria-label="Team backgrounds">
+      {credentials.map((c) => <li class="about__cred">{c}</li>)}
+    </ul>
   </div>
 
   <!-- Beliefs -->
@@ -162,73 +149,36 @@ const beliefs = [
     margin-top: 1rem;
   }
 
-  /* ---------- Founders ---------- */
-  .about__founders {
+  /* ---------- Pedigree ---------- */
+  .about__pedigree {
     position: relative;
     z-index: 1;
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(min(100%, 320px), 1fr));
-    gap: 1.25rem;
-  }
-  .about__founder {
-    display: flex;
-    gap: 1.25rem;
-    align-items: flex-start;
-    padding: clamp(1.25rem, 2.5vw, 1.75rem);
-    border-radius: var(--radius-card);
-    border: 1px solid transparent;
-    transition: border-color var(--duration-base) var(--ease-out-soft);
-  }
-  .about__founder--purple {
-    background: color-mix(in srgb, var(--color-purple) 8%, transparent);
-    border-color: color-mix(in srgb, var(--color-purple) 18%, transparent);
-  }
-  .about__founder--teal {
-    background: color-mix(in srgb, var(--color-teal) 6%, transparent);
-    border-color: color-mix(in srgb, var(--color-teal) 16%, transparent);
-  }
-
-  .about__founder-avatar {
-    width: 3.25rem;
-    height: 3.25rem;
-    border-radius: 50%;
-    display: grid;
-    place-items: center;
-    flex-shrink: 0;
-  }
-  .about__founder-avatar--purple {
-    background: color-mix(in srgb, var(--color-purple) 22%, transparent);
-    border: 1px solid color-mix(in srgb, var(--color-purple) 35%, transparent);
-  }
-  .about__founder-avatar--teal {
-    background: color-mix(in srgb, var(--color-teal) 18%, transparent);
-    border: 1px solid color-mix(in srgb, var(--color-teal) 30%, transparent);
-  }
-  .about__founder-initials {
-    font-family: var(--font-display);
-    font-size: 1.25rem;
-    font-weight: 700;
-  }
-
-  .about__founder-info {
+    max-width: 46rem;
     display: flex;
     flex-direction: column;
-    gap: 0.3rem;
-    flex: 1;
+    gap: 1.5rem;
   }
-  .about__founder-role { font-size: 0.7rem; }
-  .about__founder-role--purple { color: var(--color-purple-bright); }
-  .about__founder-role--teal   { color: var(--color-teal-bright); }
-  .about__founder-name {
+  .about__pedigree-text {
+    max-width: 44rem;
+  }
+  .about__creds {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+  .about__cred {
+    padding: 0.45rem 0.9rem;
     font-family: var(--font-display);
-    font-size: 1.05rem;
-    font-weight: 600;
-    letter-spacing: -0.01em;
-  }
-  .about__founder-bio {
-    font-size: 0.875rem;
-    line-height: 1.6;
-    color: color-mix(in srgb, var(--color-cream) 58%, transparent);
+    font-size: 0.8rem;
+    font-weight: 500;
+    letter-spacing: 0.02em;
+    color: var(--color-cream);
+    background: color-mix(in srgb, var(--color-cream) 8%, transparent);
+    border: 1px solid color-mix(in srgb, var(--color-cream) 16%, transparent);
+    border-radius: var(--radius-pill);
   }
 
   /* ---------- Beliefs ---------- */
@@ -277,8 +227,9 @@ const beliefs = [
     if (prefersReducedMotion()) return;
 
     reveal(root.querySelector(".about__intro"));
-    reveal(root.querySelectorAll<HTMLElement>(".about__founder"), {
-      trigger: root.querySelector("[data-founders]"),
+    reveal(root.querySelector(".about__pedigree-text"));
+    reveal(root.querySelectorAll<HTMLElement>(".about__cred"), {
+      trigger: root.querySelector(".about__creds"),
     });
     reveal(root.querySelector("[data-beliefs]"));
   }
