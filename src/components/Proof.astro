@@ -5,11 +5,11 @@
  * Light cream section for tonal rhythm.
  */
 
-const stats = [
-  { value: "3×",  label: "the target speed from brief to live",   accent: "teal"   },
-  { value: "60%", label: "wider creative exploration, by design", accent: "purple" },
-  { value: "3",   label: "offerings, one studio: creative, growth, software", accent: "teal"   },
-  { value: "100%",label: "human reviewed before it ships",        accent: "purple" },
+const commitments = [
+  { text: "Every deliverable reviewed by a person before it ships. No exceptions.", accent: "teal"   },
+  { text: "First work back in days.",                                               accent: "purple" },
+  { text: "Three capabilities from one team, so nothing gets lost between vendors.", accent: "teal"   },
+  { text: "We compete on the quality of the work. Full stop.",                      accent: "purple" },
 ];
 
 const marqueeItems = [
@@ -30,22 +30,17 @@ const marqueeItems = [
   <div class="proof__content section-shell">
     <p class="eyebrow proof__eyebrow">The Standard We Hold</p>
     <h2 id="proof-title" class="proof__headline">
-      Outcomes, not&nbsp;<span class="proof__accent">outputs.</span>
+      The standard&nbsp;<span class="proof__accent">we hold.</span>
     </h2>
     <p class="proof__sub">
-      These are the targets every engagement is built to hit, not averages
-      we are quoting back at you. Speed to live, creative range, work that is
-      always human reviewed. The numbers that move the business, never vanity
-      metrics.
+      We are early, and we will not quote you averages we have not earned yet.
+      So here is what we commit to instead.
     </p>
 
     <dl class="proof__stats" data-proof-stats>
-      {stats.map((s) => (
-        <div class:list={["proof__stat", `proof__stat--${s.accent}`]} data-stat>
-          <dt class:list={["proof__stat-value", `proof__stat-value--${s.accent}`]}>
-            {s.value}
-          </dt>
-          <dd class="proof__stat-label">{s.label}</dd>
+      {commitments.map((c) => (
+        <div class:list={["proof__stat", `proof__stat--${c.accent}`]} data-stat>
+          <dd class="proof__stat-label proof__stat-label--commit">{c.text}</dd>
         </div>
       ))}
     </dl>
@@ -169,6 +164,16 @@ const marqueeItems = [
     color: var(--color-ink-muted);
     margin: 0;
   }
+  /* Commitment cards carry a full statement (no big number), so the text reads
+     a touch larger and bolder than a stat caption. */
+  .proof__stat-label--commit {
+    font-family: var(--font-display);
+    font-size: clamp(1rem, 1.8vw, 1.15rem);
+    font-weight: 500;
+    line-height: 1.45;
+    letter-spacing: -0.01em;
+    color: var(--color-ink);
+  }
 
   /* ---------- Marquee ---------- */
   .proof__marquee {
@@ -233,7 +238,7 @@ const marqueeItems = [
 </style>
 
 <script>
-  import { reveal, countUp } from "../lib/reveal";
+  import { reveal } from "../lib/reveal";
   import { prefersReducedMotion } from "../lib/motion";
 
   const root = document.querySelector<HTMLElement>("[data-proof]");
@@ -246,15 +251,9 @@ const marqueeItems = [
       trigger: root,
     });
 
+    // The commitment cards stagger in as the row scrolls into view.
     const statsWrap = root.querySelector<HTMLElement>("[data-proof-stats]");
     const stats = Array.from(root.querySelectorAll<HTMLElement>("[data-stat]"));
     reveal(stats, { trigger: statsWrap, pop: true });
-
-    // Count each stat up from zero as the row scrolls in — the detail that
-    // makes the numbers feel earned rather than printed.
-    stats.forEach((stat) => {
-      const value = stat.querySelector<HTMLElement>(".proof__stat-value");
-      if (value) countUp(value, { trigger: statsWrap });
-    });
   }
 </script>

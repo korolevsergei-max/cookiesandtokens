@@ -5,6 +5,7 @@ import Hero from "../components/Hero.astro";
 import CollisionScene from "../components/CollisionScene.astro";
 import CookieSide from "../components/CookieSide.astro";
 import Offering from "../components/Offering.astro";
+import SelectedWork from "../components/SelectedWork.astro";
 import TokenSide from "../components/TokenSide.astro";
 import Overlap from "../components/Overlap.astro";
 import Process from "../components/Process.astro";
@@ -19,35 +20,35 @@ import Footer from "../components/Footer.astro";
 const creative = {
   id: "creative",
   eyebrow: "What We Do / 01",
-  titleLead: "Creative",
-  titleAccent: "that means something.",
-  sub: "Brand, content, and the strategy behind both. Deep creative experience sets the point of view, then AI lets us explore wider and ship more without losing the taste that makes it yours.",
+  titleLead: "Creative with",
+  titleAccent: "a point of view.",
+  sub: "Brand, content, and the strategy behind both. People with real creative experience set the direction. AI lets us produce more of it without thinning the quality.",
   tone: "light" as const,
   accent: "purple" as const,
   cards: [
     {
       number: "01",
       title: "Brand & Identity",
-      desc: "Strategy, naming, visual identity, and the guidelines that hold it together. The system that makes you instantly recognisable and hard to copy.",
+      desc: "Strategy, naming, visual identity, and the system that holds it together. The part that makes you recognizable and hard to copy.",
       tags: ["Strategy", "Naming", "Visual Identity", "Guidelines"],
     },
     {
       number: "02",
       title: "Content & Copy",
-      desc: "Copy that earns attention and visuals with a point of view. Built as a system so the voice stays consistent at volume, across every channel.",
+      desc: "Copy that earns attention and visuals with a point of view, built as a system so the voice stays consistent across every channel at volume.",
       tags: ["Copywriting", "Social", "Content Systems", "Production"],
     },
     {
       number: "03",
       title: "Creative Strategy",
-      desc: "The thinking before the making. Positioning, messaging, and the creative concepts that decide what the work should say before we say it.",
+      desc: "The thinking before the making. Positioning, messaging, and the concepts that decide what the work should say before we say it.",
       tags: ["Positioning", "Messaging", "Concepts", "Direction"],
     },
     {
       number: "04",
       title: "Design & Production",
-      desc: "Campaigns, assets, and brand collateral, concept to delivery. Human art direction, AI in the production pipeline, so volume never costs you quality.",
-      tags: ["Campaigns", "Art Direction", "Assets", "Always-On"],
+      desc: "Campaigns and brand collateral, concept to delivery. Human art direction with AI in the production pipeline, so volume never costs you quality.",
+      tags: ["Campaigns", "Art Direction", "Assets", "Always On"],
     },
   ],
 };
@@ -55,35 +56,35 @@ const creative = {
 const growth = {
   id: "growth",
   eyebrow: "What We Do / 02",
-  titleLead: "Growth across",
-  titleAccent: "every channel.",
-  sub: "We drive growth through the channels that actually move the needle, organic and paid working as one engine. Real marketing experience, supercharged by AI to test more, learn faster, and scale what works.",
+  titleLead: "Growth across every",
+  titleAccent: "channel that pays.",
+  sub: "Owned, earned, and paid, run as one engine instead of three disconnected line items. We test fast, kill what fails, and put budget behind what works.",
   tone: "dark" as const,
   accent: "teal" as const,
   cards: [
     {
       number: "01",
-      title: "Organic Growth",
-      desc: "Growth hacking the channels most agencies ignore. Community and local group posting, partnerships, and the scrappy, compounding tactics that build an audience without a media budget.",
+      title: "Organic & Community",
+      desc: "The compounding channels most agencies skip. Community posting, local groups, and partnerships that build an audience before you spend a dollar on media.",
       tags: ["Growth Hacking", "Community", "Local", "Partnerships"],
     },
     {
       number: "02",
       title: "Email & Lifecycle",
-      desc: "List building, automated flows, and campaigns that turn subscribers into revenue. The owned channel you control, working while you sleep.",
+      desc: "List building and automated flows that turn subscribers into revenue while you sleep. The one channel you actually own.",
       tags: ["List Building", "Flows", "Campaigns", "Retention"],
     },
     {
       number: "03",
-      title: "Community & Experiential",
-      desc: "In-store, in-restaurant, pop-up, and local activations that give people a reason to show up, share, and come back.",
-      tags: ["In-Store", "Pop-Ups", "Events", "Community"],
+      title: "PR & Earned Media",
+      desc: "Stories worth covering and the outreach to land them. The credibility you cannot buy with ad spend.",
+      tags: ["PR", "Outreach", "Earned Media", "Credibility"],
     },
     {
       number: "04",
       title: "Paid Media",
-      desc: "Paid social and search that scale profitably. We build the creative, run the experiments, and let AI optimise the spend so every dollar works harder.",
-      tags: ["Paid Social", "Search", "Creative Testing", "Optimisation"],
+      desc: "Paid social and search that scale profitably. We build the creative, run the tests, and put spend where the return is.",
+      tags: ["Paid Social", "Search", "Creative Testing", "ROAS"],
     },
   ],
 };
@@ -91,34 +92,34 @@ const growth = {
 const software = {
   id: "software",
   eyebrow: "What We Do / 03",
-  titleLead: "Software + AI,",
+  titleLead: "Software",
   titleAccent: "built to ship.",
-  sub: "Full web and mobile apps, custom software, and AI agents that run your workflows. Engineers with deep experience, AI woven through the build, so you get production software faster, not slideware.",
+  sub: "Web and mobile apps, custom internal tools, and AI agents that run your workflows. Real engineers, AI in the build, production software at the end.",
   tone: "light" as const,
   accent: "purple" as const,
   cards: [
     {
       number: "01",
       title: "Web Apps",
-      desc: "Full web applications, front to back. Marketing sites, dashboards, and complete products, designed and engineered to perform and scale.",
+      desc: "Full applications, front to back. Marketing sites, dashboards, and complete products engineered to scale.",
       tags: ["Frontend", "Backend", "Dashboards", "Performance"],
     },
     {
       number: "02",
       title: "Mobile Apps",
-      desc: "Native iOS and Android, or cross-platform when it makes sense. From first build to app store, with the polish users expect on their phone.",
-      tags: ["iOS", "Android", "Cross-Platform", "App Store"],
+      desc: "Native iOS and Android, or cross platform when it fits. From first build to the app store.",
+      tags: ["iOS", "Android", "Cross Platform", "App Store"],
     },
     {
       number: "03",
       title: "Custom Software & SaaS",
-      desc: "When off-the-shelf falls short, we build it. Bespoke internal tools, integrations, and full SaaS products engineered around how your business actually runs.",
+      desc: "When off the shelf falls short, we build it. Internal tools, integrations, and full SaaS products shaped around how your business actually runs.",
       tags: ["Internal Tools", "Integrations", "SaaS", "APIs"],
     },
     {
       number: "04",
       title: "AI Agents & Automation",
-      desc: "We stand up AI agents to handle the workflows that eat your team's time. From support and ops to research and reporting, working day and night.",
+      desc: "We stand up agents that handle the work eating your team's hours. Support, ops, research, reporting. Running day and night.",
       tags: ["AI Agents", "Workflows", "Automation", "Ops"],
     },
   ],
@@ -135,6 +136,7 @@ const software = {
     <Offering {...creative} />
     <Offering {...growth} />
     <Offering {...software} />
+    <SelectedWork />
     <TokenSide />
     <Overlap />
     <Process />

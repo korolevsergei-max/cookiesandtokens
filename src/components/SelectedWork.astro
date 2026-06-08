@@ -1,0 +1,159 @@
+---
+/**
+ * SelectedWork — "Recent work"
+ * Slot for one real, named engagement with one real result. Until that exists,
+ * we deliberately render a single honest "what we're working on now" line
+ * rather than invented client names, logos, or statistics.
+ *
+ * Dark navy section for tonal rhythm; mirrors the existing section shells.
+ */
+
+// When a real engagement is ready, drop it in here (name, line, result).
+// Leave null to render the honest "what we're working on now" fallback.
+const engagement: { name: string; what: string; result: string } | null = null;
+---
+
+<section
+  id="work"
+  class="work section-shell"
+  data-work
+  data-tone="dark"
+  aria-labelledby="work-title"
+>
+  <div class="work__header">
+    <p class="eyebrow work__eyebrow">Selected Work</p>
+    <h2 id="work-title" class="work__headline">
+      Recent&nbsp;<span class="text-gradient-overlap">work.</span>
+    </h2>
+  </div>
+
+  {engagement ? (
+    <article class="work__case" data-work-case>
+      <p class="work__case-name">{engagement.name}</p>
+      <p class="work__case-what">{engagement.what}</p>
+      <p class="work__case-result">{engagement.result}</p>
+    </article>
+  ) : (
+    <p class="work__now" data-work-now>
+      We are early, and we would rather show you real engagements than invented
+      ones. We are currently building brand, growth, and software for our first
+      clients. Named work, with real results, lands here soon.
+    </p>
+  )}
+
+  <div class="work__bg" aria-hidden="true">
+    <span class="work__blob work__blob--purple"></span>
+    <span class="work__blob work__blob--teal"></span>
+  </div>
+</section>
+
+<style>
+  .work {
+    position: relative;
+    background-color: var(--color-navy);
+    color: var(--color-cream);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: clamp(1.5rem, 4vh, 2.5rem);
+    overflow: clip;
+    isolation: isolate;
+  }
+
+  .work__bg {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+  }
+  .work__blob {
+    position: absolute;
+    width: 46vmax;
+    height: 46vmax;
+    border-radius: 50%;
+    filter: blur(110px);
+    opacity: 0.1;
+  }
+  .work__blob--purple {
+    top: -10vmax; left: -12vmax;
+    background: radial-gradient(circle, var(--color-purple) 0%, transparent 65%);
+  }
+  .work__blob--teal {
+    bottom: -10vmax; right: -12vmax;
+    background: radial-gradient(circle, var(--color-teal) 0%, transparent 65%);
+  }
+
+  .work__header {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+  }
+  .work__eyebrow {
+    color: color-mix(in srgb, var(--color-cream) 42%, transparent);
+  }
+  .work__headline {
+    font-size: var(--text-display-lg);
+    line-height: var(--text-display-lg--line-height);
+    letter-spacing: var(--text-display-lg--letter-spacing);
+  }
+
+  /* Honest "what we're working on now" fallback */
+  .work__now {
+    position: relative;
+    z-index: 1;
+    max-width: 38rem;
+    font-size: var(--text-lead);
+    line-height: var(--text-lead--line-height);
+    color: color-mix(in srgb, var(--color-cream) 65%, transparent);
+  }
+
+  /* Real engagement card (used once a named case is dropped in) */
+  .work__case {
+    position: relative;
+    z-index: 1;
+    max-width: 44rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    padding: clamp(1.5rem, 3vw, 2.5rem);
+    border-radius: var(--radius-card);
+    border: 1px solid color-mix(in srgb, var(--color-cream) 10%, transparent);
+    background: color-mix(in srgb, var(--color-navy-700) 60%, transparent);
+  }
+  .work__case-name {
+    font-family: var(--font-display);
+    font-weight: 600;
+    font-size: clamp(1.1rem, 2.2vw, 1.5rem);
+    letter-spacing: -0.01em;
+  }
+  .work__case-what {
+    font-size: var(--text-lead);
+    line-height: var(--text-lead--line-height);
+    color: color-mix(in srgb, var(--color-cream) 72%, transparent);
+  }
+  .work__case-result {
+    font-family: var(--font-display);
+    font-weight: 600;
+    font-size: clamp(1rem, 1.8vw, 1.2rem);
+    background: var(--gradient-overlap);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+</style>
+
+<script>
+  import { reveal } from "../lib/reveal";
+  import { prefersReducedMotion } from "../lib/motion";
+
+  const root = document.querySelector<HTMLElement>("[data-work]");
+  if (root && !prefersReducedMotion()) {
+    reveal(root.querySelector(".work__header"), { trigger: root });
+    const body = root.querySelector<HTMLElement>("[data-work-case], [data-work-now]");
+    if (body) reveal(body, { trigger: root, delay: 0.1 });
+  }
+</script>
