@@ -57,15 +57,14 @@ const paths = [
     <p class="eyebrow hero__brand">Cookies &amp; Tokens</p>
 
     <h1 class="hero__headline">
-      Human craft.<br />
-      <span class="text-gradient-overlap">AI supercharged.</span>
+      Human-led.<br />
+      <span class="text-gradient-overlap">AI-amplified.</span>
     </h1>
 
     <p class="hero__sub">
-      One studio for creative, growth, and software. We bring deep experience
-      and a creative mindset, then supercharge it with AI to ship better work,
-      faster. The cookie is the human. The token is the AI. Together they drive
-      value no one thought possible.
+      One lean studio for creative, growth, and software. We bring deep
+      experience and a creative mindset, then supercharge it with AI to ship
+      better work, faster. The cookie is the human. The token is the AI.
     </p>
 
     <!-- The interactive stage = the navigation -->
@@ -119,7 +118,7 @@ const paths = [
       }
     </div>
 
-    <a href="#manifesto" class="hero__scrollcue" data-cursor="link" data-scrollcue>
+    <a href="#collision" class="hero__scrollcue" data-cursor="link" data-scrollcue>
       <span>Scroll</span>
       <span class="hero__scrollcue-line" aria-hidden="true"></span>
     </a>
@@ -548,7 +547,7 @@ const paths = [
     if (scrollcue) {
       scrollcue.addEventListener("click", (e) => {
         e.preventDefault();
-        scrollTo("#manifesto");
+        scrollTo("#collision");
       });
     }
 
@@ -564,9 +563,20 @@ const paths = [
     /* ---------- Reduced motion / touch: stop here (states still work) ---------- */
     if (reduced) return;
 
-    /* ---------- Idle float (breathing) ---------- */
+    /* ---------- Idle float (breathing) ----------
+       Both shapes float in the SAME direction, with the SAME amplitude, phase,
+       and duration, so their vertical centers track together instead of drifting
+       apart (the cookie used to float up while the token floated down — making
+       the cookie read as "higher than the token"). Rotation can still oppose:
+       it spins around each shape's own center and never shifts the centerline. */
+    gsap.to([cookieInner, tokenInner], {
+      yPercent: -3,
+      duration: 4,
+      ease: "sine.inOut",
+      repeat: -1,
+      yoyo: true,
+    });
     gsap.to(cookieInner, {
-      yPercent: -4,
       rotation: 2.5,
       duration: 3.6,
       ease: "sine.inOut",
@@ -574,13 +584,11 @@ const paths = [
       yoyo: true,
     });
     gsap.to(tokenInner, {
-      yPercent: 4,
       rotation: -3,
       duration: 4.2,
       ease: "sine.inOut",
       repeat: -1,
       yoyo: true,
-      delay: 0.4,
     });
     gsap.to(lens, {
       scale: 1.12,

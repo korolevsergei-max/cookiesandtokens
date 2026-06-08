@@ -2,7 +2,6 @@
 import BaseLayout from "../layouts/BaseLayout.astro";
 import Nav from "../components/Nav.astro";
 import Hero from "../components/Hero.astro";
-import Manifesto from "../components/Manifesto.astro";
 import CollisionScene from "../components/CollisionScene.astro";
 import CookieSide from "../components/CookieSide.astro";
 import Offering from "../components/Offering.astro";
@@ -76,9 +75,9 @@ const growth = {
     },
     {
       number: "03",
-      title: "PR & Earned Media",
-      desc: "Stories worth covering and the outreach to land them. Press, features, and earned attention that buys credibility paid media can't.",
-      tags: ["Press", "Outreach", "Features", "Reputation"],
+      title: "Community & Experiential",
+      desc: "In-store, in-restaurant, pop-up, and local activations that give people a reason to show up, share, and come back.",
+      tags: ["In-Store", "Pop-Ups", "Events", "Community"],
     },
     {
       number: "04",
@@ -92,7 +91,7 @@ const growth = {
 const software = {
   id: "software",
   eyebrow: "What We Do / 03",
-  titleLead: "Software,",
+  titleLead: "Software + AI,",
   titleAccent: "built to ship.",
   sub: "Full web and mobile apps, custom software, and AI agents that run your workflows. Engineers with deep experience, AI woven through the build, so you get production software faster, not slideware.",
   tone: "light" as const,
@@ -131,7 +130,6 @@ const software = {
 
   <main>
     <Hero />
-    <Manifesto />
     <CollisionScene />
     <CookieSide />
     <Offering {...creative} />
