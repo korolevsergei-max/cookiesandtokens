@@ -243,6 +243,9 @@ const titleId = `${id}-title`;
     font-weight: 600;
     letter-spacing: -0.015em;
     line-height: 1.1;
+    /* Reserve two lines so titles that wrap don't push the desc/tags
+       below out of alignment with cards whose title fits on one line. */
+    min-height: 2.2em;
   }
   .offering--light .offering-card__title { color: var(--color-ink); }
   .offering--dark .offering-card__title { color: var(--color-cream); }
