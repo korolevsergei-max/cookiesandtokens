@@ -5,7 +5,7 @@
  *
  *   · Creative — self-drawing pen-stroke marks (the hand)     → initSketchField
  *   · Growth   — a momentum line + rising motes that climb    → initGrowthMomentum
- *   · Software — a streaming field of tokenized code lines    → initCodeField
+ *   · Software — a schematic system diagram that draws once   → initSoftwareSchematic
  *
  * Every scene is reduced-motion safe (renders one settled static frame and
  * never starts a loop), pauses itself when scrolled offscreen (Intersection
@@ -460,202 +460,117 @@ export function initGrowthMomentum(canvas: HTMLCanvasElement): SceneController {
   return mountScene(canvas, render, { autoPlay: true, defaultProgress: 0.62 });
 }
 
-/* ── Software: a streaming field of real, syntax-lit code ────────────────── */
+/* ── Software: a schematic system diagram that draws once ────────────────── */
 //
-// Renders faint, actual monospaced code (brand-flavored snippets) scrolling
-// upward, with the bottom line "typing in" behind a blinking caret. Syntax is
-// lightly colored — keywords purple, strings/values teal, everything else ink —
-// so it reads as a live IDE/terminal rather than the abstract loading-skeleton
-// bars this used to draw. Reduced-motion shows one settled, fully-typed frame.
+// Four square nodes joined by orthogonal traces — a quiet architecture
+// drawing, not readable code. The renderer is purely progress-driven: the
+// component tweens setProgress(0→1) once on scroll-in and the diagram then
+// stays permanently static (no rAF loop ever runs — autoPlay: false). Crisp
+// butt caps and miter joins keep it drafting-table, distinct from Creative's
+// hand-drawn round-cap sketches.
 
-// 0 ink · 1 keyword (purple) · 2 string/number/bool (teal) · 3 comment (dim ink)
-type Hue = 0 | 1 | 2 | 3;
-interface Seg {
-  text: string;
-  hue: Hue;
-}
-interface CodeLine {
-  segs: Seg[];
-  len: number; // total chars (drives the typing reveal)
-  typed: number; // 0..1
-  warmth: number; // 1 just-written → decays to 0 (glow cascade)
+interface SchematicNode {
+  x: number;
+  y: number;
+  /** Progress at which this node's inbound trace arrives. */
+  at: number;
 }
 
-const LINE_H = 26;
-const FONT_PX = 13;
-
-const CODE_KEYWORDS = new Set([
-  "const", "let", "var", "export", "default", "async", "await", "function",
-  "return", "if", "else", "while", "for", "import", "from", "type",
-  "interface", "new", "class", "extends",
-]);
-
-// Brand-flavored source. Indentation lives in the strings so monospace handles
-// it for free; each line is a complete, plausible statement.
-const CODE_SOURCE = [
-  "const studio = createStudio({ ai: true });",
-  "export async function ship(idea) {",
-  "  const brand = await design(idea);",
-  "  const growth = engine.run(brand);",
-  "  return deploy(growth);",
-  "}",
-  "// human craft, AI underneath",
-  "type Result = { fast: boolean; yours: true };",
-  "const agents = spawn([\"ops\", \"research\"]);",
-  "await Promise.all(tasks.map(run));",
-  "if (review.passed) ship();",
-  "let velocity = baseline * 3;",
-  "import { craft } from \"./cookie\";",
-  "import { speed } from \"./token\";",
-  "const product = build(brand, growth);",
-  "function automate(workflow) {",
-  "  return agent.handle(workflow);",
-  "}",
-  "export default studio;",
-  "while (!shipped) iterate();",
-  "const api = new Server({ port: 443 });",
-  "render(<App ready={true} />);",
-];
-
-function tokenizeCode(src: string): { segs: Seg[]; len: number } {
-  if (src.trim().startsWith("//")) return { segs: [{ text: src, hue: 3 }], len: src.length };
-  const segs: Seg[] = [];
-  // whitespace · string · identifier · number · single punctuation
-  const re = /(\s+|"[^"]*"|'[^']*'|`[^`]*`|[A-Za-z_$][\w$]*|\d+(?:\.\d+)?|[^\w\s])/g;
-  let m: RegExpExecArray | null;
-  while ((m = re.exec(src))) {
-    const t = m[0];
-    let hue: Hue = 0;
-    if (/^\s+$/.test(t)) hue = 0;
-    else if (/^["'`]/.test(t) || /^\d/.test(t)) hue = 2;
-    else if (CODE_KEYWORDS.has(t)) hue = t === "true" || t === "false" || t === "null" ? 2 : 1;
-    segs.push({ text: t, hue });
-  }
-  return { segs, len: src.length };
+/** Hermite smoothstep of p over [a, b]. */
+function smoothstep(a: number, b: number, p: number): number {
+  const t = clamp01((p - a) / (b - a));
+  return t * t * (3 - 2 * t);
 }
 
-function makeCodeLine(): CodeLine {
-  const src = CODE_SOURCE[Math.floor(Math.random() * CODE_SOURCE.length)];
-  const { segs, len } = tokenizeCode(src);
-  return { segs, len, typed: 0, warmth: 0 };
-}
+export function initSoftwareSchematic(canvas: HTMLCanvasElement): SceneController {
+  const NODE = 10; // square side, px
 
-export function initCodeField(canvas: HTMLCanvasElement, opts: { intensity?: number } = {}): SceneController {
-  const k = opts.intensity ?? 1; // alpha multiplier — Software dials this up
-  const inkA = 0.3 * k; // identifiers / punctuation
-  const dimA = 0.2 * k; // comments
-  const accentA = 0.5 * k; // keywords / strings
-  let lines: CodeLine[] = [];
-  let vy = 0; // scroll offset within a line height
-  let rows = 0;
-  let lh = 0;
+  const nodes: SchematicNode[] = [
+    { x: 0.10, y: 0.18, at: 0.02 },
+    { x: 0.46, y: 0.18, at: 0.30 },
+    { x: 0.46, y: 0.62, at: 0.50 },
+    { x: 0.86, y: 0.40, at: 0.90 }, // terminus
+  ];
 
-  const ensure = (h: number) => {
-    const need = Math.ceil(h / LINE_H) + 2;
-    if (rows === need && h === lh) return;
-    rows = need;
-    lh = h;
-    lines = Array.from({ length: need }, () => {
-      const l = makeCodeLine();
-      l.typed = 1; // existing lines are already written
-      return l;
-    });
-    if (lines.length) lines[lines.length - 1].typed = 0; // bottom line types in
-  };
+  // Orthogonal polylines (normalized), each drawn over a progress window.
+  const traces: { pts: number[][]; a: number; b: number; accent: boolean }[] = [
+    { pts: [[0.10, 0.18], [0.46, 0.18]], a: 0.00, b: 0.30, accent: false },
+    { pts: [[0.46, 0.18], [0.46, 0.62]], a: 0.22, b: 0.50, accent: false },
+    { pts: [[0.46, 0.18], [0.86, 0.18], [0.86, 0.40]], a: 0.42, b: 0.78, accent: true },
+    { pts: [[0.46, 0.62], [0.86, 0.62], [0.86, 0.40]], a: 0.60, b: 0.92, accent: false },
+  ];
+
+  const marks = [
+    { x: 0.24, y: 0.80 },
+    { x: 0.68, y: 0.10 },
+  ];
 
   const render: RenderFn = (ctx, f) => {
-    ensure(f.h);
+    // Keyed entirely off progress (the external draw-once driver); `reduced`
+    // is irrelevant here because progress 1 IS the settled frame.
+    const p = f.progress;
     const { palette } = f;
-    ctx.font = `${FONT_PX}px ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace`;
-    ctx.textBaseline = "top";
-    const charW = ctx.measureText("0").width || FONT_PX * 0.6;
+    ctx.lineCap = "butt";
+    ctx.lineJoin = "miter";
+    ctx.lineWidth = 1.25;
 
-    const colorFor = (hue: Hue, a: number) =>
-      hue === 1 ? rgba(palette.purpleDeep, a)
-      : hue === 2 ? rgba(palette.teal, a)
-      : hue === 3 ? rgba(palette.ink, a)
-      : rgba(palette.ink, a);
-    // accent for lit/warm lines — alternates purple / occasionally teal
-    const accent = (r: number, a: number) => (r % 3 === 1 ? rgba(palette.teal, a) : rgba(palette.purpleDeep, a));
-
-    const lastIdx = lines.length - 1;
-
-    if (!f.reduced) {
-      // stream upward; type in the bottom line
-      vy += (f.dt / 1000) * 13; // px/sec scroll
-      const bottom = lines[lastIdx];
-      const wasTyping = bottom.typed < 1;
-      bottom.typed = clamp01(bottom.typed + (f.dt / 1000) / 1.1);
-      if (wasTyping && bottom.typed >= 1) bottom.warmth = 1; // just finished → glow then cool
-      for (const l of lines) if (l.warmth > 0) l.warmth = Math.max(0, l.warmth - f.dt / 1400);
-      if (vy >= LINE_H) {
-        vy -= LINE_H;
-        lines.shift();
-        lines.push(makeCodeLine());
+    for (const t of traces) {
+      const reveal = smoothstep(t.a, t.b, p);
+      if (reveal <= 0) continue;
+      const pts = t.pts.map(([x, y]) => ({ x: x * f.w, y: y * f.h }));
+      let total = 0;
+      const lens: number[] = [];
+      for (let i = 1; i < pts.length; i++) {
+        const len = Math.hypot(pts[i].x - pts[i - 1].x, pts[i].y - pts[i - 1].y);
+        lens.push(len);
+        total += len;
       }
+      let remain = total * reveal;
+      ctx.strokeStyle = t.accent ? rgba(palette.purpleDeep, 0.4) : rgba(palette.ink, 0.16);
+      ctx.beginPath();
+      ctx.moveTo(pts[0].x, pts[0].y);
+      for (let i = 1; i < pts.length && remain > 0; i++) {
+        const seg = Math.min(lens[i - 1], remain);
+        const k = seg / lens[i - 1];
+        ctx.lineTo(
+          pts[i - 1].x + (pts[i].x - pts[i - 1].x) * k,
+          pts[i - 1].y + (pts[i].y - pts[i - 1].y) * k
+        );
+        remain -= seg;
+      }
+      ctx.stroke();
     }
 
-    const x0 = Math.round(f.w * 0.06);
-    for (let r = 0; r < lines.length; r++) {
-      const line = lines[r];
-      const y = Math.round(r * LINE_H - vy + 14);
-      if (y < -LINE_H || y > f.h + LINE_H) continue;
-      const isActive = !f.reduced && r === lastIdx && line.typed < 1;
-      const glow = isActive ? 1 : line.warmth;
-      const shown = f.reduced ? line.len : Math.floor(line.typed * line.len);
-
-      if (glow > 0.05) {
-        ctx.save();
-        ctx.shadowColor = accent(r, 0.5 * glow);
-        ctx.shadowBlur = 8 * glow;
+    nodes.forEach((n, i) => {
+      const a = smoothstep(n.at, n.at + 0.08, p);
+      if (a <= 0) return;
+      const x = n.x * f.w - NODE / 2;
+      const y = n.y * f.h - NODE / 2;
+      const terminus = i === nodes.length - 1;
+      if (terminus) {
+        ctx.fillStyle = rgba(palette.purpleDeep, 0.3 * a);
+        ctx.fillRect(x, y, NODE, NODE);
       }
+      ctx.strokeStyle = terminus ? rgba(palette.purpleDeep, 0.5 * a) : rgba(palette.ink, 0.25 * a);
+      ctx.strokeRect(x, y, NODE, NODE);
+    });
 
-      let x = x0;
-      let drawn = 0;
-      for (const seg of line.segs) {
-        if (drawn >= shown) break;
-        const visibleChars = Math.min(seg.text.length, shown - drawn);
-        const text = seg.text.slice(0, visibleChars);
-        if (text.trim().length) {
-          let fill: string;
-          if (isActive) {
-            fill = accent(r, Math.min(0.6, inkA + 0.34));
-          } else if (line.warmth > 0.05) {
-            const a = (seg.hue === 0 ? inkA : seg.hue === 3 ? dimA : accentA) + line.warmth * 0.28;
-            fill = accent(r, a);
-          } else {
-            fill = colorFor(seg.hue, seg.hue === 1 || seg.hue === 2 ? accentA : seg.hue === 3 ? dimA : inkA);
-          }
-          ctx.fillStyle = fill;
-          ctx.fillText(text, x, y);
-        }
-        x += seg.text.length * charW;
-        drawn += seg.text.length;
+    const markA = smoothstep(0.86, 1, p);
+    if (markA > 0) {
+      ctx.strokeStyle = rgba(palette.purple, 0.3 * markA);
+      for (const m of marks) {
+        const x = m.x * f.w;
+        const y = m.y * f.h;
+        ctx.beginPath();
+        ctx.moveTo(x - 5, y);
+        ctx.lineTo(x + 5, y);
+        ctx.moveTo(x, y - 5);
+        ctx.lineTo(x, y + 5);
+        ctx.stroke();
       }
-
-      if (glow > 0.05) ctx.restore();
-
-      // block typing caret on the active (bottom) line
-      if (isActive) {
-        const blink = Math.sin(f.time / 140) > 0 ? 1 : 0.25;
-        ctx.fillStyle = rgba(palette.purpleDeep, 0.6 * blink);
-        ctx.fillRect(x, y + 1, Math.max(2, charW * 0.6), FONT_PX);
-      }
-    }
-
-    // slow vertical scan band — a soft highlight sweeping down the field
-    if (!f.reduced) {
-      const period = 7000;
-      const sy = ((f.time % period) / period) * (f.h + 120) - 60;
-      const band = ctx.createLinearGradient(0, sy - 60, 0, sy + 60);
-      band.addColorStop(0, rgba(palette.purple, 0));
-      band.addColorStop(0.5, rgba(palette.teal, 0.04 * k));
-      band.addColorStop(1, rgba(palette.purple, 0));
-      ctx.fillStyle = band;
-      ctx.fillRect(0, sy - 60, f.w, 120);
     }
   };
 
-  // Ambient: runs while visible.
-  return mountScene(canvas, render, { autoPlay: true });
+  return mountScene(canvas, render, { autoPlay: false, defaultProgress: 0 });
 }
+
