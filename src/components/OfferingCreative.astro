@@ -53,11 +53,6 @@ const titleId = `${id}-title`;
   <div class="section-shell relative z-10 max-w-[1400px] mx-auto pt-0">
     <div class="flex flex-col border-t border-ink/10" data-creative-list>
       {cards.map((c) => {
-        // Split the title for the inline stroke-glyph injection
-        const parts = c.title.split(' ');
-        const firstWord = parts[0];
-        const rest = parts.slice(1).join(' ');
-
         return (
           <article class="group relative flex flex-col lg:flex-row lg:items-center justify-between py-10 md:py-16 border-b border-ink/10 hover:bg-black/[0.015] transition-colors duration-500 px-4 sm:px-8 -mx-4 sm:-mx-8 rounded-3xl overflow-hidden cursor-crosshair" data-creative-row>
 
@@ -76,20 +71,8 @@ const titleId = `${id}-title`;
                 <ServiceIcon title={c.title} class="w-5 h-5" />
               </span>
 
-              <h3 class="font-display text-3xl md:text-5xl font-semibold tracking-tight text-ink group-hover:text-purple transition-colors duration-500 flex flex-wrap items-center gap-x-3 gap-y-2">
-                <span>{firstWord}</span>
-                {/* 2026 inline media — a brand stroke-mark that draws itself on hover */}
-                <svg class="sketch-glyph inline-block w-14 h-8 md:w-16 md:h-9 align-middle shrink-0" viewBox="0 0 64 36" fill="none" aria-hidden="true">
-                  <path
-                    d="M4 26 C 12 6, 22 6, 28 20 S 44 34, 50 16 S 60 8, 60 8"
-                    pathLength="1"
-                    stroke="currentColor"
-                    class="text-purple"
-                    stroke-width="2.5"
-                    stroke-linecap="round"
-                  />
-                </svg>
-                <span>{rest}</span>
+              <h3 class="font-display text-3xl md:text-5xl font-semibold tracking-tight text-ink group-hover:text-purple transition-colors duration-500">
+                {c.title}
               </h3>
             </div>
 
@@ -114,25 +97,6 @@ const titleId = `${id}-title`;
   </div>
 </section>
 
-<style>
-  /* Inline stroke-glyph draws itself on row hover (pure CSS, on-brand) */
-  .sketch-glyph path {
-    stroke-dasharray: 1;
-    stroke-dashoffset: 1;
-    transition: stroke-dashoffset 0.75s cubic-bezier(0.32, 0.72, 0, 1);
-  }
-  .group:hover .sketch-glyph path {
-    stroke-dashoffset: 0;
-  }
-  @media (prefers-reduced-motion: reduce) {
-    .sketch-glyph path {
-      transition: none;
-    }
-    .group:hover .sketch-glyph path {
-      stroke-dashoffset: 0;
-    }
-  }
-</style>
 
 <script>
   import { reveal } from "../lib/reveal";
