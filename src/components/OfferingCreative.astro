@@ -1,0 +1,162 @@
+---
+import ServiceIcon from "./ServiceIcon.astro";
+
+interface Card {
+  number: string;
+  title: string;
+  desc: string;
+  tags: string[];
+}
+
+interface Props {
+  id: string;
+  eyebrow?: string;
+  titleLead: string;
+  titleAccent: string;
+  sub: string;
+  cards: Card[];
+  tone?: "light" | "dark";
+  accent?: "purple" | "teal";
+}
+
+const {
+  id,
+  titleLead,
+  titleAccent,
+  sub,
+  cards,
+} = Astro.props;
+
+const titleId = `${id}-title`;
+---
+
+<section
+  id={id}
+  class="relative overflow-clip isolation-isolate bg-cream text-ink py-20 md:py-32"
+  data-offering-creative
+  aria-labelledby={titleId}
+>
+  {/* Always-on ambient sketch field — keeps the section alive without hover */}
+  <canvas class="absolute inset-0 w-full h-full z-0 pointer-events-none" data-creative-ambient aria-hidden="true"></canvas>
+
+  <div class="section-shell relative z-10 max-w-[1400px] mx-auto pb-16 md:pb-24">
+    <div class="flex flex-col md:flex-row md:items-end justify-between gap-10">
+      <h2 id={titleId} class="text-display-lg md:text-display-xl tracking-tighter leading-none max-w-4xl text-ink">
+        {titleLead}<br /><span class="text-purple">{titleAccent}</span>
+      </h2>
+      <p class="text-lead text-ink-muted max-w-[32ch] md:mb-2">
+        {sub}
+      </p>
+    </div>
+  </div>
+
+  <div class="section-shell relative z-10 max-w-[1400px] mx-auto pt-0">
+    <div class="flex flex-col border-t border-ink/10" data-creative-list>
+      {cards.map((c) => {
+        // Split the title for the inline stroke-glyph injection
+        const parts = c.title.split(' ');
+        const firstWord = parts[0];
+        const rest = parts.slice(1).join(' ');
+
+        return (
+          <article class="group relative flex flex-col lg:flex-row lg:items-center justify-between py-10 md:py-16 border-b border-ink/10 hover:bg-black/[0.015] transition-colors duration-500 px-4 sm:px-8 -mx-4 sm:-mx-8 rounded-3xl overflow-hidden cursor-crosshair" data-creative-row>
+
+            {/* The Spatial Hover-Reveal: live sketch canvas (drawn marks) */}
+            <div class="absolute right-0 top-0 bottom-0 w-full lg:w-[48%] opacity-0 group-hover:opacity-100 transition-opacity duration-700 ease-[cubic-bezier(0.32,0.72,0,1)] pointer-events-none z-0">
+               {/* Left-to-right cream fade so the marks dissolve into the row */}
+               <div class="absolute inset-0 bg-gradient-to-r from-cream via-cream/70 to-transparent z-10"></div>
+               <canvas class="absolute inset-0 w-full h-full" data-creative-motion aria-hidden="true"></canvas>
+            </div>
+
+            {/* Left: Number & inline stroke-glyph typography */}
+            <div class="flex items-center gap-5 md:gap-6 w-full lg:w-[45%] relative z-10">
+              <span class="font-display text-xs md:text-sm font-semibold tracking-widest text-purple tabular-nums">{c.number}</span>
+
+              <span class="hidden sm:inline-flex items-center justify-center w-11 h-11 rounded-xl bg-purple/[0.07] ring-1 ring-purple/15 text-purple-deep shrink-0 transition-transform duration-500 ease-[cubic-bezier(0.32,0.72,0,1)] group-hover:scale-110 group-hover:rotate-3">
+                <ServiceIcon title={c.title} class="w-5 h-5" />
+              </span>
+
+              <h3 class="font-display text-3xl md:text-5xl font-semibold tracking-tight text-ink group-hover:text-purple transition-colors duration-500 flex flex-wrap items-center gap-x-3 gap-y-2">
+                <span>{firstWord}</span>
+                {/* 2026 inline media — a brand stroke-mark that draws itself on hover */}
+                <svg class="sketch-glyph inline-block w-14 h-8 md:w-16 md:h-9 align-middle shrink-0" viewBox="0 0 64 36" fill="none" aria-hidden="true">
+                  <path
+                    d="M4 26 C 12 6, 22 6, 28 20 S 44 34, 50 16 S 60 8, 60 8"
+                    pathLength="1"
+                    stroke="currentColor"
+                    class="text-purple"
+                    stroke-width="2.5"
+                    stroke-linecap="round"
+                  />
+                </svg>
+                <span>{rest}</span>
+              </h3>
+            </div>
+
+            {/* Middle: Description */}
+            <div class="w-full lg:w-[30%] mt-6 lg:mt-0 pl-10 lg:pl-0 relative z-10">
+              <p class="text-base md:text-lg text-ink-muted leading-relaxed max-w-[38ch] opacity-70 group-hover:opacity-100 transition-opacity duration-500">{c.desc}</p>
+            </div>
+
+            {/* Right: Asymmetric Tags */}
+            <ul class="w-full lg:w-[25%] mt-6 lg:mt-0 pl-10 lg:pl-0 flex flex-wrap lg:justify-end gap-2 relative z-10" aria-label="What this includes">
+              {c.tags.map((t) => (
+                <li class="px-3 py-1 text-[10px] uppercase font-bold tracking-widest text-purple-deep bg-white/50 backdrop-blur-sm rounded-full ring-1 ring-purple/20 transition-all duration-500 group-hover:bg-purple group-hover:text-white group-hover:ring-purple">
+                  {t}
+                </li>
+              ))}
+            </ul>
+
+          </article>
+        );
+      })}
+    </div>
+  </div>
+</section>
+
+<style>
+  /* Inline stroke-glyph draws itself on row hover (pure CSS, on-brand) */
+  .sketch-glyph path {
+    stroke-dasharray: 1;
+    stroke-dashoffset: 1;
+    transition: stroke-dashoffset 0.75s cubic-bezier(0.32, 0.72, 0, 1);
+  }
+  .group:hover .sketch-glyph path {
+    stroke-dashoffset: 0;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .sketch-glyph path {
+      transition: none;
+    }
+    .group:hover .sketch-glyph path {
+      stroke-dashoffset: 0;
+    }
+  }
+</style>
+
+<script>
+  import { reveal } from "../lib/reveal";
+  import { initSketchField, type SceneController } from "../lib/offeringMotion";
+  import { isCoarsePointer } from "../lib/motion";
+
+  // Always-on ambient sketch field (runs on all devices, IntersectionObserver-paused)
+  document.querySelectorAll<HTMLCanvasElement>("[data-creative-ambient]").forEach((canvas) => {
+    initSketchField(canvas, { ambient: true });
+  });
+
+  const lists = document.querySelectorAll("[data-creative-list]");
+  lists.forEach((list) => {
+    const rows = Array.from(list.querySelectorAll<HTMLElement>("[data-creative-row]"));
+    reveal(rows, { trigger: list });
+
+    // Hover-driven sketch motion — only on devices that actually hover.
+    if (isCoarsePointer()) return;
+    rows.forEach((row) => {
+      const canvas = row.querySelector<HTMLCanvasElement>("[data-creative-motion]");
+      if (!canvas) return;
+      const scene: SceneController = initSketchField(canvas);
+      row.addEventListener("mouseenter", () => scene.play());
+      row.addEventListener("mouseleave", () => scene.pause());
+    });
+  });
+</script>

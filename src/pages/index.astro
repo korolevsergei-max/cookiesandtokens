@@ -4,10 +4,11 @@ import Nav from "../components/Nav.astro";
 import Hero from "../components/Hero.astro";
 import CollisionScene from "../components/CollisionScene.astro";
 import CookieSide from "../components/CookieSide.astro";
-import Offering from "../components/Offering.astro";
+import OfferingCreative from "../components/OfferingCreative.astro";
+import OfferingGrowth from "../components/OfferingGrowth.astro";
+import OfferingSoftware from "../components/OfferingSoftware.astro";
 import SelectedWork from "../components/SelectedWork.astro";
 import TokenSide from "../components/TokenSide.astro";
-import Overlap from "../components/Overlap.astro";
 import Process from "../components/Process.astro";
 import About from "../components/About.astro";
 import CTA from "../components/CTA.astro";
@@ -132,12 +133,11 @@ const software = {
     <Hero />
     <CollisionScene />
     <CookieSide />
-    <Offering {...creative} />
-    <Offering {...growth} />
-    <Offering {...software} />
+    <OfferingCreative {...creative} />
+    <OfferingGrowth {...growth} />
+    <OfferingSoftware {...software} />
     <SelectedWork />
     <TokenSide />
-    <Overlap />
     <Process />
     <About />
     <CTA />

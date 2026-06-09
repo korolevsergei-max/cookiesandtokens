@@ -39,6 +39,9 @@ const services = [
     <h2 id="token-title" class="token-side__headline">
       How the work<br /><span class="token-side__accent">gets made.</span>
     </h2>
+    <p class="token-side__tagline">
+      Human craft. <span class="text-gradient-overlap">Supercharged by AI.</span>
+    </p>
     <p class="token-side__sub">
       People with real experience own the thinking and the final call. AI
       handles the speed and the volume. Every piece is reviewed by a person
@@ -110,6 +113,14 @@ const services = [
   }
   .token-side__accent {
     color: var(--color-teal);
+  }
+  .token-side__tagline {
+    font-family: var(--font-display);
+    font-weight: 600;
+    font-size: clamp(1.1rem, 2.4vw, 1.5rem);
+    letter-spacing: -0.01em;
+    color: var(--color-cream);
+    margin-top: 1rem;
   }
   .token-side__sub {
     max-width: 34rem;

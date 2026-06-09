@@ -1,0 +1,50 @@
+---
+/**
+ * ServiceIcon — bespoke thin-line glyph per service, looked up by title slug.
+ * Stroke uses currentColor so the parent sets the accent (purple / teal).
+ * Deliberately custom (no icon-pack defaults) and one distinct mark per service.
+ */
+interface Props {
+  title: string;
+  class?: string;
+}
+const { title, class: className = "" } = Astro.props;
+
+const key = title
+  .toLowerCase()
+  .replace(/&/g, "")
+  .replace(/[^a-z0-9]+/g, "-")
+  .replace(/(^-|-$)/g, "");
+
+const ICONS: Record<string, string> = {
+  // Creative
+  "brand-identity": `<path d="M12 2.5C12.9 8 16 11.1 21.5 12C16 12.9 12.9 16 12 21.5C11.1 16 8 12.9 2.5 12C8 11.1 11.1 8 12 2.5Z"/>`,
+  "content-copy": `<path d="M5 7H19M5 12H19M5 17H13"/>`,
+  "creative-strategy": `<circle cx="6" cy="12" r="2"/><circle cx="18" cy="6" r="2"/><circle cx="18" cy="18" r="2"/><path d="M7.7 11L16.3 6.7M7.7 13L16.3 17.3"/>`,
+  "design-production": `<path d="M4 18C8 6.5 16 6.5 20 18"/><rect x="2.5" y="16.5" width="3" height="3" rx="0.5"/><rect x="18.5" y="16.5" width="3" height="3" rx="0.5"/><circle cx="12" cy="9.2" r="1.4"/>`,
+  // Growth
+  "organic-community": `<circle cx="7" cy="8" r="2.3"/><circle cx="17" cy="8" r="2.3"/><circle cx="12" cy="16.5" r="2.3"/><path d="M9.2 8.7H14.8M8.4 9.9L10.9 14.6M15.6 9.9L13.1 14.6"/>`,
+  "email-lifecycle": `<rect x="3" y="6" width="18" height="12" rx="2"/><path d="M4 8L12 13L20 8"/>`,
+  "experiential-activations": `<circle cx="12" cy="12" r="2.2"/><path d="M12 2.5V5.5M12 18.5V21.5M2.5 12H5.5M18.5 12H21.5M5.2 5.2L7.3 7.3M16.7 16.7L18.8 18.8M18.8 5.2L16.7 7.3M7.3 16.7L5.2 18.8"/>`,
+  "paid-media": `<path d="M4 16L9.5 10.5L13 14L20 6.5"/><path d="M15 6.5H20V11.5"/>`,
+  // Software
+  "web-apps": `<rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 9H21"/><circle cx="6.2" cy="7" r="0.5"/><circle cx="8.4" cy="7" r="0.5"/>`,
+  "mobile-apps": `<rect x="7" y="2.5" width="10" height="19" rx="2.5"/><path d="M10.5 18.5H13.5"/>`,
+  "custom-software-saas": `<rect x="3.5" y="3.5" width="7" height="7" rx="1.5"/><rect x="13.5" y="3.5" width="7" height="7" rx="1.5"/><rect x="3.5" y="13.5" width="7" height="7" rx="1.5"/><path d="M17 13.5V20.5M13.5 17H20.5"/>`,
+  "ai-agents-automation": `<circle cx="12" cy="12" r="3"/><circle cx="12" cy="4.2" r="1.3"/><circle cx="18.8" cy="15.8" r="1.3"/><circle cx="5.2" cy="15.8" r="1.3"/><path d="M12 9V5.5M14.4 13.5L17.7 15M9.6 13.5L6.3 15"/>`,
+};
+
+const inner = ICONS[key] ?? `<circle cx="12" cy="12" r="8"/>`;
+---
+
+<svg
+  class={className}
+  viewBox="0 0 24 24"
+  fill="none"
+  stroke="currentColor"
+  stroke-width="1.6"
+  stroke-linecap="round"
+  stroke-linejoin="round"
+  aria-hidden="true"
+  set:html={inner}
+></svg>

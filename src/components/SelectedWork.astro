@@ -42,6 +42,20 @@ const engagement: { name: string; what: string; result: string } | null = null;
     </p>
   )}
 
+  <!-- Stat + CTA: ask for the work we cannot publicly show yet. -->
+  <div class="work__cta" data-work-cta>
+    <a href="#cta" class="work__btn" data-work-scroll data-cursor="link">
+      <span>Request Case Studies</span>
+      <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+        <path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </a>
+    <div class="work__stat">
+      <span class="work__stat-num">40+</span>
+      <span class="work__stat-label">Years of combined experience</span>
+    </div>
+  </div>
+
   <div class="work__bg" aria-hidden="true">
     <span class="work__blob work__blob--purple"></span>
     <span class="work__blob work__blob--teal"></span>
@@ -112,6 +126,73 @@ const engagement: { name: string; what: string; result: string } | null = null;
     color: color-mix(in srgb, var(--color-cream) 65%, transparent);
   }
 
+  /* ---------- Stat + CTA ---------- */
+  .work__cta {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: clamp(1.75rem, 5vw, 4rem);
+    margin-top: clamp(0.5rem, 2vh, 1.5rem);
+  }
+  .work__btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.8rem 1.75rem;
+    border-radius: var(--radius-pill);
+    font-size: 1rem;
+    font-weight: 500;
+    text-decoration: none;
+    background: var(--gradient-overlap);
+    color: var(--color-navy);
+    box-shadow: 0 4px 24px color-mix(in srgb, var(--color-purple) 30%, transparent);
+    transition:
+      transform var(--duration-fast) var(--ease-out-soft),
+      box-shadow var(--duration-fast) var(--ease-out-soft);
+  }
+  .work__btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 30px color-mix(in srgb, var(--color-purple) 45%, transparent);
+  }
+  .work__btn:active {
+    transform: translateY(0) scale(0.98);
+    transition-duration: 0.08s;
+  }
+  .work__btn svg {
+    transition: transform var(--duration-base) var(--ease-out-soft);
+  }
+  .work__btn:hover svg {
+    transform: translateX(3px);
+  }
+  .work__stat {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 0.25rem;
+  }
+  .work__stat-num {
+    font-family: var(--font-display);
+    font-weight: 600;
+    font-size: clamp(2.5rem, 6vw, 4rem);
+    line-height: 1;
+    letter-spacing: -0.02em;
+    background: var(--gradient-overlap);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+  .work__stat-label {
+    font-size: 0.7rem;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: color-mix(in srgb, var(--color-cream) 55%, transparent);
+  }
+
   /* Real engagement card (used once a named case is dropped in) */
   .work__case {
     position: relative;
@@ -150,11 +231,22 @@ const engagement: { name: string; what: string; result: string } | null = null;
 <script>
   import { reveal } from "../lib/reveal";
   import { prefersReducedMotion } from "../lib/motion";
+  import { scrollTo } from "../lib/lenis";
 
   const root = document.querySelector<HTMLElement>("[data-work]");
-  if (root && !prefersReducedMotion()) {
-    reveal(root.querySelector(".work__header"), { trigger: root });
-    const body = root.querySelector<HTMLElement>("[data-work-case], [data-work-now]");
-    if (body) reveal(body, { trigger: root, delay: 0.1 });
+  if (root) {
+    // CTA scrolls down to the contact section.
+    const scrollBtn = root.querySelector<HTMLAnchorElement>("[data-work-scroll]");
+    scrollBtn?.addEventListener("click", (e) => {
+      e.preventDefault();
+      scrollTo("#cta");
+    });
+
+    if (!prefersReducedMotion()) {
+      reveal(root.querySelector(".work__header"), { trigger: root });
+      const body = root.querySelector<HTMLElement>("[data-work-case], [data-work-now]");
+      if (body) reveal(body, { trigger: root, delay: 0.1 });
+      reveal(root.querySelector("[data-work-cta]"), { trigger: root, delay: 0.2 });
+    }
   }
 </script>

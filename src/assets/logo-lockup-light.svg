@@ -5,12 +5,13 @@
   <g transform="translate(4,8)">
     <path d="M80 24 H110 L131 45 V75 L110 96 H80 L59 75 V45 Z"
       stroke="#3FD9C0" stroke-width="8" stroke-linejoin="round" fill="none"/>
-    <!-- Bite painted as a cream circle over the disc (not an SVG <mask>): reads
-         as a cut-out on the light surface this variant sits on, and stays robust
-         under GPU compositing where mask refs can fail to paint. -->
+    <!-- Bite painted as a cream nibbled "cap" over the disc (not an SVG <mask>):
+         the scalloped cut-out shape is filled with the background colour so it
+         reads as a bitten edge on the light surface this variant sits on, and
+         stays robust under GPU compositing where mask refs can fail to paint. -->
     <circle cx="42" cy="60" r="44" fill="#A974E8"/>
-    <circle cx="76" cy="33" r="20" fill="#f5efe6"/>
-    <g fill="#11112E">
+    <path fill="#f5efe6" d="M 45.83 16.17 A 44.00 44.00 0 0 1 85.83 56.17 A 10.19 10.19 0 0 1 70.35 50.64 A 7.02 7.02 0 0 1 59.45 47.56 A 4.40 4.40 0 0 1 54.44 42.55 A 7.02 7.02 0 0 1 51.36 31.65 A 10.19 10.19 0 0 1 45.83 16.17 Z"/>
+    <g fill="#FFFFFF">
       <circle cx="25" cy="51" r="5.5"/>
       <circle cx="50" cy="47" r="4.6"/>
       <circle cx="31" cy="74" r="6"/>

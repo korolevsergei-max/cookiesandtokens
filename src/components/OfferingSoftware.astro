@@ -1,0 +1,153 @@
+---
+interface Card {
+  number: string;
+  title: string;
+  desc: string;
+  tags: string[];
+}
+
+interface Props {
+  id: string;
+  eyebrow?: string;
+  titleLead: string;
+  titleAccent: string;
+  sub: string;
+  cards: Card[];
+  tone?: "light" | "dark";
+  accent?: "purple" | "teal";
+}
+
+const {
+  id,
+  titleLead,
+  titleAccent,
+  sub,
+  cards,
+} = Astro.props;
+
+import ServiceIcon from "./ServiceIcon.astro";
+
+const titleId = `${id}-title`;
+const slug = (s: string) => s.toLowerCase().replace(/&/g, "").replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "");
+---
+
+<section
+  id={id}
+  class="relative overflow-clip isolation-isolate bg-cream text-ink"
+  data-offering-software
+  aria-labelledby={titleId}
+>
+  {/* Streaming code field — pinned to the viewport so the spec modules glide over a stable
+      backdrop (the negative margin cancels its flow height so it overlays the content). */}
+  <div class="sticky top-0 h-[100dvh] -mb-[100dvh] z-0 pointer-events-none" aria-hidden="true">
+    <canvas class="w-full h-full" data-code-motion></canvas>
+  </div>
+
+  <div class="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8 py-24 md:py-40 flex flex-col md:flex-row gap-12 md:gap-24 relative z-10">
+
+    {/* Editorial Split: Left (Pinned Typography) */}
+    <div class="w-full md:w-[45%] md:sticky md:top-40 h-max flex flex-col justify-start relative">
+      <div class="text-scrim -inset-x-8 -inset-y-10" aria-hidden="true"></div>
+      <div class="relative z-10">
+        <h2 id={titleId} class="text-display-lg md:text-display-xl tracking-tighter leading-none text-ink">
+          {titleLead}<br /><span class="text-purple">{titleAccent}</span>
+        </h2>
+        <p class="text-lead text-ink-muted max-w-[36ch] mt-8">
+          {sub}
+        </p>
+      </div>
+    </div>
+
+    {/* Editorial Split: Right (Technical spec modules over the code field) */}
+    <div class="w-full md:w-[55%]" data-software-col>
+      <div class="relative z-10 flex flex-col gap-12 md:gap-16 pt-12 md:pt-0" data-software-cards>
+        {cards.map((c) => (
+          <article class="group relative border-t border-ink/15 pt-8 md:pt-10" data-offering-card>
+            <div class="text-scrim -inset-x-5 -inset-y-3" aria-hidden="true"></div>
+            <div class="relative z-10">
+
+              {/* Mono spec header: index · path · caret */}
+              <div class="flex items-center justify-between mb-5 font-mono text-[11px] uppercase tracking-[0.18em]">
+                <span class="text-purple-deep tabular-nums">
+                  {c.number}<span class="text-ink-muted"> &nbsp;/ {slug(c.title)}</span>
+                </span>
+                <span class="spec-caret text-purple-deep" aria-hidden="true">▍</span>
+              </div>
+
+              <h3 class="font-display text-2xl md:text-3xl font-semibold tracking-tight text-ink mb-3 flex items-center gap-3">
+                <ServiceIcon title={c.title} class="w-6 h-6 shrink-0 text-purple-deep transition-transform duration-500 ease-[cubic-bezier(0.32,0.72,0,1)] group-hover:scale-110" />
+                <span>{c.title}</span>
+              </h3>
+              <p class="text-base md:text-lg text-ink-muted leading-relaxed max-w-[44ch]">{c.desc}</p>
+
+              {/* Square mono key-chips (not pills) — reads as a spec sheet */}
+              <ul class="flex flex-wrap gap-2 mt-6 font-mono text-[11px]" aria-label="What this includes">
+                {c.tags.map((t) => (
+                  <li class="px-2 py-1 rounded-[4px] border border-ink/15 text-ink-muted tracking-wide transition-colors duration-300 group-hover:border-purple/40 group-hover:text-purple-deep">
+                    {t}
+                  </li>
+                ))}
+              </ul>
+
+            </div>
+          </article>
+        ))}
+      </div>
+    </div>
+
+  </div>
+
+  {/* Accent blob */}
+  <div class="absolute bottom-0 right-0 w-[60vmax] h-[60vmax] bg-purple/10 blur-[120px] rounded-full pointer-events-none z-0"></div>
+</section>
+
+<style>
+  /* Soft cream spotlight behind text blocks — lifts copy off the live code field
+     without hard-masking it (code still shows in the surrounding negative space) */
+  .text-scrim {
+    position: absolute;
+    z-index: 0;
+    pointer-events: none;
+    background: radial-gradient(
+      140% 120% at 35% 50%,
+      var(--color-cream) 0%,
+      var(--color-cream) 58%,
+      color-mix(in srgb, var(--color-cream) 45%, transparent) 76%,
+      transparent 94%
+    );
+  }
+
+  /* Lift the body copy off the live code field behind it (legibility, not masking) */
+  p {
+    text-shadow: 0 0 10px var(--color-cream), 0 0 18px var(--color-cream);
+  }
+
+  /* Terminal caret — blinks unless the user prefers reduced motion */
+  @keyframes spec-blink {
+    0%, 49% { opacity: 1; }
+    50%, 100% { opacity: 0.15; }
+  }
+  .spec-caret {
+    animation: spec-blink 1.1s steps(1) infinite;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .spec-caret {
+      animation: none;
+      opacity: 0.4;
+    }
+  }
+</style>
+
+<script>
+  import { reveal } from "../lib/reveal";
+  import { initCodeField } from "../lib/offeringMotion";
+
+  document.querySelectorAll<HTMLElement>("[data-offering-software]").forEach((root) => {
+    const cards = Array.from(root.querySelectorAll<HTMLElement>("[data-offering-card]"));
+    // Staggered reveal for the right-hand spec modules
+    reveal(cards, { trigger: root.querySelector("[data-software-cards]") });
+
+    const canvas = root.querySelector<HTMLCanvasElement>("[data-code-motion]");
+    if (canvas) initCodeField(canvas, { intensity: 1.3 });
+  });
+</script>
