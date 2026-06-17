@@ -1,0 +1,817 @@
+---
+/**
+ * Industries — the "Operator Dossier".
+ *
+ * Two industries shown as sealed case files. A high-level line is always
+ * visible so a skimmer gets the point instantly. The proof sits one click away,
+ * revealed as three numbered steps (proof "tokens") the visitor flips through.
+ *
+ * Progressive enhancement: every proof line and chip is server-rendered and
+ * fully readable with zero JavaScript. JS adds the collapse/step-viewer layer
+ * on top (gated behind a `data-enhanced` flag set on mount).
+ */
+
+const industries = [
+  {
+    name: "Restaurants & Hospitality",
+    index: "01",
+    highLevel:
+      "We've owned the P&L in multi unit food and beverage, with tier one strategy rigor behind every call. We know where the margin leaks and where digital compounds.",
+    steps: [
+      {
+        num: "01",
+        label: "Operations",
+        proof:
+          "Owned the full P&L as general manager across a mid size corporate fleet for one of the country's largest national restaurant brands",
+        chips: ["P&L Ownership", "Multi Unit", "Field Ops"],
+      },
+      {
+        num: "02",
+        label: "Analytics",
+        proof:
+          "Built marketing analytics across thousands of locations that drove the majority of a year's same brand sales growth",
+        chips: ["Marketing Analytics", "Forecasting", "Promotions"],
+      },
+      {
+        num: "03",
+        label: "Loyalty",
+        proof:
+          "Launched a national chain's first loyalty program and scaled the member base into the hundreds of thousands",
+        chips: ["Loyalty Launch", "CRM", "Retention"],
+      },
+    ],
+  },
+  {
+    name: "Retail",
+    index: "02",
+    highLevel:
+      "We've run the stores, not just marketed them. We know how to grow without torching ad budget.",
+    steps: [
+      {
+        num: "01",
+        label: "Operations",
+        proof:
+          "Ran operations as COO of a mid size consumer retail chain, scaling revenue roughly threefold",
+        chips: ["COO", "Multi Store", "P&L"],
+      },
+      {
+        num: "02",
+        label: "Digital",
+        proof:
+          "Grew digital revenue tenfold under real operating constraints, without an infinite ad budget",
+        chips: ["Ecommerce", "Digital Revenue", "Growth"],
+      },
+      {
+        num: "03",
+        label: "Owned Channels",
+        proof:
+          "Built a 300,000 plus member email loyalty program from scratch with zero paid spend",
+        chips: ["Email", "Lifecycle", "Zero Paid"],
+      },
+    ],
+  },
+];
+
+const ctaLine = "This is the kind of operator behind your account. Let's talk.";
+const total = 3;
+---
+
+<section
+  id="industries"
+  class="dossier section-shell"
+  data-dossier
+  data-tone="dark"
+  aria-labelledby="industries-title"
+>
+  <div class="dossier__intro">
+    <p class="eyebrow dossier__eyebrow">Industries</p>
+    <h2 id="industries-title" class="dossier__headline">
+      We've run these from the&nbsp;<span class="text-gradient-overlap"
+        >inside.</span
+      >
+    </h2>
+  </div>
+
+  <div class="dossier__grid">
+    {
+      industries.map((ind, p) => {
+        const stepsId = `dossier-steps-${p}`;
+        return (
+          <article class="dossier-panel" data-dossier-panel>
+            <span class="dossier-panel__watermark" aria-hidden="true">
+              {ind.index}
+            </span>
+
+            <div class="dossier-panel__head">
+              <h3 class="dossier-panel__name">{ind.name}</h3>
+              <p class="dossier-panel__lead">{ind.highLevel}</p>
+            </div>
+
+            <button
+              type="button"
+              class="dossier-panel__open"
+              data-dossier-open
+              aria-expanded="false"
+              aria-controls={stepsId}
+            >
+              <span class="dossier-panel__open-label" data-open-label>
+                Open the file
+              </span>
+              <span class="dossier-panel__token" aria-hidden="true">
+                <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+                  <circle
+                    cx="7"
+                    cy="7"
+                    r="6"
+                    stroke="currentColor"
+                    stroke-width="1.4"
+                  />
+                  <circle cx="7" cy="7" r="2" fill="currentColor" />
+                </svg>
+              </span>
+            </button>
+
+            <div class="dossier-panel__reveal" id={stepsId} data-dossier-steps>
+              <div class="dossier-panel__viewer">
+                <div
+                  class="dossier-panel__nav"
+                  role="group"
+                  aria-label={`${ind.name} proof steps`}
+                >
+                  <div class="dossier-panel__indicators">
+                    {ind.steps.map((s, i) => (
+                      <button
+                        type="button"
+                        class="dossier-panel__indicator"
+                        data-dossier-goto={i}
+                        aria-label={`Go to proof step ${i + 1}: ${s.label}`}
+                      >
+                        {s.num}
+                      </button>
+                    ))}
+                  </div>
+                  <div class="dossier-panel__progress" aria-hidden="true">
+                    {ind.steps.map((_, i) => (
+                      <span class="dossier-panel__dot" data-dossier-dot={i} />
+                    ))}
+                  </div>
+                </div>
+
+                <div class="dossier-panel__track">
+                  {ind.steps.map((s, i) => (
+                    <div
+                      class="dossier-step"
+                      data-dossier-step
+                      data-index={i}
+                      tabindex="-1"
+                    >
+                      <button
+                        type="button"
+                        class="dossier-step__body"
+                        data-dossier-advance
+                      >
+                        <p class="dossier-step__meta">
+                          <span class="dossier-step__num">{s.num}</span>
+                          <span class="dossier-step__sep" aria-hidden="true">
+                            ·
+                          </span>
+                          <span class="dossier-step__label">{s.label}</span>
+                        </p>
+                        <p class="dossier-step__proof">{s.proof}</p>
+                      </button>
+
+                      <ul class="dossier-step__chips" aria-label="Proof tags">
+                        {s.chips.map((c) => (
+                          <li class="dossier-step__chip">{c}</li>
+                        ))}
+                      </ul>
+
+                      {i === total - 1 && (
+                        <a href="#cta" class="dossier-step__cta" data-cursor="link">
+                          {ctaLine}
+                          <svg
+                            width="16"
+                            height="16"
+                            viewBox="0 0 16 16"
+                            fill="none"
+                            aria-hidden="true"
+                          >
+                            <path
+                              d="M3 8h10M9 4l4 4-4 4"
+                              stroke="currentColor"
+                              stroke-width="1.5"
+                              stroke-linecap="round"
+                              stroke-linejoin="round"
+                            />
+                          </svg>
+                        </a>
+                      )}
+                    </div>
+                  ))}
+                </div>
+
+                <div class="dossier-panel__controls">
+                  <button
+                    type="button"
+                    class="dossier-panel__step"
+                    data-dossier-prev
+                    aria-label="Previous proof step"
+                  >
+                    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+                      <path d="M13 8H3M7 4 3 8l4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+                    </svg>
+                    <span>Prev</span>
+                  </button>
+                  <button
+                    type="button"
+                    class="dossier-panel__step"
+                    data-dossier-next
+                    aria-label="Next proof step"
+                  >
+                    <span>Next</span>
+                    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+                      <path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+                    </svg>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </article>
+        );
+      })
+    }
+  </div>
+
+  <div class="dossier__bg" aria-hidden="true">
+    <span class="dossier__blob dossier__blob--purple"></span>
+    <span class="dossier__blob dossier__blob--teal"></span>
+  </div>
+</section>
+
+<style>
+  .dossier {
+    position: relative;
+    background-color: var(--color-navy-800);
+    color: var(--color-cream);
+    display: flex;
+    flex-direction: column;
+    gap: clamp(2.5rem, 6vh, 4.5rem);
+    overflow: clip;
+    isolation: isolate;
+  }
+
+  /* ---------- Ambient ---------- */
+  .dossier__bg {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+  }
+  .dossier__blob {
+    position: absolute;
+    width: 44vmax;
+    height: 44vmax;
+    border-radius: 50%;
+    filter: blur(120px);
+    opacity: 0.08;
+  }
+  .dossier__blob--purple {
+    top: -10vmax;
+    left: -10vmax;
+    background: radial-gradient(circle, var(--color-purple) 0%, transparent 65%);
+  }
+  .dossier__blob--teal {
+    bottom: -10vmax;
+    right: -10vmax;
+    background: radial-gradient(circle, var(--color-teal) 0%, transparent 65%);
+  }
+
+  /* ---------- Intro ---------- */
+  .dossier__intro {
+    position: relative;
+    z-index: 1;
+    max-width: 46rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+  .dossier__eyebrow {
+    color: color-mix(in srgb, var(--color-cream) 40%, transparent);
+  }
+  .dossier__headline {
+    font-size: var(--text-display-lg);
+    line-height: var(--text-display-lg--line-height);
+    letter-spacing: var(--text-display-lg--letter-spacing);
+  }
+
+  /* ---------- Grid ---------- */
+  .dossier__grid {
+    position: relative;
+    z-index: 1;
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: clamp(1rem, 2.5vw, 1.75rem);
+    align-items: start;
+  }
+  @media (max-width: 768px) {
+    .dossier__grid {
+      grid-template-columns: minmax(0, 1fr);
+    }
+  }
+
+  /* ---------- Panel ---------- */
+  .dossier-panel {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+    padding: clamp(1.5rem, 3vw, 2.25rem);
+    background: color-mix(in srgb, var(--color-navy) 55%, transparent);
+    border: 1px solid color-mix(in srgb, var(--color-cream) 16%, transparent);
+    border-radius: var(--radius-card);
+    overflow: clip;
+    transition:
+      border-color var(--duration-base) var(--ease-out-soft),
+      background-color var(--duration-base) var(--ease-out-soft);
+  }
+  .dossier-panel__watermark {
+    position: absolute;
+    top: -0.35em;
+    right: 0.1em;
+    font-family: var(--font-display);
+    font-weight: 600;
+    font-size: clamp(6rem, 14vw, 11rem);
+    line-height: 1;
+    color: color-mix(in srgb, var(--color-cream) 5%, transparent);
+    font-variant-numeric: tabular-nums;
+    user-select: none;
+    pointer-events: none;
+    z-index: 0;
+  }
+  .dossier-panel__head,
+  .dossier-panel__open,
+  .dossier-panel__reveal {
+    position: relative;
+    z-index: 1;
+  }
+  .dossier-panel__head {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+  .dossier-panel__name {
+    font-family: var(--font-display);
+    font-size: var(--text-display-md);
+    line-height: var(--text-display-md--line-height);
+    letter-spacing: var(--text-display-md--letter-spacing);
+    font-weight: 600;
+  }
+  .dossier-panel__lead {
+    font-size: var(--text-lead);
+    line-height: var(--text-lead--line-height);
+    color: color-mix(in srgb, var(--color-cream) 76%, transparent);
+    max-width: 38rem;
+  }
+
+  /* ---------- Open affordance ---------- */
+  .dossier-panel__open {
+    display: none; /* no-JS: hidden, steps already visible */
+    align-items: center;
+    gap: 0.6rem;
+    align-self: flex-start;
+    min-height: 44px;
+    padding: 0.5rem 0;
+    background: none;
+    border: none;
+    color: var(--color-teal);
+    font-family: var(--font-display);
+    font-size: 0.9rem;
+    font-weight: 500;
+    letter-spacing: 0.02em;
+    cursor: pointer;
+  }
+  .dossier-panel__token {
+    display: inline-flex;
+    color: var(--color-teal);
+    transition: transform var(--duration-base) var(--ease-out-soft);
+  }
+  .dossier-panel__open:hover .dossier-panel__token,
+  .dossier-panel__open:focus-visible .dossier-panel__token {
+    transform: scale(1.18) rotate(8deg);
+  }
+
+  /* ---------- Reveal region ---------- */
+  .dossier-panel__reveal {
+    display: flex;
+    flex-direction: column;
+  }
+  .dossier-panel__viewer {
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+  }
+
+  /* ---------- Step nav (indicators + progress) ---------- */
+  .dossier-panel__nav {
+    display: none; /* no-JS: hidden, steps shown as a static stack */
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+  }
+  .dossier-panel__indicators {
+    display: flex;
+    gap: 0.4rem;
+  }
+  .dossier-panel__indicator {
+    min-width: 44px;
+    min-height: 44px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+    background: none;
+    border: 1px solid color-mix(in srgb, var(--color-cream) 14%, transparent);
+    border-radius: 0.6rem;
+    color: color-mix(in srgb, var(--color-cream) 45%, transparent);
+    font-family: var(--font-display);
+    font-size: 0.78rem;
+    font-weight: 600;
+    font-variant-numeric: tabular-nums;
+    letter-spacing: 0.06em;
+    cursor: pointer;
+    transition:
+      color var(--duration-fast) var(--ease-out-soft),
+      border-color var(--duration-fast) var(--ease-out-soft),
+      background-color var(--duration-fast) var(--ease-out-soft);
+  }
+  .dossier-panel__indicator:hover,
+  .dossier-panel__indicator:focus-visible {
+    color: var(--color-cream);
+    border-color: color-mix(in srgb, var(--color-teal) 50%, transparent);
+  }
+  .dossier-panel__indicator[aria-current="true"] {
+    color: var(--color-navy);
+    background: var(--color-teal);
+    border-color: var(--color-teal);
+  }
+  .dossier-panel__progress {
+    display: flex;
+    gap: 0.4rem;
+  }
+  .dossier-panel__dot {
+    width: 1.25rem;
+    height: 3px;
+    border-radius: var(--radius-pill);
+    background: color-mix(in srgb, var(--color-cream) 15%, transparent);
+    transition:
+      width var(--duration-base) var(--ease-out-soft),
+      background-color var(--duration-base) var(--ease-out-soft);
+  }
+  .dossier-panel__dot[data-filled] {
+    width: 1.75rem;
+    background: var(--color-teal-bright);
+  }
+
+  /* ---------- Step track ---------- */
+  .dossier-panel__track {
+    position: relative;
+  }
+  .dossier-step {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+  .dossier-step + .dossier-step {
+    margin-top: 2rem; /* no-JS stacked spacing */
+  }
+  .dossier-step__body {
+    display: block;
+    width: 100%;
+    text-align: left;
+    background: none;
+    border: none;
+    padding: 0;
+    color: inherit;
+    cursor: default;
+  }
+  .dossier-step__meta {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 0.75rem;
+    font-family: var(--font-display);
+    font-size: 0.8rem;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+  .dossier-step__num {
+    color: var(--color-teal);
+    font-variant-numeric: tabular-nums;
+  }
+  .dossier-step__sep {
+    color: color-mix(in srgb, var(--color-cream) 35%, transparent);
+  }
+  .dossier-step__label {
+    color: color-mix(in srgb, var(--color-cream) 70%, transparent);
+  }
+  .dossier-step__proof {
+    font-family: var(--font-display);
+    font-size: clamp(1.15rem, 2.2vw, 1.55rem);
+    line-height: 1.35;
+    font-weight: 500;
+    color: var(--color-cream);
+    max-width: 36rem;
+  }
+  .dossier-step__chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+  .dossier-step__chip {
+    padding: 0.45rem 0.9rem;
+    font-family: var(--font-display);
+    font-size: 0.8rem;
+    font-weight: 500;
+    letter-spacing: 0.02em;
+    color: var(--color-cream);
+    background: color-mix(in srgb, var(--color-cream) 8%, transparent);
+    border: 1px solid color-mix(in srgb, var(--color-cream) 16%, transparent);
+    border-radius: var(--radius-pill);
+  }
+
+  /* ---------- Inline CTA (step 03) ---------- */
+  .dossier-step__cta {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-top: 0.5rem;
+    color: var(--color-teal-bright);
+    font-family: var(--font-display);
+    font-size: 1rem;
+    font-weight: 500;
+    line-height: 1.4;
+    text-decoration: none;
+    border-bottom: 1px solid color-mix(in srgb, var(--color-teal) 40%, transparent);
+    padding-bottom: 0.2rem;
+    transition: color var(--duration-fast) var(--ease-out-soft);
+  }
+  .dossier-step__cta svg {
+    flex-shrink: 0;
+    transition: transform var(--duration-base) var(--ease-out-soft);
+  }
+  .dossier-step__cta:hover svg,
+  .dossier-step__cta:focus-visible svg {
+    transform: translateX(3px);
+  }
+
+  /* ---------- Prev / next controls ---------- */
+  .dossier-panel__controls {
+    display: none; /* no-JS: hidden */
+    align-items: center;
+    gap: 0.75rem;
+  }
+  .dossier-panel__step {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    min-height: 44px;
+    padding: 0 1rem;
+    background: none;
+    border: 1px solid color-mix(in srgb, var(--color-cream) 16%, transparent);
+    border-radius: var(--radius-pill);
+    color: var(--color-cream);
+    font-family: var(--font-display);
+    font-size: 0.85rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition:
+      border-color var(--duration-fast) var(--ease-out-soft),
+      color var(--duration-fast) var(--ease-out-soft),
+      opacity var(--duration-fast) var(--ease-out-soft);
+  }
+  .dossier-panel__step:hover:not(:disabled),
+  .dossier-panel__step:focus-visible:not(:disabled) {
+    border-color: color-mix(in srgb, var(--color-teal) 50%, transparent);
+    color: var(--color-teal-bright);
+  }
+  .dossier-panel__step:disabled {
+    opacity: 0.35;
+    cursor: not-allowed;
+  }
+
+  /* ============================================================
+     Enhanced layer — activated once JS sets [data-enhanced].
+     ============================================================ */
+  .dossier[data-enhanced] .dossier-panel__open {
+    display: inline-flex;
+  }
+  .dossier[data-enhanced] .dossier-panel__nav,
+  .dossier[data-enhanced] .dossier-panel__controls {
+    display: flex;
+  }
+
+  /* Collapse the reveal region by default (smooth grid-rows trick). */
+  .dossier[data-enhanced] .dossier-panel__reveal {
+    display: grid;
+    grid-template-rows: 0fr;
+    opacity: 0;
+    transition:
+      grid-template-rows 360ms var(--ease-out-soft),
+      opacity var(--duration-base) var(--ease-out-soft);
+  }
+  .dossier[data-enhanced] .dossier-panel__viewer {
+    min-height: 0;
+    overflow: hidden;
+  }
+  .dossier[data-enhanced] .dossier-panel[data-open] .dossier-panel__reveal {
+    grid-template-rows: 1fr;
+    opacity: 1;
+    margin-top: 0.25rem;
+  }
+  .dossier[data-enhanced] .dossier-panel[data-open] {
+    border-color: color-mix(in srgb, var(--color-cream) 26%, transparent);
+    background: color-mix(in srgb, var(--color-navy) 75%, transparent);
+  }
+
+  /* Single-step viewer: only the active step occupies flow; others slide out. */
+  .dossier[data-enhanced] .dossier-step {
+    position: absolute;
+    inset: 0;
+    margin-top: 0;
+    opacity: 0;
+    transform: translateX(2.5rem);
+    pointer-events: none;
+    transition:
+      opacity var(--duration-fast) var(--ease-out-soft),
+      transform var(--duration-fast) var(--ease-out-soft);
+  }
+  .dossier[data-enhanced] .dossier-step[data-prev] {
+    transform: translateX(-2.5rem);
+  }
+  .dossier[data-enhanced] .dossier-step[data-active] {
+    position: relative;
+    opacity: 1;
+    transform: none;
+    pointer-events: auto;
+  }
+  .dossier[data-enhanced] .dossier-step__body {
+    cursor: pointer;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .dossier[data-enhanced] .dossier-step {
+      transform: none;
+    }
+    .dossier[data-enhanced] .dossier-step[data-prev] {
+      transform: none;
+    }
+  }
+</style>
+
+<script>
+  /**
+   * Progressive-enhancement controller for the Operator Dossier.
+   * All motion is CSS-driven (and reduced-motion-safe via the @media guard in
+   * this component + the global clamp), so this script stays imperative-free.
+   */
+  const root = document.querySelector<HTMLElement>("[data-dossier]");
+  if (root) initDossier(root);
+
+  function initDossier(root: HTMLElement) {
+    const desktop = window.matchMedia("(min-width: 769px)");
+
+    const panels = Array.from(
+      root.querySelectorAll<HTMLElement>("[data-dossier-panel]")
+    );
+
+    // Per-panel controllers
+    const controllers = panels.map((panel) => makePanel(panel));
+
+    // Desktop: only one open at a time.
+    function closeOthers(except: HTMLElement) {
+      if (!desktop.matches) return;
+      controllers.forEach((c) => {
+        if (c.panel !== except) c.setOpen(false);
+      });
+    }
+
+    controllers.forEach((c) => c.bind(closeOthers));
+
+    // Mark the section enhanced last, so CSS only collapses once wiring is ready.
+    root.dataset.enhanced = "true";
+  }
+
+  function makePanel(panel: HTMLElement) {
+    const openBtn = panel.querySelector<HTMLButtonElement>("[data-dossier-open]");
+    const openLabel = panel.querySelector<HTMLElement>("[data-open-label]");
+    const steps = Array.from(
+      panel.querySelectorAll<HTMLElement>("[data-dossier-step]")
+    );
+    const dots = Array.from(
+      panel.querySelectorAll<HTMLElement>("[data-dossier-dot]")
+    );
+    const indicators = Array.from(
+      panel.querySelectorAll<HTMLButtonElement>("[data-dossier-goto]")
+    );
+    const advanceBtns = Array.from(
+      panel.querySelectorAll<HTMLButtonElement>("[data-dossier-advance]")
+    );
+    const prevBtn = panel.querySelector<HTMLButtonElement>("[data-dossier-prev]");
+    const nextBtn = panel.querySelector<HTMLButtonElement>("[data-dossier-next]");
+
+    const last = steps.length - 1;
+    let open = false;
+    let index = 0;
+
+    function renderSteps() {
+      steps.forEach((step, i) => {
+        const active = i === index;
+        step.toggleAttribute("data-active", active);
+        step.toggleAttribute("data-prev", i < index);
+        step.setAttribute("aria-hidden", active ? "false" : "true");
+      });
+      dots.forEach((dot, i) =>
+        dot.toggleAttribute("data-filled", i <= index)
+      );
+      indicators.forEach((ind, i) =>
+        ind.setAttribute("aria-current", i === index ? "true" : "false")
+      );
+      if (prevBtn) prevBtn.disabled = index === 0;
+      if (nextBtn) nextBtn.disabled = index === last;
+    }
+
+    function goTo(next: number, focus = false) {
+      index = Math.max(0, Math.min(last, next));
+      renderSteps();
+      if (focus) steps[index].focus();
+    }
+
+    function setOpen(next: boolean) {
+      open = next;
+      panel.toggleAttribute("data-open", open);
+      openBtn?.setAttribute("aria-expanded", String(open));
+      if (openLabel) openLabel.textContent = open ? "Close the file" : "Open the file";
+      if (open) {
+        goTo(0);
+      }
+    }
+
+    function bind(onOpen: (panel: HTMLElement) => void) {
+      openBtn?.addEventListener("click", () => {
+        const next = !open;
+        setOpen(next);
+        if (next) {
+          onOpen(panel);
+          steps[0]?.focus();
+        }
+      });
+
+      prevBtn?.addEventListener("click", () => goTo(index - 1, true));
+      nextBtn?.addEventListener("click", () => goTo(index + 1, true));
+
+      indicators.forEach((ind, i) =>
+        ind.addEventListener("click", () => goTo(i, true))
+      );
+
+      // Click the step body to advance (last step stays put).
+      advanceBtns.forEach((btn) =>
+        btn.addEventListener("click", () => {
+          if (index < last) goTo(index + 1, true);
+        })
+      );
+
+      // Arrow / Home / End keyboard navigation when the panel is open.
+      panel.addEventListener("keydown", (e) => {
+        if (!open) return;
+        switch (e.key) {
+          case "ArrowRight":
+            e.preventDefault();
+            goTo(index + 1, true);
+            break;
+          case "ArrowLeft":
+            e.preventDefault();
+            goTo(index - 1, true);
+            break;
+          case "Home":
+            e.preventDefault();
+            goTo(0, true);
+            break;
+          case "End":
+            e.preventDefault();
+            goTo(last, true);
+            break;
+        }
+      });
+    }
+
+    // Start collapsed with step 0 primed.
+    setOpen(false);
+    renderSteps();
+
+    return { panel, setOpen, bind };
+  }
+</script>
