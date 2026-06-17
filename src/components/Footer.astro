@@ -7,21 +7,14 @@ import logoMarkRaw from "../assets/logo-mark.svg?raw";
 
 const year = new Date().getFullYear();
 
+// Mirror the primary nav exactly — every link points at a section that exists.
 const links = [
-  { label: "Creative",     href: "#creative" },
-  { label: "Growth",       href: "#growth"   },
-  { label: "Software",     href: "#software" },
+  { label: "Creative",     href: "#creative"   },
+  { label: "Growth",       href: "#growth"     },
+  { label: "Software",     href: "#software"   },
   { label: "Industries",   href: "#industries" },
-  { label: "How We Work",  href: "#token"    },
-  { label: "Process",      href: "#process"  },
-  { label: "About",        href: "#about"    },
-  { label: "Work with us", href: "#cta"      },
-];
-
-const socials = [
-  { label: "LinkedIn", href: "https://linkedin.com/company/cookiesandtokens", abbr: "in" },
-  { label: "Instagram", href: "https://instagram.com/cookiesandtokens", abbr: "ig" },
-  { label: "X / Twitter", href: "https://x.com/cookiesntokens", abbr: "x" },
+  { label: "About",        href: "#about"      },
+  { label: "Work with us", href: "#cta"        },
 ];
 ---
 
@@ -50,22 +43,6 @@ const socials = [
         ))}
       </ul>
     </nav>
-
-    <!-- Socials -->
-    <div class="site-footer__socials">
-      {socials.map((s) => (
-        <a
-          href={s.href}
-          target="_blank"
-          rel="noopener noreferrer"
-          class="site-footer__social"
-          data-cursor="link"
-          aria-label={s.label}
-        >
-          {s.abbr}
-        </a>
-      ))}
-    </div>
   </div>
 
   <!-- Bottom bar -->
@@ -153,38 +130,6 @@ const socials = [
     transition: color var(--duration-fast) var(--ease-out-soft);
   }
   .site-footer__link:hover { color: var(--color-cream); }
-
-  /* ---------- Socials ---------- */
-  .site-footer__socials {
-    display: flex;
-    gap: 0.5rem;
-    align-items: flex-start;
-    padding-top: 0.1rem;
-  }
-  .site-footer__social {
-    width: 2.25rem;
-    height: 2.25rem;
-    border-radius: 50%;
-    display: grid;
-    place-items: center;
-    font-size: 0.75rem;
-    font-weight: 600;
-    font-family: var(--font-display);
-    letter-spacing: -0.01em;
-    text-decoration: none;
-    text-transform: lowercase;
-    color: color-mix(in srgb, var(--color-cream) 55%, transparent);
-    border: 1px solid color-mix(in srgb, var(--color-cream) 12%, transparent);
-    transition:
-      color       var(--duration-fast) var(--ease-out-soft),
-      background  var(--duration-fast) var(--ease-out-soft),
-      border-color var(--duration-fast) var(--ease-out-soft);
-  }
-  .site-footer__social:hover {
-    color: var(--color-cream);
-    background: color-mix(in srgb, var(--color-cream) 8%, transparent);
-    border-color: color-mix(in srgb, var(--color-cream) 26%, transparent);
-  }
 
   /* ---------- Bottom bar ---------- */
   .site-footer__bottom {
