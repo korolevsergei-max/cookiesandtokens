@@ -1,0 +1,187 @@
+---
+/**
+ * PageLayout — layout for standalone content pages (Privacy, Terms, Contact).
+ * Reuses the global shell (BaseLayout) but swaps the homepage's scroll-driven
+ * Nav/Footer for a simple header (logo → home) and route-based footer links,
+ * since the homepage anchors (#creative, …) don't exist on these pages.
+ */
+import BaseLayout from "./BaseLayout.astro";
+import logoMarkRaw from "../assets/logo-mark.svg?raw";
+
+interface Props {
+  title: string;
+  description?: string;
+  /** Plain-language line under the page title (e.g. "Last updated …"). */
+  meta?: string;
+}
+
+const { title, description, meta } = Astro.props;
+const year = new Date().getFullYear();
+
+const footerLinks = [
+  { label: "Home", href: "/" },
+  { label: "Privacy", href: "/privacy" },
+  { label: "Terms", href: "/terms" },
+  { label: "Contact", href: "/contact" },
+];
+---
+
+<BaseLayout title={`${title} | Cookies & Tokens`} description={description}>
+  <header class="page-head">
+    <div class="page-head__inner">
+      <a href="/" class="page-head__logo" data-cursor="link" aria-label="Cookies and Tokens — home">
+        <span class="page-head__mark" set:html={logoMarkRaw} />
+        <span class="page-head__wordmark">Cookies&nbsp;&amp;&nbsp;Tokens</span>
+      </a>
+      <a href="/" class="page-head__back" data-cursor="link">← Back to site</a>
+    </div>
+  </header>
+
+  <main class="page">
+    <article class="page__body">
+      <p class="eyebrow page__eyebrow">Cookies &amp; Tokens</p>
+      <h1 class="page__title">{title}</h1>
+      {meta && <p class="page__meta">{meta}</p>}
+      <div class="prose">
+        <slot />
+      </div>
+    </article>
+  </main>
+
+  <footer class="page-foot" role="contentinfo">
+    <nav class="page-foot__nav" aria-label="Footer">
+      {footerLinks.map((l) => (
+        <a href={l.href} class="page-foot__link" data-cursor="link">{l.label}</a>
+      ))}
+    </nav>
+    <p class="page-foot__copy">&copy; {year} Cookies &amp; Tokens. All rights reserved.</p>
+  </footer>
+</BaseLayout>
+
+<style>
+  /* ---------- Header ---------- */
+  .page-head {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background: color-mix(in srgb, var(--color-navy) 90%, transparent);
+    backdrop-filter: blur(18px) saturate(1.4);
+    -webkit-backdrop-filter: blur(18px) saturate(1.4);
+    border-bottom: 1px solid color-mix(in srgb, var(--color-cream) 8%, transparent);
+  }
+  .page-head__inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    max-width: 50rem;
+    margin-inline: auto;
+    padding-inline: var(--spacing-gutter);
+    padding-block: 0.85rem;
+  }
+  .page-head__logo {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    text-decoration: none;
+    color: var(--color-cream);
+  }
+  .page-head__mark { width: 32px; flex-shrink: 0; }
+  .page-head__mark :global(svg) { width: 100%; height: auto; display: block; }
+  .page-head__wordmark {
+    font-family: var(--font-display);
+    font-weight: 600;
+    font-size: 0.9rem;
+    letter-spacing: -0.01em;
+    white-space: nowrap;
+  }
+  .page-head__back {
+    font-size: 0.8125rem;
+    font-weight: 500;
+    color: color-mix(in srgb, var(--color-cream) 60%, transparent);
+    text-decoration: none;
+    transition: color var(--duration-fast) var(--ease-out-soft);
+  }
+  .page-head__back:hover { color: var(--color-cream); }
+
+  /* ---------- Body ---------- */
+  .page {
+    min-height: 60vh;
+    padding-inline: var(--spacing-gutter);
+    padding-block: clamp(3rem, 8vh, 6rem);
+  }
+  .page__body { max-width: 50rem; margin-inline: auto; }
+  .page__eyebrow { color: color-mix(in srgb, var(--color-cream) 42%, transparent); }
+  .page__title {
+    font-family: var(--font-display);
+    font-weight: 600;
+    font-size: clamp(2rem, 5vw, 3.25rem);
+    line-height: 1.05;
+    letter-spacing: -0.02em;
+    margin-block: 0.5rem 0.75rem;
+  }
+  .page__meta {
+    font-size: 0.875rem;
+    color: color-mix(in srgb, var(--color-cream) 50%, transparent);
+    margin-bottom: 2.5rem;
+  }
+
+  /* ---------- Prose ---------- */
+  .prose {
+    color: color-mix(in srgb, var(--color-cream) 80%, transparent);
+    font-size: 1.0625rem;
+    line-height: 1.7;
+  }
+  .prose :global(h2) {
+    font-family: var(--font-display);
+    font-weight: 600;
+    font-size: clamp(1.25rem, 2.5vw, 1.6rem);
+    letter-spacing: -0.01em;
+    color: var(--color-cream);
+    margin-block: 2.5rem 0.75rem;
+  }
+  .prose :global(h3) {
+    font-family: var(--font-display);
+    font-weight: 500;
+    font-size: 1.1rem;
+    color: var(--color-cream);
+    margin-block: 1.5rem 0.5rem;
+  }
+  .prose :global(p) { margin-block: 0.75rem; }
+  .prose :global(ul) { margin-block: 0.75rem; padding-left: 1.25rem; }
+  .prose :global(li) { margin-block: 0.35rem; }
+  .prose :global(a) {
+    color: var(--color-teal-bright);
+    text-decoration: underline;
+    text-underline-offset: 2px;
+  }
+  .prose :global(a:hover) { color: var(--color-teal); }
+  .prose :global(strong) { color: var(--color-cream); font-weight: 600; }
+
+  /* ---------- Footer ---------- */
+  .page-foot {
+    border-top: 1px solid color-mix(in srgb, var(--color-cream) 8%, transparent);
+    padding-inline: var(--spacing-gutter);
+    padding-block: 2rem;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    max-width: 50rem;
+    margin-inline: auto;
+  }
+  .page-foot__nav { display: flex; flex-wrap: wrap; gap: 1.25rem; }
+  .page-foot__link {
+    font-size: 0.875rem;
+    color: color-mix(in srgb, var(--color-cream) 55%, transparent);
+    text-decoration: none;
+    transition: color var(--duration-fast) var(--ease-out-soft);
+  }
+  .page-foot__link:hover { color: var(--color-cream); }
+  .page-foot__copy {
+    font-size: 0.8125rem;
+    color: color-mix(in srgb, var(--color-cream) 35%, transparent);
+    margin: 0;
+  }
+</style>

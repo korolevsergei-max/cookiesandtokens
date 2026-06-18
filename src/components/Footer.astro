@@ -16,6 +16,13 @@ const links = [
   { label: "About",        href: "#about"      },
   { label: "Work with us", href: "#cta"        },
 ];
+
+// Route-based links (real pages, not in-page anchors).
+const legalLinks = [
+  { label: "Contact", href: "/contact" },
+  { label: "Privacy", href: "/privacy" },
+  { label: "Terms",   href: "/terms"   },
+];
 ---
 
 <footer class="site-footer" role="contentinfo">
@@ -35,6 +42,19 @@ const links = [
     <nav class="site-footer__nav" aria-label="Footer navigation">
       <ul class="site-footer__links">
         {links.map((l) => (
+          <li>
+            <a href={l.href} class="site-footer__link" data-cursor="link">
+              {l.label}
+            </a>
+          </li>
+        ))}
+      </ul>
+    </nav>
+
+    <!-- Legal / route links -->
+    <nav class="site-footer__nav" aria-label="Legal navigation">
+      <ul class="site-footer__links">
+        {legalLinks.map((l) => (
           <li>
             <a href={l.href} class="site-footer__link" data-cursor="link">
               {l.label}
