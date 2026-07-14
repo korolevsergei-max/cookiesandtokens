@@ -1,0 +1,153 @@
+---
+import CaseStudyGroup from "./CaseStudyGroup.astro";
+import {
+  caseStudies,
+  serviceAreaOrder,
+  type CaseStudy,
+} from "../data/caseStudies";
+
+const groups = serviceAreaOrder
+  .map((area, index) => ({
+    area,
+    number: String(index + 1).padStart(2, "0"),
+    studies: caseStudies.filter((study) => study.serviceArea === area),
+  }))
+  .filter((group): group is typeof group & { studies: CaseStudy[] } =>
+    group.studies.length > 0
+  );
+---
+
+<section
+  id="work"
+  class="selected-work section-shell"
+  data-selected-work
+  data-tone="light"
+  aria-labelledby="selected-work-title"
+>
+  <header class="selected-work__intro" data-work-intro>
+    <p class="eyebrow selected-work__eyebrow">Selected Work</p>
+    <div class="selected-work__headline-row">
+      <h2 id="selected-work-title">
+        The work is only good if it
+        <span class="selected-work__accent">moves something.</span>
+      </h2>
+      <p>
+        A closer look at the context, the calls we made, and what changed.
+        Organized by the same three areas we bring together for clients.
+      </p>
+    </div>
+  </header>
+
+  <div class="selected-work__groups">
+    {
+      groups.map((group) => (
+        <CaseStudyGroup
+          area={group.area}
+          number={group.number}
+          studies={group.studies}
+        />
+      ))
+    }
+  </div>
+</section>
+
+<style>
+  .selected-work {
+    position: relative;
+    overflow: clip;
+    color: var(--color-ink);
+    background:
+      linear-gradient(
+        90deg,
+        transparent 0,
+        transparent calc(100% - var(--spacing-gutter)),
+        color-mix(in srgb, var(--color-navy) 5%, transparent)
+          calc(100% - var(--spacing-gutter)),
+        color-mix(in srgb, var(--color-navy) 5%, transparent) 100%
+      ),
+      var(--color-cream);
+  }
+
+  .selected-work::before {
+    content: "";
+    position: absolute;
+    top: clamp(4rem, 9vw, 8rem);
+    right: clamp(-9rem, -7vw, -4rem);
+    width: clamp(14rem, 25vw, 26rem);
+    aspect-ratio: 1;
+    border: 1px solid color-mix(in srgb, var(--color-purple) 22%, transparent);
+    border-radius: 50%;
+    pointer-events: none;
+  }
+
+  .selected-work__intro,
+  .selected-work__groups {
+    position: relative;
+    z-index: 1;
+    max-width: 88rem;
+    margin-inline: auto;
+  }
+
+  .selected-work__intro {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    margin-bottom: clamp(3.5rem, 8vw, 7rem);
+  }
+
+  .selected-work__eyebrow {
+    color: var(--color-purple-deep);
+  }
+
+  .selected-work__headline-row {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(17rem, 0.34fr);
+    gap: clamp(2rem, 6vw, 7rem);
+    align-items: end;
+  }
+
+  .selected-work__headline-row h2 {
+    max-width: 14ch;
+    margin: 0;
+    font-size: var(--text-display-lg);
+    line-height: var(--text-display-lg--line-height);
+    letter-spacing: var(--text-display-lg--letter-spacing);
+  }
+
+  .selected-work__accent {
+    color: var(--color-purple-deep);
+  }
+
+  .selected-work__headline-row p {
+    max-width: 30rem;
+    margin: 0 0 0.4rem;
+    color: var(--color-ink-muted);
+    font-size: clamp(1rem, 1.45vw, 1.15rem);
+    line-height: 1.65;
+    text-wrap: pretty;
+  }
+
+  @media (max-width: 760px) {
+    .selected-work {
+      background: var(--color-cream);
+    }
+
+    .selected-work__headline-row {
+      grid-template-columns: minmax(0, 1fr);
+      gap: 1.5rem;
+    }
+  }
+</style>
+
+<script>
+  import { reveal } from "../lib/reveal";
+
+  const root = document.querySelector<HTMLElement>("[data-selected-work]");
+  if (root) {
+    reveal(root.querySelector("[data-work-intro]"), { trigger: root });
+    reveal(root.querySelectorAll("[data-work-group]"), {
+      trigger: root.querySelector("[data-work-group]"),
+      stagger: 0.12,
+    });
+  }
+</script>
