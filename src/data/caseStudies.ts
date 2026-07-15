@@ -50,7 +50,7 @@ export const caseStudies: CaseStudy[] = [
     industry: "Restaurants & Hospitality",
     title: "More traffic. More orders. Lower cost.",
     summary:
-      "A highly regarded plant-based restaurant chain needed its paid channels to work as one growth engine, not a collection of disconnected campaigns.",
+      "A plant based restaurant chain needed its paid channels to work as one growth engine, not a pile of disconnected campaigns.",
     metrics: [
       { value: "+83%", label: "web traffic vs. prior year" },
       { value: "3.3×", label: "paid cart sessions vs. baseline" },
@@ -62,8 +62,8 @@ export const caseStudies: CaseStudy[] = [
         label: "Context",
         title: "Demand was there. The channel mix was not compounding.",
         body:
-          "The chain wanted to grow web traffic and paid order sessions while improving efficiency across search, social, and display. Each channel needed a clearer role and a faster feedback loop.",
-        tags: ["Multi-location", "Paid acquisition", "Digital ordering"],
+          "The chain wanted more traffic and more paid orders at better efficiency. Search, social, and display each needed a clear role and a faster feedback loop.",
+        tags: ["Multi location", "Paid acquisition", "Digital ordering"],
         image: contextImage,
         alt:
           "Illustrated restaurant locations and customers connected through fragmented digital marketing paths.",
@@ -74,7 +74,7 @@ export const caseStudies: CaseStudy[] = [
         label: "Approach",
         title: "Test the mix, then move budget toward what worked.",
         body:
-          "We rapidly tested channel allocation, ad creative, copy, calls to action, and keyword strategy. Social and display assets were iterated repeatedly while search expanded into relevant unbranded and competitor terms.",
+          "We tested channel allocation, creative, copy, and keywords, then moved budget toward what worked. Search expanded into unbranded and competitor terms.",
         tags: ["Channel mix", "Creative testing", "Search strategy"],
         image: approachImage,
         alt:
@@ -86,7 +86,7 @@ export const caseStudies: CaseStudy[] = [
         label: "Outcome",
         title: "Traffic rose 83%. Paid cart sessions reached 3.3× baseline.",
         body:
-          "Average CPC fell from $0.95 in week one to $0.40 by week ten. Unbranded keyword traffic rose 27% with CPC down 10%; competitor keyword traffic rose 18% with CPC down 31%.",
+          "Average CPC fell from $0.95 in week one to $0.40 by week ten. Unbranded traffic rose 27% with CPC down 10%. Competitor traffic rose 18% with CPC down 31%.",
         tags: ["83% traffic growth", "3.3× cart sessions", "58% lower CPC"],
         image: outcomeImage,
         alt:

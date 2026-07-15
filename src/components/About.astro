@@ -1,26 +1,24 @@
 ---
 /**
- * About — "Humans + Machines"
- * Philosophy, team pedigree (credential chips, no named individuals), and the
- * "AI-native creatives" positioning.
+ * About — "The humans"
+ * Brief team beat: operators who grew consumer businesses from the inside.
+ * Pedigree chips (no named individuals) + three beliefs.
  * Dark navy section for tonal rhythm.
  */
 
 // Team pedigree — backgrounds the senior team brings, no named individuals.
 const credentials = [
-  "Software Engineering",
+  "P&L Ownership",
   "Organic Growth",
-  "Tier-1 Strategy",
+  "Tier One Strategy",
   "Brand & Creative",
-  "Applied AI",
+  "Software Engineering",
 ];
 
 const beliefs = [
-  "Human taste is the moat. AI is the engine.",
   "We understand the problem before we touch the solution.",
   "We never ship anything we would not put our name on.",
-  "Each discipline has to stand on its own. Together, they compound.",
-  "You get senior specialists and the people who run the studio, not juniors on your account.",
+  "You get the people who run the studio, not juniors on your account.",
 ];
 ---
 
@@ -37,23 +35,15 @@ const beliefs = [
       The&nbsp;<span class="text-gradient-overlap">humans.</span>
     </h2>
     <p class="about__lead">
-      We are creatives, marketers, and engineers who got tired of watching
-      brand, growth, and product get built by three teams that never spoke.
-    </p>
-    <p class="about__body">
-      We have worked inside brand teams, inside agencies, and inside AI
-      companies. We saw what experienced people do once they have AI in their
-      hands, and we built the studio around it.
+      We are operators, marketers, and engineers who spent years growing
+      consumer businesses from the inside. Now we do it for clients.
     </p>
   </div>
 
   <!-- Pedigree -->
   <div class="about__pedigree" data-pedigree>
     <p class="about__body about__pedigree-text">
-      The team is led by senior operators. Specialists,
-      not generalists, with experience across software development, driving
-      organic growth, and tier-one strategy consulting. People who have done the
-      work at the highest level, now with AI in their hands.
+      Senior specialists, not juniors. The backgrounds on your account:
     </p>
     <ul class="about__creds" aria-label="Team backgrounds">
       {credentials.map((c) => <li class="about__cred">{c}</li>)}

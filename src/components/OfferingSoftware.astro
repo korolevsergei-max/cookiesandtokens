@@ -19,6 +19,7 @@ interface Props {
 
 const {
   id,
+  eyebrow,
   titleLead,
   titleAccent,
   sub,
@@ -41,6 +42,7 @@ const slug = (s: string) => s.toLowerCase().replace(/&/g, "").replace(/[^a-z0-9]
 
     {/* Editorial Split: Left (Pinned Typography) */}
     <div class="w-full md:w-[45%] md:sticky md:top-40 h-max flex flex-col justify-start">
+      {eyebrow && <p class="eyebrow text-purple mb-6">{eyebrow}</p>}
       <h2 id={titleId} class="text-display-lg md:text-display-xl tracking-tighter leading-none text-ink">
         {titleLead}<br /><span class="text-purple">{titleAccent}</span>
       </h2>

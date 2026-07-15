@@ -13,40 +13,40 @@ import SelectedWork from "../components/SelectedWork.astro";
 import CTA from "../components/CTA.astro";
 import Footer from "../components/Footer.astro";
 
-// ── The three things we do, each its own section (Creative / Growth / Software).
+// ── Three growth levers, each its own section (Brand / Channels / Digital Experience).
 // Tone + accent alternate down the page for rhythm.
 
 const creative = {
   id: "creative",
-  eyebrow: "What We Do / 01",
-  titleLead: "Creative with",
-  titleAccent: "a point of view.",
-  sub: "Brand, content, and the strategy underneath both. Senior creatives set the direction and make the calls. AI lets us produce more of it, faster, without thinning the bar.",
+  eyebrow: "Growth Lever 01 / Brand",
+  titleLead: "Creative that pulls",
+  titleAccent: "its weight.",
+  sub: "A recognizable brand does some of the selling and lowers your cost per customer. Senior creatives set the direction and every piece earns its keep.",
   tone: "light" as const,
   accent: "purple" as const,
   cards: [
     {
       number: "01",
       title: "Brand & Identity",
-      desc: "Strategy, naming, visual identity, and the system that holds it together. The part that makes you recognizable and hard to copy.",
+      desc: "Positioning, naming, and a visual system that makes you recognizable and hard to copy. Recognition is cheaper than reach.",
       tags: ["Strategy", "Naming", "Visual Identity", "Guidelines"],
     },
     {
       number: "02",
       title: "Content & Copy",
-      desc: "Copy that earns attention and visuals with a point of view, built as a system so the voice stays consistent across every channel at volume.",
+      desc: "Copy and content built as a system, so the voice holds across every menu, feed, and shelf.",
       tags: ["Copywriting", "Social", "Content Systems", "Production"],
     },
     {
       number: "03",
       title: "Creative Strategy",
-      desc: "The thinking before the making. Positioning, messaging, and the concepts that decide what the work should say before we say it.",
+      desc: "The thinking before the making. What to say, to whom, and in what order, decided before a dollar is spent.",
       tags: ["Positioning", "Messaging", "Concepts", "Direction"],
     },
     {
       number: "04",
       title: "Design & Production",
-      desc: "Campaigns and brand collateral, concept to delivery. Human art direction with AI in the production pipeline, so volume never costs you quality.",
+      desc: "Campaigns and collateral from concept to delivery, at the volume your channels actually need.",
       tags: ["Campaigns", "Art Direction", "Assets", "Always On"],
     },
   ],
@@ -54,35 +54,35 @@ const creative = {
 
 const growth = {
   id: "growth",
-  eyebrow: "What We Do / 02",
+  eyebrow: "Growth Lever 02 / Channels",
   titleLead: "Growth across every",
   titleAccent: "channel that pays.",
-  sub: "Owned, earned, paid, and real world, run as one engine instead of disconnected line items. An activation creates the moment and the content. The content feeds social and paid. The audience feeds your list and your retargeting. We test fast, cut what fails, and put budget behind what compounds.",
+  sub: "Owned, earned, paid, and real world, run as one engine. We test fast, cut what fails, and put budget behind what compounds.",
   tone: "dark" as const,
   accent: "teal" as const,
   cards: [
     {
       number: "01",
       title: "Organic & Community",
-      desc: "The compounding channels most agencies skip. Community posting, local groups, and partnerships that build an audience before you spend a dollar on media.",
+      desc: "The compounding channels most agencies skip. Community, local, and partnerships that build an audience before you spend on media.",
       tags: ["Growth Hacking", "Community", "Local", "Partnerships"],
     },
     {
       number: "02",
       title: "Email & Lifecycle",
-      desc: "List building and automated flows that turn subscribers into revenue while you sleep. The one channel you actually own.",
+      desc: "The channel you own. Lists and flows that turn one time buyers into repeat orders.",
       tags: ["List Building", "Flows", "Campaigns", "Retention"],
     },
     {
       number: "03",
       title: "Experiential & Activations",
-      desc: "Launches, pop ups, and field activations built to do more than draw a crowd. We design the moment to capture content, grow a list, and start a paid loop, so the energy in the room keeps working long after the doors close.",
+      desc: "Launches, pop ups, and field activations engineered to capture content, grow the list, and feed the paid loop.",
       tags: ["Activations", "Launches", "Pop Ups", "Content Capture"],
     },
     {
       number: "04",
       title: "Paid Media",
-      desc: "Paid social and search that scale profitably. We plan, build, and manage Google Ads and paid social campaigns on behalf of our clients, run the creative tests, and put spend where the return is.",
+      desc: "Google Ads and paid social, planned and managed for our clients. We run the tests and put spend where the return is.",
       tags: ["Google Ads", "Paid Social", "Creative Testing", "ROAS"],
     },
   ],
@@ -90,36 +90,36 @@ const growth = {
 
 const software = {
   id: "software",
-  eyebrow: "What We Do / 03",
-  titleLead: "Software",
-  titleAccent: "built to ship.",
-  sub: "Web and mobile apps, custom internal tools, and AI agents that run the work eating your team's hours. Real engineers, AI in the build, production software at the end.",
+  eyebrow: "Growth Lever 03 / Digital Experience",
+  titleLead: "Where browsers",
+  titleAccent: "become buyers.",
+  sub: "The websites, apps, and funnels where your growth converts. Senior engineers build them, then keep optimizing until the numbers move.",
   tone: "light" as const,
   accent: "purple" as const,
   cards: [
     {
       number: "01",
-      title: "Web Apps",
-      desc: "Full applications, front to back. Marketing sites, dashboards, and complete products engineered to scale.",
-      tags: ["Frontend", "Backend", "Dashboards", "Performance"],
+      title: "Websites & Ecommerce",
+      desc: "Marketing sites and online stores built to convert. Fast, on brand, and measured.",
+      tags: ["Marketing Sites", "Online Stores", "SEO", "Performance"],
     },
     {
       number: "02",
+      title: "Web Apps",
+      desc: "Ordering, booking, loyalty, and member portals. Full applications, front to back, engineered to scale.",
+      tags: ["Frontend", "Backend", "Dashboards", "Integrations"],
+    },
+    {
+      number: "03",
       title: "Mobile Apps",
       desc: "Native iOS and Android, or cross platform when it fits. From first build to the app store.",
       tags: ["iOS", "Android", "Cross Platform", "App Store"],
     },
     {
-      number: "03",
-      title: "Custom Software & SaaS",
-      desc: "When off the shelf falls short, we build it. Internal tools, integrations, and full SaaS products shaped around how your business actually runs.",
-      tags: ["Internal Tools", "Integrations", "SaaS", "APIs"],
-    },
-    {
       number: "04",
-      title: "AI Agents & Automation",
-      desc: "We stand up agents that handle the work eating your team's hours. Support, ops, research, reporting. Running day and night.",
-      tags: ["AI Agents", "Workflows", "Automation", "Ops"],
+      title: "Experience Optimization",
+      desc: "Onboarding, funnels, and checkout, improved release by release. We find where customers drop off and fix it.",
+      tags: ["Onboarding", "Funnels", "CRO", "A/B Testing"],
     },
   ],
 };
@@ -130,13 +130,13 @@ const software = {
 
   <main>
     <Hero />
-    <CollisionScene />
+    <Industries />
     <CookieSide />
     <OfferingCreative {...creative} />
     <OfferingGrowth {...growth} />
     <OfferingSoftware {...software} />
-    <Industries />
     <SelectedWork />
+    <CollisionScene />
     <About />
     <CTA />
   </main>

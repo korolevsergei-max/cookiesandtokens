@@ -19,17 +19,17 @@ const paths = [
   {
     key: "cookie",
     eyebrow: "The Cookie",
-    title: "What We Make",
-    desc: "Creative · Growth · Software",
+    title: "What We Run",
+    desc: "Brand, channels, and digital. Three levers, one engine.",
     target: "#cookie",
     cursor: "cookie",
-    cursorLabel: "Make",
+    cursorLabel: "Run",
   },
   {
     key: "venn",
     eyebrow: "The Overlap",
-    title: "Human × AI",
-    desc: "Real experience runs the AI, not the other way around.",
+    title: "Why the Name",
+    desc: "Operator taste, machine speed.",
     target: "#collision",
     cursor: "link",
     cursorLabel: "Overlap",
@@ -37,11 +37,11 @@ const paths = [
   {
     key: "token",
     eyebrow: "The Token",
-    title: "How We Work",
-    desc: "Human craft, AI underneath",
-    target: "#token",
+    title: "What We Build",
+    desc: "Websites, apps, and the funnels they feed.",
+    target: "#software",
     cursor: "token",
-    cursorLabel: "Work",
+    cursorLabel: "Build",
   },
 ] as const;
 ---
@@ -57,14 +57,14 @@ const paths = [
     <p class="eyebrow hero__brand">Cookies &amp; Tokens</p>
 
     <h1 class="hero__headline">
-      One studio for the brand,<br />
-      the growth, and <span class="text-gradient-overlap">the build.</span>
+      We grow restaurants, retail,<br />
+      and <span class="text-gradient-overlap">consumer brands.</span>
     </h1>
 
     <p class="hero__sub">
-      A senior team that brings strategy, creative, growth, and software
-      together, with AI built into the workflow. Your brand lands, your channels
-      convert, and your product ships in weeks, not quarters.
+      Run by operators who have owned the P&amp;L and grown the number. One
+      senior team turns your brand, your channels, and your digital experience
+      into one growth engine.
     </p>
 
     <!-- The interactive stage = the navigation -->
@@ -104,7 +104,7 @@ const paths = [
     <!-- Dynamic caption: crossfades to the active path (or default prompt) -->
     <div class="hero__caption" data-caption>
       <p class="hero__cap" data-cap="default">
-        <span class="hero__cap-title">One team for the brand, the growth, and the build.</span>
+        <span class="hero__cap-title">By operators, for operators.</span>
         <span class="hero__cap-desc">Hover a shape to explore, or scroll to see it all.</span>
       </p>
       {
@@ -118,7 +118,7 @@ const paths = [
       }
     </div>
 
-    <a href="#collision" class="hero__scrollcue" data-cursor="link" data-scrollcue>
+    <a href="#industries" class="hero__scrollcue" data-cursor="link" data-scrollcue>
       <span>Scroll</span>
       <span class="hero__scrollcue-line" aria-hidden="true"></span>
     </a>
@@ -547,7 +547,7 @@ const paths = [
     if (scrollcue) {
       scrollcue.addEventListener("click", (e) => {
         e.preventDefault();
-        scrollTo("#collision");
+        scrollTo("#industries");
       });
     }
 

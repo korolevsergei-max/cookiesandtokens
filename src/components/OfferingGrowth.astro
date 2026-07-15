@@ -21,6 +21,7 @@ interface Props {
 
 const {
   id,
+  eyebrow,
   titleLead,
   titleAccent,
   sub,
@@ -44,6 +45,7 @@ const total = cards.length;
   </div>
 
   <div class="section-shell relative z-10 max-w-[1400px] mx-auto pb-12 md:pb-24 pt-24 md:pt-40">
+    {eyebrow && <p class="eyebrow text-teal mb-6">{eyebrow}</p>}
     <h2 id={titleId} class="text-display-lg md:text-display-xl tracking-tighter leading-none max-w-4xl text-cream">
       {titleLead}<br /><span class="text-teal">{titleAccent}</span>
     </h2>
