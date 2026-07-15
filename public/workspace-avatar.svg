@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" role="img" aria-label="Cookies &amp; Tokens Workspace Avatar">
+  <!-- Dark blue background, perfect circle, ideal for Workspace Avatar cropping -->
+  <circle cx="50" cy="50" r="50" fill="#11112E"/>
+  
+  <g transform="translate(0, 0)">
+    <!-- Right: token octagon -->
+    <path d="M59 30 H78 L91 43 V61 L78 74 H59 L46 61 V43 Z"
+      stroke="#3FD9C0" stroke-width="8" stroke-linejoin="round" fill="none"/>
+
+    <!-- Left: cookie disc with native transparent bite -->
+    <g transform="translate(38 52)">
+      <path fill="#A974E8"
+        d="M 26.90 -2.35 A 27.00 27.00 0 1 1 2.35 -26.90 A 6.25 6.25 0 0 0 5.75 -17.41 A 4.31 4.31 0 0 0 7.65 -10.73 A 2.70 2.70 0 0 0 10.73 -7.65 A 4.31 4.31 0 0 0 17.41 -5.75 A 6.25 6.25 0 0 0 26.90 -2.35 Z"/>
+      <g fill="#FFFFFF">
+        <circle cx="-10" cy="-5" r="3.6"/>
+        <circle cx="6" cy="-8" r="3.0"/>
+        <circle cx="-6" cy="9.5" r="4.0"/>
+        <circle cx="8.5" cy="8" r="3.3"/>
+        <circle cx="0.5" cy="2" r="2.4"/>
+      </g>
+    </g>
+  </g>
+</svg>

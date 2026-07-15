@@ -1,0 +1,35 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 470 130" role="img" aria-label="Cookies &amp; Tokens">
+  <!-- Mark -->
+  <g transform="translate(4,8)">
+    <path d="M80 24 H110 L131 45 V75 L110 96 H80 L59 75 V45 Z"
+      stroke="#3FD9C0" stroke-width="8" stroke-linejoin="round" fill="none"/>
+    
+    <!-- True transparent bite using a scaled complex path instead of a white overlay patch. -->
+    <g transform="translate(42, 60) scale(1.62963)">
+      <path fill="#A974E8"
+        d="M 26.90 -2.35 A 27.00 27.00 0 1 1 2.35 -26.90 A 6.25 6.25 0 0 0 5.75 -17.41 A 4.31 4.31 0 0 0 7.65 -10.73 A 2.70 2.70 0 0 0 10.73 -7.65 A 4.31 4.31 0 0 0 17.41 -5.75 A 6.25 6.25 0 0 0 26.90 -2.35 Z"/>
+    </g>
+
+    <!-- Chips on the cookie -->
+    <g fill="#FFFFFF">
+      <circle cx="25" cy="51" r="5.5"/>
+      <circle cx="50" cy="47" r="4.6"/>
+      <circle cx="31" cy="74" r="6"/>
+      <circle cx="57" cy="71" r="4.9"/>
+      <circle cx="42" cy="61" r="3.6"/>
+    </g>
+
+    <!-- Chips scattered off the cookie -->
+    <g fill="#A974E8">
+      <circle cx="80" cy="47" r="2.6"/>
+      <circle cx="85" cy="39" r="1.7"/>
+      <circle cx="77" cy="30" r="2.3" fill="#8B54D4"/>
+    </g>
+  </g>
+
+  <!-- Wordmark -->
+  <g fill="#11112E" font-family="'Clash Display','Satoshi',sans-serif" font-weight="600" letter-spacing="1">
+    <text x="156" y="62" font-size="44">COOKIES</text>
+    <text x="156" y="108" font-size="44">&amp; TOKENS</text>
+  </g>
+</svg>
