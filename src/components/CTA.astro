@@ -1,10 +1,9 @@
 ---
 /**
  * CTA — "Let's bake something"
- * Big closing section. Email link + calendar link + the combined lockup.
+ * Big closing section. Email link + calendar link.
  * Dark navy, centered, gradient headline.
  */
-import logoLockupDarkRaw from "../assets/logo-lockup-dark.svg?raw";
 ---
 
 <section
@@ -47,10 +46,6 @@ import logoLockupDarkRaw from "../assets/logo-lockup-dark.svg?raw";
     >
       info@cookiesandtokens.com
     </a>
-
-    <div class="cta__lockup" data-cta-lockup>
-      <span class="cta__lockup-mark" set:html={logoLockupDarkRaw} />
-    </div>
   </div>
 
   <!-- Ambient -->
@@ -193,31 +188,9 @@ import logoLockupDarkRaw from "../assets/logo-lockup-dark.svg?raw";
     color: var(--color-cream);
     border-color: color-mix(in srgb, var(--color-cream) 55%, transparent);
   }
-
-  /* ---------- Lockup ---------- */
-  .cta__lockup {
-    margin-top: clamp(1.5rem, 4vh, 3rem);
-    opacity: 0.18;
-    will-change: opacity;
-    transition: opacity var(--duration-slow) var(--ease-out-soft);
-  }
-  .cta__lockup:hover {
-    opacity: 0.35;
-  }
-  .cta__lockup-mark {
-    display: block;
-    width: clamp(120px, 22vw, 200px);
-    height: auto;
-  }
-  .cta__lockup-mark :global(svg) {
-    width: 100%;
-    height: auto;
-    display: block;
-  }
 </style>
 
 <script>
-  import { gsap } from "../lib/gsap";
   import { reveal } from "../lib/reveal";
   import { prefersReducedMotion } from "../lib/motion";
 
@@ -228,18 +201,5 @@ import logoLockupDarkRaw from "../assets/logo-lockup-dark.svg?raw";
     if (prefersReducedMotion()) return;
 
     reveal(root.querySelector<HTMLElement>(".cta__inner"), { trigger: root });
-
-    // Lockup subtle float
-    const lockup = root.querySelector<HTMLElement>("[data-cta-lockup]");
-    if (lockup) {
-      gsap.to(lockup, {
-        y: -10,
-        duration: 4.5,
-        ease: "sine.inOut",
-        repeat: -1,
-        yoyo: true,
-        delay: 0.5,
-      });
-    }
   }
 </script>
