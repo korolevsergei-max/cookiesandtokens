@@ -48,12 +48,12 @@ const {
 const titleId = `${id}-title`;
 const total = cards.length;
 
-// Station positions inside the plot band. X sits at each column's centre; Y
-// climbs so the line rises left → right. The stem then reaches from the node
-// down past the band's bottom edge to the station heading beneath it.
-const BAND = 180; // px — keep in sync with the band's height class below
-const nodeX = (i: number) => ((i + 0.5) / total) * 100;
-const nodeY = (i: number) => 80 - (i / (total - 1)) * 68;
+// Station positions inside the plot band. The band mirrors the station grid
+// (same columns, same gap) so each node lands dead centre over its column; only
+// Y varies, climbing left → right. The stem then reaches from the node down
+// past the band's bottom edge to the station heading beneath it.
+const BAND = 300; // px — keep in sync with the band's height class below
+const nodeY = (i: number) => 88 - (i / (total - 1)) * 80;
 const stem = (i: number) => `calc(${(BAND * (1 - nodeY(i) / 100)).toFixed(1)}px + 2.5rem)`;
 ---
 
@@ -71,29 +71,24 @@ const stem = (i: number) => `calc(${(BAND * (1 - nodeY(i) / 100)).toFixed(1)}px 
   ></canvas>
 
   <div class="relative z-10 max-w-[1400px] mx-auto px-[var(--spacing-gutter)]">
-    {/* Header — headline left, promise right, so it stops eating a viewport. */}
-    <header class="flex flex-col md:flex-row md:items-end justify-between gap-8 md:gap-16">
-      <div>
-        {eyebrow && <p class="eyebrow text-teal mb-6">{eyebrow}</p>}
-        <h2 id={titleId} class="text-display-lg md:text-display-xl tracking-tighter leading-none text-cream">
-          {titleLead}<br /><span class="text-teal">{titleAccent}</span>
-        </h2>
-      </div>
-      <p class="text-lead text-cream/70 max-w-[34ch] md:mb-3">
+    {/* Header — the headline runs full width so it holds at two lines, then the
+        promise is pushed out to the right margin. Keeps it off a full viewport. */}
+    <header>
+      {eyebrow && <p class="eyebrow text-teal mb-6">{eyebrow}</p>}
+      <h2 id={titleId} class="text-display-lg tracking-tighter leading-none text-cream">
+        {titleLead}<br /><span class="text-teal">{titleAccent}</span>
+      </h2>
+      <p class="text-lead text-cream/70 max-w-[38ch] mt-8 md:mt-10 md:ml-auto">
         {sub}
       </p>
     </header>
 
     {/* Plot band — node markers on the climb, with stems dropping to the
         stations below. Wide viewports only; the rail takes over under xl. */}
-    <div class="growth-plot hidden xl:block relative h-[180px] mt-20" data-growth-plot aria-hidden="true">
+    <div class="growth-plot hidden xl:grid grid-cols-4 gap-x-8 h-[300px] mt-10" data-growth-plot aria-hidden="true">
       {cards.map((_c, i) => (
-        <span
-          class="growth-node"
-          data-growth-anchor
-          style={`--nx:${nodeX(i)}%; --ny:${nodeY(i)}%; --stem:${stem(i)};`}
-        >
-          <span class="growth-node__ring"></span>
+        <span class="growth-node" style={`--ny:${nodeY(i)}%; --stem:${stem(i)};`}>
+          <span class="growth-node__ring" data-growth-anchor></span>
         </span>
       ))}
     </div>
@@ -107,18 +102,17 @@ const stem = (i: number) => `calc(${(BAND * (1 - nodeY(i) / 100)).toFixed(1)}px 
             <ServiceIcon title={c.title} class="w-5 h-5 text-teal-bright shrink-0" />
           </div>
 
-          <h3 class="growth-station__title font-display text-2xl xl:text-[1.75rem] font-semibold tracking-tight leading-tight text-cream mb-3">
+          {/* min-height holds two lines so every description starts on the same
+              baseline across the four columns, however the title wraps. */}
+          <h3 class="growth-station__title font-display text-2xl xl:text-[1.75rem] font-semibold tracking-tight leading-tight text-cream mb-3 xl:min-h-[4.4rem]">
             {c.title}
           </h3>
 
           <p class="text-[15px] xl:text-base text-cream/65 leading-relaxed max-w-[46ch]">{c.desc}</p>
 
           <p class="growth-station__tags mt-5 max-w-[46ch]" aria-label="What this includes">
-            {c.tags.map((t, ti) => (
-              <>
-                {ti > 0 && <span class="growth-station__sep" aria-hidden="true">·</span>}
-                <span>{t}</span>
-              </>
+            {c.tags.map((t) => (
+              <span class="growth-station__tag">{t}</span>
             ))}
           </p>
         </li>
@@ -136,17 +130,16 @@ const stem = (i: number) => `calc(${(BAND * (1 - nodeY(i) / 100)).toFixed(1)}px 
 
 <style>
   /* ── Plot band: node markers + stems ──────────────────────────────────── */
+
+  /* One cell per station column, so a node is always centred over the copy
+     beneath it however the grid resolves. */
   .growth-node {
-    position: absolute;
-    left: var(--nx);
-    top: var(--ny);
-    width: 0;
-    height: 0;
+    position: relative;
   }
 
   .growth-node__ring {
     position: absolute;
-    top: 50%;
+    top: var(--ny);
     left: 50%;
     width: 13px;
     height: 13px;
@@ -165,8 +158,8 @@ const stem = (i: number) => `calc(${(BAND * (1 - nodeY(i) / 100)).toFixed(1)}px 
   .growth-node::after {
     content: "";
     position: absolute;
-    top: 0;
-    left: 0;
+    top: var(--ny);
+    left: 50%;
     width: 1px;
     height: var(--stem);
     background: linear-gradient(
@@ -177,7 +170,7 @@ const stem = (i: number) => `calc(${(BAND * (1 - nodeY(i) / 100)).toFixed(1)}px 
   }
 
   /* Hovering a station lights its node up on the line above (set from JS). */
-  .growth-node.is-active .growth-node__ring {
+  .growth-node__ring.is-active {
     transform: scale(1.45);
     border-color: var(--color-teal-bright);
     box-shadow: 0 0 16px 1px color-mix(in srgb, var(--color-teal-bright) 45%, transparent);
@@ -192,8 +185,12 @@ const stem = (i: number) => `calc(${(BAND * (1 - nodeY(i) / 100)).toFixed(1)}px 
     color: var(--color-teal-bright);
   }
 
-  /* Tags as an inline mono run — no pills, no chips, no container. */
+  /* Tags as an inline mono run — no pills, no chips, no container. Flex (not
+     inline text) so tags can wrap between themselves without depending on
+     whitespace text nodes, which the template doesn't emit. */
   .growth-station__tags {
+    display: flex;
+    flex-wrap: wrap;
     font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, monospace;
     font-size: 0.6875rem;
     line-height: 1.9;
@@ -202,9 +199,16 @@ const stem = (i: number) => `calc(${(BAND * (1 - nodeY(i) / 100)).toFixed(1)}px 
     color: color-mix(in srgb, var(--color-teal) 78%, transparent);
   }
 
-  .growth-station__sep {
+  /* Each tag carries its own trailing separator and never breaks internally,
+     so a wrap leaves the dot at the end of a line instead of orphaning it. */
+  .growth-station__tag {
+    white-space: nowrap;
+  }
+
+  .growth-station__tag:not(:last-child)::after {
+    content: "·";
     color: color-mix(in srgb, var(--color-cream) 28%, transparent);
-    margin: 0 0.5em;
+    margin: 0 0.45em;
   }
 
   /* ── Rail (< xl): the same climb, running down the left edge ──────────── */
@@ -289,7 +293,9 @@ const stem = (i: number) => `calc(${(BAND * (1 - nodeY(i) / 100)).toFixed(1)}px 
       scene.pause();
     }
 
-    reveal(stations, { trigger: plot ?? stations[0] });
+    // Trigger off the station list, not the plot band — the band is display:none
+    // under xl, which would collapse its trigger position to the document top.
+    reveal(stations, { trigger: section.querySelector("[data-growth-stations]") });
 
     // Hovering a station lights its node on the line above it.
     if (!coarse && nodes.length === stations.length) {

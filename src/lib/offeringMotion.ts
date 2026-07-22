@@ -435,11 +435,22 @@ export function initGrowthMomentum(canvas: HTMLCanvasElement, options: GrowthOpt
       motes = buildMotes(f.w, f.h, 40);
       // Re-measured only on resize: the canvas spans the whole section, so any
       // reflow that moves the stations also resizes it (ResizeObserver → fit()).
-      const anchors = options.anchors?.() ?? null;
-      curve = anchors && anchors.length >= 2 ? anchoredCurve(anchors, f.w, f.h) : growthCurve(f.w, f.h);
+      const measured = options.anchors?.() ?? null;
+      if (measured && measured.length >= 2) {
+        curve = anchoredCurve(measured, f.w, f.h);
+      } else if (options.anchors) {
+        // Anchors were asked for but the plot isn't mounted (narrow viewports,
+        // where the section draws its own rail in CSS) — motes only, no curve.
+        curve = [];
+      } else {
+        curve = growthCurve(f.w, f.h);
+      }
     }
     const { palette } = f;
-    const prog = f.reduced ? 0.62 : Math.max(0.08, f.progress);
+    // Floor only — an externally set progress still wins, so reduced-motion
+    // (which pins progress at 1) gets the finished climb, not a line that stops
+    // short of the last station.
+    const prog = Math.max(f.reduced ? 0.62 : 0.08, f.progress);
 
     // faint chart gridlines
     ctx.strokeStyle = rgba(palette.teal, 0.05);
@@ -453,49 +464,51 @@ export function initGrowthMomentum(canvas: HTMLCanvasElement, options: GrowthOpt
     }
 
     // resolve the polyline up to `prog` (last point partial)
-    const segs = curve.length - 1;
-    const head = prog * segs;
-    const full = Math.floor(head);
-    const frac = head - full;
-    const drawn: { x: number; y: number }[] = curve.slice(0, full + 1).map((p) => ({ ...p }));
-    if (full < segs) {
-      const a = curve[full];
-      const b = curve[full + 1];
-      drawn.push({ x: a.x + (b.x - a.x) * frac, y: a.y + (b.y - a.y) * frac });
-    }
+    if (curve.length > 1) {
+      const segs = curve.length - 1;
+      const head = prog * segs;
+      const full = Math.floor(head);
+      const frac = head - full;
+      const drawn: { x: number; y: number }[] = curve.slice(0, full + 1).map((p) => ({ ...p }));
+      if (full < segs) {
+        const a = curve[full];
+        const b = curve[full + 1];
+        drawn.push({ x: a.x + (b.x - a.x) * frac, y: a.y + (b.y - a.y) * frac });
+      }
 
-    // area fill under the drawn line
-    if (drawn.length > 1) {
-      const tip = drawn[drawn.length - 1];
-      const grad = ctx.createLinearGradient(0, 0, 0, f.h);
-      grad.addColorStop(0, rgba(palette.teal, 0.05));
-      grad.addColorStop(1, rgba(palette.teal, 0));
-      ctx.fillStyle = grad;
-      ctx.beginPath();
-      ctx.moveTo(drawn[0].x, f.h);
-      for (const p of drawn) ctx.lineTo(p.x, p.y);
-      ctx.lineTo(tip.x, f.h);
-      ctx.closePath();
-      ctx.fill();
+      // area fill under the drawn line
+      if (drawn.length > 1) {
+        const tip = drawn[drawn.length - 1];
+        const grad = ctx.createLinearGradient(0, 0, 0, f.h);
+        grad.addColorStop(0, rgba(palette.teal, 0.05));
+        grad.addColorStop(1, rgba(palette.teal, 0));
+        ctx.fillStyle = grad;
+        ctx.beginPath();
+        ctx.moveTo(drawn[0].x, f.h);
+        for (const p of drawn) ctx.lineTo(p.x, p.y);
+        ctx.lineTo(tip.x, f.h);
+        ctx.closePath();
+        ctx.fill();
 
-      // the momentum line itself
-      ctx.strokeStyle = rgba(palette.teal, 0.55);
-      ctx.lineWidth = 2;
-      ctx.lineJoin = "round";
-      ctx.beginPath();
-      ctx.moveTo(drawn[0].x, drawn[0].y);
-      for (let i = 1; i < drawn.length; i++) ctx.lineTo(drawn[i].x, drawn[i].y);
-      ctx.stroke();
+        // the momentum line itself
+        ctx.strokeStyle = rgba(palette.teal, 0.55);
+        ctx.lineWidth = 2;
+        ctx.lineJoin = "round";
+        ctx.beginPath();
+        ctx.moveTo(drawn[0].x, drawn[0].y);
+        for (let i = 1; i < drawn.length; i++) ctx.lineTo(drawn[i].x, drawn[i].y);
+        ctx.stroke();
 
-      // glowing leading node
-      ctx.save();
-      ctx.shadowColor = rgba(palette.tealBright, 0.9);
-      ctx.shadowBlur = 18;
-      ctx.fillStyle = rgba(palette.tealBright, 0.95);
-      ctx.beginPath();
-      ctx.arc(tip.x, tip.y, 3.4, 0, Math.PI * 2);
-      ctx.fill();
-      ctx.restore();
+        // glowing leading node
+        ctx.save();
+        ctx.shadowColor = rgba(palette.tealBright, 0.9);
+        ctx.shadowBlur = 18;
+        ctx.fillStyle = rgba(palette.tealBright, 0.95);
+        ctx.beginPath();
+        ctx.arc(tip.x, tip.y, 3.4, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.restore();
+      }
     }
 
     // rising motes — density scales with progress
