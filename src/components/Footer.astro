@@ -4,33 +4,31 @@
  * Wordmark, nav links, socials, "Made by humans + machines" line, year.
  */
 import logoMarkRaw from "../assets/logo-mark.svg?raw";
+import { primaryNavLinks, resolveNavHref } from "../data/siteNav";
 
 const year = new Date().getFullYear();
+const pathname = Astro.url.pathname;
+const isHome = pathname === "/" || pathname === "";
 
-// Mirror the primary nav exactly — every link points at a section that exists.
 const links = [
-  { label: "Operators",    href: "#industries" },
-  { label: "Creative",     href: "#creative"   },
-  { label: "Growth",       href: "#growth"     },
-  { label: "Digital",      href: "#software"   },
-  { label: "Work",         href: "#work"       },
-  { label: "About",        href: "#about"      },
-  { label: "Work with us", href: "#cta"        },
+  ...primaryNavLinks.map((link) => ({
+    label: link.label,
+    href: resolveNavHref(link, pathname),
+  })),
+  { label: "Work with us", href: isHome ? "#cta" : "/#cta" },
 ];
 
-// Route-based links (real pages, not in-page anchors).
 const legalLinks = [
   { label: "Contact", href: "/contact" },
   { label: "Privacy", href: "/privacy" },
-  { label: "Terms",   href: "/terms"   },
+  { label: "Terms", href: "/terms" },
 ];
 ---
 
 <footer class="site-footer" role="contentinfo">
   <div class="site-footer__inner">
-    <!-- Wordmark -->
     <div class="site-footer__brand">
-      <a href="#hero" class="site-footer__logo" data-cursor="link" aria-label="Back to top: Cookies and Tokens">
+      <a href={isHome ? "#hero" : "/"} class="site-footer__logo" data-cursor="link" aria-label="Back to top: Cookies and Tokens">
         <span class="site-footer__mark" set:html={logoMarkRaw} />
         <span class="site-footer__wordmark">
           Cookies&nbsp;&amp;&nbsp;Tokens
@@ -39,7 +37,6 @@ const legalLinks = [
       <p class="site-footer__tagline">Growth for consumer businesses, run by operators.</p>
     </div>
 
-    <!-- Navigation -->
     <nav class="site-footer__nav" aria-label="Footer navigation">
       <ul class="site-footer__links">
         {links.map((l) => (
@@ -52,7 +49,6 @@ const legalLinks = [
       </ul>
     </nav>
 
-    <!-- Legal / route links -->
     <nav class="site-footer__nav" aria-label="Legal navigation">
       <ul class="site-footer__links">
         {legalLinks.map((l) => (
@@ -66,7 +62,6 @@ const legalLinks = [
     </nav>
   </div>
 
-  <!-- Bottom bar -->
   <div class="site-footer__bottom">
     <p class="site-footer__made">
       Made by&nbsp;
@@ -97,7 +92,6 @@ const legalLinks = [
     margin-inline: auto;
   }
 
-  /* ---------- Brand ---------- */
   .site-footer__brand {
     display: flex;
     flex-direction: column;
@@ -134,7 +128,6 @@ const legalLinks = [
     margin-left: calc(36px + 0.6rem);
   }
 
-  /* ---------- Nav ---------- */
   .site-footer__nav { flex: 1; min-width: 160px; }
   .site-footer__links {
     list-style: none;
@@ -152,7 +145,6 @@ const legalLinks = [
   }
   .site-footer__link:hover { color: var(--color-cream); }
 
-  /* ---------- Bottom bar ---------- */
   .site-footer__bottom {
     display: flex;
     flex-wrap: wrap;
@@ -177,13 +169,28 @@ const legalLinks = [
 <script>
   import { scrollTo } from "../lib/lenis";
 
+  const isHome = window.location.pathname === "/" || window.location.pathname === "";
+
   document
-    .querySelectorAll<HTMLAnchorElement>(".site-footer a[href^='#']")
+    .querySelectorAll<HTMLAnchorElement>(".site-footer a[href]")
     .forEach((a) => {
       a.addEventListener("click", (e) => {
-        e.preventDefault();
-        const target = a.getAttribute("href");
-        if (target) scrollTo(target);
+        const href = a.getAttribute("href");
+        if (!href) return;
+
+        if (href.startsWith("#")) {
+          e.preventDefault();
+          scrollTo(href);
+          history.pushState(null, "", href);
+          return;
+        }
+
+        if (href.startsWith("/#") && isHome) {
+          e.preventDefault();
+          const hash = href.slice(1);
+          scrollTo(hash);
+          history.pushState(null, "", hash);
+        }
       });
     });
 </script>

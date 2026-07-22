@@ -33,6 +33,12 @@ const groups = serviceAreaOrder
       </h2>
       <p>The context, the calls we made, and what moved.</p>
     </div>
+    <a href="/work/" class="selected-work__all" data-cursor="link">
+      View all work
+      <svg width="18" height="18" viewBox="0 0 18 18" fill="none" aria-hidden="true">
+        <path d="M4 9h10M10 5l4 4-4 4" />
+      </svg>
+    </a>
   </header>
 
   <div class="selected-work__groups">
@@ -86,9 +92,10 @@ const groups = serviceAreaOrder
   }
 
   .selected-work__intro {
-    display: flex;
-    flex-direction: column;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
     gap: 1rem;
+    align-items: end;
     margin-bottom: clamp(3.5rem, 8vw, 7rem);
   }
 
@@ -97,6 +104,7 @@ const groups = serviceAreaOrder
   }
 
   .selected-work__headline-row {
+    grid-column: 1 / -1;
     display: grid;
     grid-template-columns: minmax(0, 1fr) minmax(17rem, 0.34fr);
     gap: clamp(2rem, 6vw, 7rem);
@@ -124,6 +132,38 @@ const groups = serviceAreaOrder
     text-wrap: pretty;
   }
 
+  .selected-work__all {
+    grid-column: 2;
+    grid-row: 1;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.55rem;
+    min-height: 44px;
+    padding: 0.7rem 1rem;
+    color: var(--color-cream);
+    background: var(--color-navy);
+    border-radius: var(--radius-pill);
+    font-size: 0.86rem;
+    font-weight: 600;
+    text-decoration: none;
+    transition:
+      background-color var(--duration-fast) var(--ease-out-soft),
+      transform var(--duration-fast) var(--ease-out-soft);
+  }
+
+  .selected-work__all:hover,
+  .selected-work__all:focus-visible {
+    background: var(--color-navy-700);
+    transform: translateY(-1px);
+  }
+
+  .selected-work__all path {
+    stroke: currentColor;
+    stroke-width: 1.5;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+
   @media (max-width: 760px) {
     .selected-work {
       background: var(--color-cream);
@@ -132,6 +172,12 @@ const groups = serviceAreaOrder
     .selected-work__headline-row {
       grid-template-columns: minmax(0, 1fr);
       gap: 1.5rem;
+    }
+
+    .selected-work__all {
+      grid-column: 1;
+      grid-row: auto;
+      justify-self: start;
     }
   }
 </style>

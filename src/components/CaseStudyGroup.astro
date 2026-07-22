@@ -33,7 +33,7 @@ const headingId = `work-group-${area}`;
   </header>
 
   <div class="work-group__stories">
-    {studies.map((study) => <CaseStudyCard study={study} />)}
+    {studies.map((study, index) => <CaseStudyCard study={study} index={index} />)}
   </div>
 </section>
 
@@ -62,7 +62,7 @@ const headingId = `work-group-${area}`;
 
   .work-group__header {
     position: sticky;
-    top: 6rem;
+    top: var(--scroll-offset);
     display: flex;
     flex-direction: column;
     gap: 1rem;

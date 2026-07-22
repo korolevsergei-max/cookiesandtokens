@@ -422,8 +422,9 @@
         .from(sub, { autoAlpha: 0, y: 22, ease: "power3.out", duration: 0.14 }, 0.86);
     };
 
+    // Desktop pin/scrub only. Mobile shows the resolved lockup without a long
+    // sticky scroll trap after Selected Work.
     mm.add("(min-width: 769px) and (prefers-reduced-motion: no-preference)", build(false));
-    mm.add("(max-width: 768px) and (prefers-reduced-motion: no-preference)", build(true));
 
     // Pin offsets depend on font/layout settling; keep them honest.
     ScrollTrigger.refresh();

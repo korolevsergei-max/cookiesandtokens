@@ -47,7 +47,17 @@ const canonical = new URL(Astro.url.pathname, Astro.site ?? Astro.url);
 
     <!-- Prevent flash: set lenis class before paint (removed in reduced-motion by JS) -->
     <script is:inline>
-      document.documentElement.classList.add("lenis", "lenis-smooth");
+      // Opt into Lenis only for fine-pointer desktops without reduced motion.
+      // Touch devices keep native scrolling from the first paint.
+      (function () {
+        try {
+          var reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+          var coarse = window.matchMedia("(hover: none), (pointer: coarse)").matches;
+          if (!reduce && !coarse) {
+            document.documentElement.classList.add("lenis", "lenis-smooth");
+          }
+        } catch (e) {}
+      })();
     </script>
   </head>
   <body>

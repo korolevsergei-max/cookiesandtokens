@@ -1,0 +1,47 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import Nav from "../../components/Nav.astro";
+import Footer from "../../components/Footer.astro";
+import CaseStudyHero from "../../components/CaseStudyHero.astro";
+import CaseStudyLocalNav from "../../components/CaseStudyLocalNav.astro";
+import CaseStudySections from "../../components/CaseStudySections.astro";
+import CaseStudyPager from "../../components/CaseStudyPager.astro";
+import CTA from "../../components/CTA.astro";
+import {
+  caseStudies,
+  getAdjacentCaseStudies,
+} from "../../data/caseStudies";
+
+export function getStaticPaths() {
+  return caseStudies.map((study) => ({
+    params: { slug: study.slug },
+    props: { study },
+  }));
+}
+
+interface Props {
+  study: (typeof caseStudies)[number];
+}
+
+const { study } = Astro.props;
+const { previous, next } = getAdjacentCaseStudies(study.slug);
+---
+
+<BaseLayout
+  title={`${study.seo.title} | Cookies & Tokens`}
+  description={study.seo.description}
+>
+  <Nav />
+
+  <main>
+    <article>
+      <CaseStudyHero study={study} />
+      <CaseStudyLocalNav study={study} />
+      <CaseStudySections study={study} />
+      <CaseStudyPager previous={previous} next={next} />
+    </article>
+    <CTA />
+  </main>
+
+  <Footer />
+</BaseLayout>

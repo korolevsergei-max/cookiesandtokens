@@ -1,0 +1,197 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import Nav from "../../components/Nav.astro";
+import Footer from "../../components/Footer.astro";
+import CaseStudyCard from "../../components/CaseStudyCard.astro";
+import {
+  caseStudies,
+  serviceAreaLabels,
+  serviceAreaOrder,
+  type CaseStudy,
+} from "../../data/caseStudies";
+
+const groups = serviceAreaOrder
+  .map((area) => ({
+    area,
+    label: serviceAreaLabels[area],
+    studies: caseStudies.filter((study) => study.serviceArea === area),
+  }))
+  .filter((group): group is typeof group & { studies: CaseStudy[] } =>
+    group.studies.length > 0
+  );
+---
+
+<BaseLayout
+  title="Selected work | Cookies & Tokens"
+  description="Case studies from Cookies & Tokens across restaurants, retail, medical offices, and real estate lead generation."
+>
+  <Nav />
+
+  <main>
+    <section class="work-index" aria-labelledby="work-index-title">
+      <header class="work-index__hero">
+        <a href="/" class="work-index__back" data-cursor="link">Back to site</a>
+        <p class="eyebrow work-index__eyebrow">Selected Work</p>
+        <div class="work-index__headline">
+          <h1 id="work-index-title">Proof that the work moved something.</h1>
+          <p>
+            Four examples across owned channels, paid media, lead generation,
+            loyalty, websites, and digital experience.
+          </p>
+        </div>
+      </header>
+
+      <div class="work-index__groups">
+        {
+          groups.map((group) => (
+            <section class="work-index__group" aria-labelledby={`work-${group.area}`}>
+              <header class="work-index__group-head">
+                <p>{group.studies.length} {group.studies.length === 1 ? "story" : "stories"}</p>
+                <h2 id={`work-${group.area}`}>{group.label}</h2>
+              </header>
+              <div class="work-index__cards">
+                {group.studies.map((study, index) => <CaseStudyCard study={study} index={index} />)}
+              </div>
+            </section>
+          ))
+        }
+      </div>
+    </section>
+  </main>
+
+  <Footer />
+</BaseLayout>
+
+<style>
+  .work-index {
+    min-height: 100dvh;
+    padding-inline: var(--spacing-gutter);
+    padding-block: clamp(8rem, 18vh, 13rem) clamp(5rem, 12vh, 9rem);
+    color: var(--color-ink);
+    background:
+      linear-gradient(
+        90deg,
+        transparent 0,
+        transparent calc(100% - var(--spacing-gutter)),
+        color-mix(in srgb, var(--color-navy) 5%, transparent)
+          calc(100% - var(--spacing-gutter)),
+        color-mix(in srgb, var(--color-navy) 5%, transparent) 100%
+      ),
+      var(--color-cream);
+  }
+
+  .work-index__hero,
+  .work-index__groups {
+    max-width: 88rem;
+    margin-inline: auto;
+  }
+
+  .work-index__back {
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
+    margin-bottom: clamp(2rem, 5vw, 4rem);
+    color: var(--color-ink-muted);
+    font-size: 0.86rem;
+    font-weight: 600;
+    text-decoration: none;
+    transition: color var(--duration-fast) var(--ease-out-soft);
+  }
+
+  .work-index__back::before {
+    content: "";
+    width: 1.2rem;
+    height: 1px;
+    margin-right: 0.65rem;
+    background: currentColor;
+  }
+
+  .work-index__back:hover,
+  .work-index__back:focus-visible {
+    color: var(--color-ink);
+  }
+
+  .work-index__eyebrow {
+    margin: 0 0 1rem;
+    color: var(--color-purple-deep);
+  }
+
+  .work-index__headline {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(18rem, 0.36fr);
+    gap: clamp(2rem, 6vw, 7rem);
+    align-items: end;
+  }
+
+  .work-index__headline h1 {
+    max-width: 13ch;
+    margin: 0;
+    font-size: clamp(3rem, 8vw, 7.2rem);
+    line-height: 0.94;
+    letter-spacing: -0.055em;
+  }
+
+  .work-index__headline p {
+    max-width: 31rem;
+    margin: 0 0 0.5rem;
+    color: var(--color-ink-muted);
+    font-size: clamp(1.05rem, 1.6vw, 1.25rem);
+    line-height: 1.65;
+    text-wrap: pretty;
+  }
+
+  .work-index__groups {
+    display: grid;
+    gap: clamp(4rem, 9vw, 8rem);
+    margin-top: clamp(4rem, 9vw, 8rem);
+  }
+
+  .work-index__group {
+    display: grid;
+    grid-template-columns: minmax(8rem, 0.2fr) minmax(0, 1fr);
+    gap: clamp(1.5rem, 4vw, 4rem);
+    align-items: start;
+  }
+
+  .work-index__group-head {
+    position: sticky;
+    top: var(--scroll-offset);
+    padding-top: 0.3rem;
+  }
+
+  .work-index__group-head p {
+    margin: 0 0 0.5rem;
+    color: var(--color-purple-deep);
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.13em;
+    text-transform: uppercase;
+  }
+
+  .work-index__group-head h2 {
+    margin: 0;
+    font-size: clamp(1.45rem, 2.4vw, 2.2rem);
+    letter-spacing: -0.03em;
+  }
+
+  .work-index__cards {
+    display: grid;
+    gap: clamp(1.25rem, 3vw, 2.5rem);
+    min-width: 0;
+  }
+
+  @media (max-width: 900px) {
+    .work-index__headline,
+    .work-index__group {
+      grid-template-columns: minmax(0, 1fr);
+    }
+
+    .work-index__group-head {
+      position: static;
+      display: flex;
+      align-items: end;
+      justify-content: space-between;
+      gap: 1rem;
+    }
+  }
+</style>

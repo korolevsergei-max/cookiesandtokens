@@ -82,11 +82,15 @@
   :root {
     color-scheme: dark;
     --cursor-size: 14px;
+    --nav-height: 4.5rem;
+    --scroll-offset: 5.5rem;
   }
 
   html {
-    /* Lenis drives scrolling; keep native smooth off to avoid double-easing. */
+    /* Lenis drives scrolling on fine-pointer desktops; keep native smooth off
+       to avoid double-easing. Mobile / coarse pointer uses native scrolling. */
     scroll-behavior: auto;
+    scroll-padding-top: var(--scroll-offset);
     -webkit-text-size-adjust: 100%;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;

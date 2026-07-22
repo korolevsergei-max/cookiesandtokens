@@ -1,39 +1,93 @@
 ---
 /**
- * Nav — sticky mini-nav that appears once the hero scrolls out of view.
- * Collapses the hero's three zones into compact jump links + a single CTA.
- * Visibility driven by IntersectionObserver on #hero; GSAP handles the slide.
+ * Nav — sticky mini-nav that appears once the hero scrolls out of view on the
+ * homepage, and stays available on nested routes. Includes an accessible mobile
+ * drawer with every primary destination.
  */
 import logoMarkRaw from "../assets/logo-mark.svg?raw";
+import { primaryNavLinks, resolveNavHref } from "../data/siteNav";
 
-const links = [
-  { label: "Operators", href: "#industries" },
-  { label: "Creative",  href: "#creative" },
-  { label: "Growth",    href: "#growth"   },
-  { label: "Digital",   href: "#software" },
-  { label: "Work",      href: "#work"     },
-  { label: "About",     href: "#about"    },
-];
+const pathname = Astro.url.pathname;
+const links = primaryNavLinks.map((link) => ({
+  label: link.label,
+  href: resolveNavHref(link, pathname),
+  isActive:
+    (link.href === "/work/" && pathname.startsWith("/work")) ||
+    (link.homeHref === "#work" && pathname.startsWith("/work")),
+}));
+const isHome = pathname === "/" || pathname === "";
 ---
 
-<header class="site-nav" data-nav aria-label="Site navigation">
+<header
+  class:list={["site-nav", !isHome && "is-visible", !isHome && "is-static"]}
+  data-nav
+  data-nav-home={isHome ? "true" : "false"}
+  aria-label="Site navigation"
+>
   <div class="site-nav__inner">
-    <a href="#hero" class="site-nav__logo" data-cursor="link" aria-label="Back to top">
+    <a href="/" class="site-nav__logo" data-cursor="link" aria-label="Cookies and Tokens home">
       <span class="site-nav__mark" set:html={logoMarkRaw} />
       <span class="site-nav__wordmark">Cookies&nbsp;&amp;&nbsp;Tokens</span>
     </a>
 
-    <nav class="site-nav__links">
-      {links.map((l) => (
-        <a href={l.href} class="site-nav__link" data-cursor="link">
-          {l.label}
-        </a>
-      ))}
+    <nav class="site-nav__links" aria-label="Primary">
+      {
+        links.map((l) => (
+          <a
+            href={l.href}
+            class:list={["site-nav__link", l.isActive && "is-active"]}
+            data-cursor="link"
+            aria-current={l.isActive ? "page" : undefined}
+          >
+            {l.label}
+          </a>
+        ))
+      }
     </nav>
 
-    <a href="#cta" class="site-nav__cta" data-cursor="link">
+    <a href={isHome ? "#cta" : "/#cta"} class="site-nav__cta" data-cursor="link">
       Work with us
     </a>
+
+    <button
+      type="button"
+      class="site-nav__menu-btn"
+      data-nav-menu-btn
+      data-cursor="link"
+      aria-expanded="false"
+      aria-controls="site-nav-drawer"
+    >
+      <span class="site-nav__menu-label" data-nav-menu-label>Menu</span>
+      <span class="site-nav__menu-bars" aria-hidden="true">
+        <span></span>
+        <span></span>
+      </span>
+    </button>
+  </div>
+
+  <div
+    id="site-nav-drawer"
+    class="site-nav__drawer"
+    data-nav-drawer
+    hidden
+  >
+    <nav class="site-nav__drawer-nav" aria-label="Mobile">
+      {
+        links.map((l) => (
+          <a
+            href={l.href}
+            class:list={["site-nav__drawer-link", l.isActive && "is-active"]}
+            data-cursor="link"
+            aria-current={l.isActive ? "page" : undefined}
+          >
+            {l.label}
+          </a>
+        ))
+      }
+      <a href={isHome ? "#cta" : "/#cta"} class="site-nav__drawer-cta" data-cursor="link">
+        Work with us
+      </a>
+    </nav>
   </div>
 </header>
 
@@ -43,21 +97,22 @@ const links = [
     top: 0;
     inset-inline: 0;
     z-index: 1000;
-    /* Hidden by default. Uses `transform` (not the `translate` property) so the
-       GSAP show/hide tweens — which write to `transform` — override this cleanly
-       instead of stacking on top of a separate `translate` property. */
     transform: translateY(-100%);
     opacity: 0;
     will-change: transform, opacity;
-    /* transition handled by GSAP; this CSS fallback drives the reduced-motion path */
     transition:
       transform 0.4s cubic-bezier(0.22, 1, 0.36, 1),
-      opacity   0.4s cubic-bezier(0.22, 1, 0.36, 1);
+      opacity 0.4s cubic-bezier(0.22, 1, 0.36, 1);
   }
 
-  .site-nav.is-visible {
+  .site-nav.is-visible,
+  .site-nav.is-static {
     transform: translateY(0);
     opacity: 1;
+  }
+
+  .site-nav.is-static {
+    will-change: auto;
   }
 
   .site-nav__inner {
@@ -115,10 +170,11 @@ const links = [
     text-decoration: none;
     border-radius: var(--radius-pill);
     transition:
-      color       var(--duration-fast) var(--ease-out-soft),
-      background  var(--duration-fast) var(--ease-out-soft);
+      color var(--duration-fast) var(--ease-out-soft),
+      background var(--duration-fast) var(--ease-out-soft);
   }
-  .site-nav__link:hover {
+  .site-nav__link:hover,
+  .site-nav__link.is-active {
     color: var(--color-cream);
     background: color-mix(in srgb, var(--color-cream) 8%, transparent);
   }
@@ -134,8 +190,8 @@ const links = [
     border-radius: var(--radius-pill);
     text-decoration: none;
     transition:
-      background  var(--duration-fast) var(--ease-out-soft),
-      transform   var(--duration-fast) var(--ease-out-soft);
+      background var(--duration-fast) var(--ease-out-soft),
+      transform var(--duration-fast) var(--ease-out-soft);
     white-space: nowrap;
   }
   .site-nav__cta:hover {
@@ -143,9 +199,110 @@ const links = [
     transform: scale(1.03);
   }
 
+  .site-nav__menu-btn {
+    display: none;
+    align-items: center;
+    gap: 0.55rem;
+    min-height: 44px;
+    padding: 0.35rem 0.75rem;
+    color: var(--color-cream);
+    background: color-mix(in srgb, var(--color-cream) 8%, transparent);
+    border: 1px solid color-mix(in srgb, var(--color-cream) 12%, transparent);
+    border-radius: var(--radius-pill);
+    font: 600 0.78rem/1 var(--font-body);
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    cursor: pointer;
+  }
+
+  .site-nav__menu-bars {
+    display: grid;
+    gap: 0.28rem;
+    width: 1rem;
+  }
+
+  .site-nav__menu-bars span {
+    display: block;
+    height: 1.5px;
+    background: currentColor;
+    transition: transform var(--duration-fast) var(--ease-out-soft);
+  }
+
+  .site-nav[data-menu-open] .site-nav__menu-bars span:first-child {
+    transform: translateY(2.5px) rotate(45deg);
+  }
+
+  .site-nav[data-menu-open] .site-nav__menu-bars span:last-child {
+    transform: translateY(-2.5px) rotate(-45deg);
+  }
+
+  .site-nav__drawer {
+    padding: 0.75rem var(--spacing-gutter) 1.25rem;
+    background: color-mix(in srgb, var(--color-navy) 96%, transparent);
+    border-bottom: 1px solid color-mix(in srgb, var(--color-cream) 8%, transparent);
+  }
+
+  .site-nav__drawer[hidden] {
+    display: none;
+  }
+
+  .site-nav__drawer-nav {
+    display: grid;
+    gap: 0.35rem;
+    max-width: 28rem;
+  }
+
+  .site-nav__drawer-link,
+  .site-nav__drawer-cta {
+    display: flex;
+    align-items: center;
+    min-height: 48px;
+    padding: 0.85rem 1rem;
+    color: var(--color-cream);
+    text-decoration: none;
+    border-radius: 0.9rem;
+    font-family: var(--font-display);
+    font-size: 1.15rem;
+    font-weight: 600;
+    letter-spacing: -0.02em;
+  }
+
+  .site-nav__drawer-link {
+    background: color-mix(in srgb, var(--color-cream) 5%, transparent);
+  }
+
+  .site-nav__drawer-link.is-active,
+  .site-nav__drawer-link:hover,
+  .site-nav__drawer-link:focus-visible {
+    background: color-mix(in srgb, var(--color-teal) 18%, transparent);
+  }
+
+  .site-nav__drawer-cta {
+    justify-content: center;
+    margin-top: 0.35rem;
+    color: var(--color-navy);
+    background: var(--color-teal);
+  }
+
+  @media (max-width: 900px) {
+    .site-nav__links {
+      display: none;
+    }
+
+    .site-nav__cta {
+      display: none;
+    }
+
+    .site-nav__menu-btn {
+      display: inline-flex;
+      margin-left: auto;
+    }
+  }
+
   @media (max-width: 640px) {
-    .site-nav__links { display: none; }
-    .site-nav__wordmark { display: none; }
+    .site-nav__wordmark {
+      display: none;
+    }
   }
 </style>
 
@@ -155,20 +312,35 @@ const links = [
   import { prefersReducedMotion } from "../lib/motion";
 
   const nav = document.querySelector<HTMLElement>("[data-nav]");
-  const hero = document.querySelector<HTMLElement>("#hero");
-  if (nav && hero) initNav(nav, hero);
+  if (nav) initNav(nav);
 
-  function initNav(nav: HTMLElement, hero: HTMLElement) {
+  function initNav(nav: HTMLElement) {
     const reduced = prefersReducedMotion();
-    let visible = false;
+    const isHome = nav.dataset.navHome === "true";
+    const hero = document.querySelector<HTMLElement>("#hero");
+    const menuBtn = nav.querySelector<HTMLButtonElement>("[data-nav-menu-btn]");
+    const menuLabel = nav.querySelector<HTMLElement>("[data-nav-menu-label]");
+    const drawer = nav.querySelector<HTMLElement>("[data-nav-drawer]");
+    let visible = nav.classList.contains("is-visible");
+    let menuOpen = false;
+
+    const measure = () => {
+      const height = nav.querySelector(".site-nav__inner")?.getBoundingClientRect().height ?? 72;
+      document.documentElement.style.setProperty("--nav-height", `${height}px`);
+      const local = document.querySelector<HTMLElement>("[data-story-local-nav]");
+      const localHeight = local?.getBoundingClientRect().height ?? 0;
+      const offset = height + (local && getComputedStyle(local).position === "sticky" ? localHeight : 0) + 12;
+      document.documentElement.style.setProperty("--scroll-offset", `${offset}px`);
+    };
+
+    measure();
+    window.addEventListener("resize", measure);
 
     const show = (instant = false) => {
       if (visible) return;
       visible = true;
-      if (reduced) {
-        nav.classList.add("is-visible");
-        return;
-      }
+      nav.classList.add("is-visible");
+      if (reduced) return;
       gsap.to(nav, {
         y: 0,
         opacity: 1,
@@ -178,12 +350,10 @@ const links = [
     };
 
     const hide = (instant = false) => {
-      if (!visible) return;
+      if (!visible || nav.classList.contains("is-static")) return;
       visible = false;
-      if (reduced) {
-        nav.classList.remove("is-visible");
-        return;
-      }
+      nav.classList.remove("is-visible");
+      if (reduced) return;
       gsap.to(nav, {
         y: "-100%",
         opacity: 0,
@@ -192,23 +362,66 @@ const links = [
       });
     };
 
-    // Start hidden. Under reduced motion we drive purely via the `.is-visible`
-    // class (CSS), so we must NOT leave an inline GSAP transform behind — it
-    // would override the class. The CSS default already hides the nav.
-    if (!reduced) gsap.set(nav, { y: "-100%", opacity: 0 });
+    if (isHome && hero) {
+      if (!reduced) gsap.set(nav, { y: "-100%", opacity: 0 });
+      const obs = new IntersectionObserver(
+        ([entry]) => (entry.isIntersecting ? hide() : show()),
+        { threshold: 0 }
+      );
+      obs.observe(hero);
+    } else {
+      nav.classList.add("is-visible", "is-static");
+      if (!reduced) gsap.set(nav, { clearProps: "transform,opacity" });
+    }
 
-    const obs = new IntersectionObserver(
-      ([entry]) => (entry.isIntersecting ? hide() : show()),
-      { threshold: 0 }
-    );
-    obs.observe(hero);
+    const setMenu = (open: boolean) => {
+      menuOpen = open;
+      nav.toggleAttribute("data-menu-open", open);
+      if (menuBtn) menuBtn.setAttribute("aria-expanded", String(open));
+      if (menuLabel) menuLabel.textContent = open ? "Close" : "Menu";
+      if (drawer) drawer.hidden = !open;
+      document.body.style.overflow = open ? "hidden" : "";
+      measure();
+      if (open) {
+        drawer?.querySelector<HTMLElement>("a")?.focus();
+      }
+    };
 
-    // Smooth-scroll click handlers.
-    nav.querySelectorAll<HTMLAnchorElement>("a[href^='#']").forEach((a) => {
+    menuBtn?.addEventListener("click", () => setMenu(!menuOpen));
+
+    document.addEventListener("keydown", (event) => {
+      if (event.key === "Escape" && menuOpen) {
+        setMenu(false);
+        menuBtn?.focus();
+      }
+    });
+
+    document.addEventListener("click", (event) => {
+      if (!menuOpen) return;
+      const target = event.target as Node | null;
+      if (target && !nav.contains(target)) setMenu(false);
+    });
+
+    nav.querySelectorAll<HTMLAnchorElement>("a[href]").forEach((a) => {
       a.addEventListener("click", (e) => {
-        e.preventDefault();
-        const target = a.getAttribute("href");
-        if (target) scrollTo(target);
+        const href = a.getAttribute("href");
+        if (!href) return;
+
+        if (menuOpen) setMenu(false);
+
+        if (href.startsWith("#")) {
+          e.preventDefault();
+          scrollTo(href);
+          history.pushState(null, "", href);
+          return;
+        }
+
+        if (href.startsWith("/#") && isHome) {
+          e.preventDefault();
+          const hash = href.slice(1);
+          scrollTo(hash);
+          history.pushState(null, "", hash);
+        }
       });
     });
   }

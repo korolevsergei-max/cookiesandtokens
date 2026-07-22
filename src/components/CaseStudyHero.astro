@@ -1,0 +1,154 @@
+---
+import type { CaseStudy } from "../data/caseStudies";
+
+interface Props {
+  study: CaseStudy;
+}
+
+const { study } = Astro.props;
+---
+
+<header class="story-hero">
+  <div class="story-hero__inner">
+    <a href="/work/" class="story-hero__back" data-cursor="link">Back to work</a>
+    <p class="eyebrow story-hero__eyebrow">{study.industry} / {study.year}</p>
+    <h1>{study.title}</h1>
+    <p class="story-hero__summary">{study.summary}</p>
+
+    <dl class="story-hero__metrics" aria-label="Headline outcomes">
+      {
+        study.metrics.map((metric) => (
+          <div>
+            <dt>{metric.label}</dt>
+            <dd>{metric.value}</dd>
+          </div>
+        ))
+      }
+    </dl>
+  </div>
+</header>
+
+<style>
+  .story-hero {
+    position: relative;
+    overflow: clip;
+    padding-inline: var(--spacing-gutter);
+    padding-block: clamp(8rem, 18vh, 13rem) clamp(4rem, 10vh, 8rem);
+    color: var(--color-cream);
+    background:
+      radial-gradient(
+        circle at 78% 18%,
+        color-mix(in srgb, var(--color-teal) 16%, transparent),
+        transparent 32rem
+      ),
+      radial-gradient(
+        circle at 12% 86%,
+        color-mix(in srgb, var(--color-purple) 18%, transparent),
+        transparent 28rem
+      ),
+      var(--color-navy);
+  }
+
+  .story-hero::after {
+    content: "";
+    position: absolute;
+    inset-inline: var(--spacing-gutter);
+    bottom: 0;
+    height: 1px;
+    background: color-mix(in srgb, var(--color-cream) 12%, transparent);
+  }
+
+  .story-hero__inner {
+    position: relative;
+    z-index: 1;
+    max-width: 88rem;
+    margin-inline: auto;
+  }
+
+  .story-hero__back {
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
+    margin-bottom: clamp(2rem, 5vw, 4rem);
+    color: color-mix(in srgb, var(--color-cream) 62%, transparent);
+    font-size: 0.86rem;
+    font-weight: 600;
+    text-decoration: none;
+    transition: color var(--duration-fast) var(--ease-out-soft);
+  }
+
+  .story-hero__back::before {
+    content: "";
+    width: 1.2rem;
+    height: 1px;
+    margin-right: 0.65rem;
+    background: currentColor;
+  }
+
+  .story-hero__back:hover,
+  .story-hero__back:focus-visible {
+    color: var(--color-cream);
+  }
+
+  .story-hero__eyebrow {
+    margin: 0 0 1.2rem;
+    color: var(--color-teal);
+  }
+
+  .story-hero h1 {
+    max-width: 12ch;
+    margin: 0;
+    font-size: clamp(3.2rem, 10vw, 9rem);
+    line-height: 0.92;
+    letter-spacing: -0.055em;
+  }
+
+  .story-hero__summary {
+    max-width: 46rem;
+    margin: clamp(1.5rem, 3vw, 2.4rem) 0 0;
+    color: color-mix(in srgb, var(--color-cream) 72%, transparent);
+    font-size: clamp(1.15rem, 2vw, 1.55rem);
+    line-height: 1.55;
+    text-wrap: pretty;
+  }
+
+  .story-hero__metrics {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(12rem, 1fr));
+    gap: clamp(1rem, 3vw, 2rem);
+    max-width: 62rem;
+    margin: clamp(3rem, 7vw, 5.5rem) 0 0;
+  }
+
+  .story-hero__metrics div {
+    padding-top: 1rem;
+    border-top: 1px solid color-mix(in srgb, var(--color-cream) 16%, transparent);
+  }
+
+  .story-hero__metrics dt {
+    color: color-mix(in srgb, var(--color-cream) 56%, transparent);
+    font-size: 0.82rem;
+    line-height: 1.35;
+  }
+
+  .story-hero__metrics dd {
+    margin: 0.5rem 0 0;
+    color: var(--color-teal);
+    font-family: var(--font-display);
+    font-size: clamp(2.6rem, 6vw, 5.5rem);
+    font-variant-numeric: tabular-nums;
+    font-weight: 600;
+    letter-spacing: -0.05em;
+    line-height: 0.85;
+  }
+
+  @media (max-width: 760px) {
+    .story-hero {
+      padding-block-start: 6.5rem;
+    }
+
+    .story-hero__metrics {
+      grid-template-columns: minmax(0, 1fr);
+    }
+  }
+</style>

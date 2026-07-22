@@ -1,0 +1,130 @@
+---
+import type { CaseStudy } from "../data/caseStudies";
+import CaseStudyVisual from "./CaseStudyVisual.astro";
+
+interface Props {
+  study: CaseStudy;
+}
+
+const { study } = Astro.props;
+---
+
+<div class="story-sections">
+  {
+    study.steps.map((step) => (
+      <section class="story-section" id={step.id} data-story-section aria-labelledby={`${study.slug}-${step.id}-title`}>
+        <div class="story-section__copy">
+          <p class="story-section__label">
+            <span>{step.number}</span>
+            {step.label}
+          </p>
+          <h2 id={`${study.slug}-${step.id}-title`}>{step.title}</h2>
+          {step.body.map((paragraph) => <p>{paragraph}</p>)}
+          <ul class="story-section__tags" aria-label={`${step.label} details`}>
+            {step.tags.map((tag) => <li>{tag}</li>)}
+          </ul>
+        </div>
+        <CaseStudyVisual step={step} />
+      </section>
+    ))
+  }
+
+  <p class="story-sections__disclosure">{study.disclosure}</p>
+</div>
+
+<style>
+  .story-sections {
+    display: grid;
+    gap: clamp(4rem, 9vw, 8rem);
+    padding-inline: var(--spacing-gutter);
+    padding-block: clamp(4rem, 10vh, 8rem);
+    color: var(--color-cream);
+    background: var(--color-navy);
+  }
+
+  .story-section {
+    display: grid;
+    grid-template-columns: minmax(18rem, 0.74fr) minmax(0, 1.26fr);
+    gap: clamp(2rem, 5vw, 5rem);
+    align-items: center;
+    max-width: 88rem;
+    margin-inline: auto;
+    scroll-margin-top: var(--scroll-offset);
+  }
+
+  .story-section:nth-child(even) .story-section__copy {
+    order: 2;
+  }
+
+  .story-section__copy {
+    max-width: 39rem;
+  }
+
+  .story-section__label {
+    display: flex;
+    gap: 0.55rem;
+    margin: 0 0 1rem;
+    color: color-mix(in srgb, var(--color-cream) 58%, transparent);
+    font-size: 0.76rem;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+  }
+
+  .story-section__label span {
+    color: var(--color-teal);
+    font-variant-numeric: tabular-nums;
+  }
+
+  .story-section h2 {
+    margin: 0;
+    font-size: clamp(2.15rem, 4.6vw, 5rem);
+    line-height: 0.98;
+    letter-spacing: -0.04em;
+  }
+
+  .story-section p:not(.story-section__label) {
+    margin: 1.25rem 0 0;
+    color: color-mix(in srgb, var(--color-cream) 72%, transparent);
+    font-size: clamp(1rem, 1.35vw, 1.16rem);
+    line-height: 1.7;
+    text-wrap: pretty;
+  }
+
+  .story-section__tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.45rem;
+    padding: 0;
+    margin: 1.7rem 0 0;
+    list-style: none;
+  }
+
+  .story-section__tags li {
+    padding: 0.5rem 0.75rem;
+    color: color-mix(in srgb, var(--color-cream) 78%, transparent);
+    background: color-mix(in srgb, var(--color-cream) 7%, transparent);
+    border: 1px solid color-mix(in srgb, var(--color-cream) 12%, transparent);
+    border-radius: 0.8rem;
+    font-size: 0.75rem;
+    font-weight: 600;
+  }
+
+  .story-sections__disclosure {
+    max-width: 88rem;
+    margin: 0 auto;
+    color: color-mix(in srgb, var(--color-cream) 43%, transparent);
+    font-size: 0.78rem;
+    line-height: 1.6;
+  }
+
+  @media (max-width: 900px) {
+    .story-section {
+      grid-template-columns: minmax(0, 1fr);
+    }
+
+    .story-section:nth-child(even) .story-section__copy {
+      order: 0;
+    }
+  }
+</style>

@@ -38,10 +38,12 @@ const total = cards.length;
   data-offering-growth
   aria-labelledby={titleId}
 >
-  {/* Momentum field — pinned to the viewport as a section-wide backdrop the cards rise over.
-      Kept OUTSIDE the GSAP-pinned stack so its negative margin can't disturb pin measurements. */}
-  <div class="sticky top-0 h-[100dvh] -mb-[100dvh] pointer-events-none z-0" aria-hidden="true">
-    <canvas class="w-full h-full" data-growth-motion></canvas>
+  {/* Momentum field — sticky on desktop for the cascade, absolute wash on mobile. */}
+  <div
+    class="pointer-events-none z-0 absolute inset-0 md:sticky md:top-0 md:h-[100dvh] md:-mb-[100dvh] md:inset-auto"
+    aria-hidden="true"
+  >
+    <canvas class="w-full h-full opacity-70 md:opacity-100" data-growth-motion></canvas>
   </div>
 
   <div class="section-shell relative z-10 max-w-[1400px] mx-auto pb-12 md:pb-24 pt-24 md:pt-40">
@@ -54,14 +56,15 @@ const total = cards.length;
     </p>
   </div>
 
-  {/* Z-Axis Sticky Cascade - GSAP target container */}
-  <div class="relative z-10 pb-40" data-growth-stack-container>
+  {/* Z-Axis Sticky Cascade - GSAP target container.
+      Mobile uses a normal vertical list; sticky stack is desktop-only. */}
+  <div class="relative z-10 pb-16 md:pb-40" data-growth-stack-container>
 
     {cards.map((c, i) => (
-      <div class="growth-stack-card relative z-10 sticky top-0 min-h-[100dvh] flex items-center justify-center py-12 px-4 pointer-events-none">
+      <div class="growth-stack-card relative z-10 md:sticky md:top-0 md:min-h-[100dvh] flex items-center justify-center py-6 md:py-12 px-4 pointer-events-none">
 
         {/* The visible stage panel */}
-        <article class="group relative p-1.5 rounded-[2rem] bg-white/5 ring-1 ring-white/10 overflow-hidden flex flex-col w-full max-w-3xl pointer-events-auto will-change-transform shadow-[0_40px_90px_-30px_rgba(0,0,0,0.75)]">
+        <article class="group relative p-1.5 rounded-[2rem] bg-white/5 ring-1 ring-white/10 overflow-hidden flex flex-col w-full max-w-3xl pointer-events-auto md:will-change-transform shadow-[0_40px_90px_-30px_rgba(0,0,0,0.75)]">
           {/* Inner Core (Double-Bezel) */}
           <div class="relative flex flex-col flex-1 h-full rounded-[calc(2rem-6px)] bg-navy-700 p-8 md:p-12 shadow-[inset_0_1px_1px_rgba(255,255,255,0.1)] transition-transform duration-700 ease-[cubic-bezier(0.32,0.72,0,1)] group-hover:scale-[0.985] origin-center z-10 overflow-hidden">
 
@@ -134,8 +137,7 @@ const total = cards.length;
       });
     }
 
-    // Desktop-only Z-axis stack pin/fade. On mobile, `sticky min-h-[100dvh]`
-    // gives a simple sticky stack on its own.
+    // Desktop-only Z-axis stack pin/fade. Mobile stays a normal vertical list.
     if (!reduced && window.innerWidth >= 768) {
       const cards = gsap.utils.toArray<HTMLElement>(container.querySelectorAll(".growth-stack-card"));
       cards.forEach((card, i) => {

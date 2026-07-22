@@ -1,46 +1,31 @@
 ---
-import { Image } from "astro:assets";
-import type { CaseStudy } from "../data/caseStudies";
+import { getCaseStudyHref, type CaseStudy } from "../data/caseStudies";
 
 interface Props {
   study: CaseStudy;
+  index?: number;
 }
 
-const { study } = Astro.props;
-const detailsId = `case-${study.slug}-details`;
+const { study, index = 0 } = Astro.props;
+const href = getCaseStudyHref(study);
+const glowX = `${Math.max(42, 82 - index * 8)}%`;
 ---
 
-<article class="case-card" data-case-study data-case-slug={study.slug}>
-  <div class="case-card__summary">
+<article class="case-card" style={`--card-glow-x: ${glowX};`}>
+  <a href={href} class="case-card__link" data-cursor="link" aria-label={`Read case study: ${study.title}`}>
     <div class="case-card__copy">
       <p class="case-card__meta">
-        <span>{study.client}</span>
+        <span>{study.year}</span>
         <span aria-hidden="true">/</span>
         <span>{study.industry}</span>
       </p>
       <h4 class="case-card__title">{study.title}</h4>
-      <p class="case-card__description">{study.summary}</p>
-
-      <button
-        type="button"
-        class="case-card__open"
-        data-case-open
-        data-cursor="link"
-        aria-expanded="false"
-        aria-controls={detailsId}
-      >
-        <span data-case-open-label>Read the story</span>
-        <span class="case-card__open-icon" aria-hidden="true">
-          <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
-            <path d="M4 9h10M10 5l4 4-4 4" />
-          </svg>
-        </span>
-      </button>
+      <p class="case-card__description">{study.catalogSummary}</p>
     </div>
 
     <dl class="case-card__metrics" aria-label="Headline outcomes">
       {
-        study.metrics.map((metric) => (
+        study.metrics.slice(0, 3).map((metric) => (
           <div class="case-card__metric">
             <dt>{metric.label}</dt>
             <dd>{metric.value}</dd>
@@ -48,140 +33,19 @@ const detailsId = `case-${study.slug}-details`;
         ))
       }
     </dl>
-  </div>
 
-  <div
-    class="case-card__details"
-    id={detailsId}
-    data-case-details
-    aria-label={`${study.client} case study`}
-  >
-    <div class="case-card__details-inner">
-      <div
-        class="case-card__tabs"
-        role="tablist"
-        aria-label="Case study sections"
-      >
-        {
-          study.steps.map((step, index) => {
-            const tabId = `case-${study.slug}-tab-${step.id}`;
-            const panelId = `case-${study.slug}-panel-${step.id}`;
-            return (
-              <button
-                type="button"
-                class="case-card__tab"
-                id={tabId}
-                role="tab"
-                data-case-tab={index}
-                aria-controls={panelId}
-                aria-selected={index === 0 ? "true" : "false"}
-                tabindex={index === 0 ? 0 : -1}
-                data-cursor="link"
-              >
-                <span>{step.number}</span>
-                {step.label}
-              </button>
-            );
-          })
-        }
-      </div>
-
-      <div class="case-card__panels" data-case-panels>
-        {
-          study.steps.map((step, index) => {
-            const tabId = `case-${study.slug}-tab-${step.id}`;
-            const panelId = `case-${study.slug}-panel-${step.id}`;
-            return (
-              <section
-                class="case-step"
-                id={panelId}
-                role="tabpanel"
-                data-case-panel={index}
-                data-active={index === 0 ? "" : undefined}
-                aria-labelledby={tabId}
-                tabindex="-1"
-              >
-                <div class="case-step__visual">
-                  <Image
-                    src={step.image}
-                    alt={step.alt}
-                    class="case-step__image"
-                    widths={[480, 720, 960, 1200]}
-                    sizes="(max-width: 760px) 100vw, 52vw"
-                    format="webp"
-                    quality={86}
-                    loading="lazy"
-                  />
-                  <span class="case-step__watermark" aria-hidden="true">
-                    {step.number}
-                  </span>
-                </div>
-
-                <div class="case-step__content">
-                  <p class="case-step__label">
-                    <span>{step.number}</span>
-                    {step.label}
-                  </p>
-                  <h5 class="case-step__title">{step.title}</h5>
-                  <p class="case-step__body">{step.body}</p>
-                  <ul class="case-step__tags" aria-label={`${step.label} details`}>
-                    {step.tags.map((tag) => <li>{tag}</li>)}
-                  </ul>
-
-                  {
-                    step.id === "outcome" && (
-                      <a href="#cta" class="case-step__cta" data-cursor="link">
-                        Build the next growth story
-                        <svg
-                          width="17"
-                          height="17"
-                          viewBox="0 0 17 17"
-                          fill="none"
-                          aria-hidden="true"
-                        >
-                          <path d="M3.5 8.5h10M9.5 4.5l4 4-4 4" />
-                        </svg>
-                      </a>
-                    )
-                  }
-                </div>
-              </section>
-            );
-          })
-        }
-      </div>
-
-      <div class="case-card__controls">
-        <button
-          type="button"
-          class="case-card__control"
-          data-case-prev
-          data-cursor="link"
-        >
-          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
-            <path d="M13 8H3M7 4 3 8l4 4" />
-          </svg>
-          Previous
-        </button>
-        <p class="case-card__position" aria-live="polite" data-case-position>
-          1 / {study.steps.length}
-        </p>
-        <button
-          type="button"
-          class="case-card__control"
-          data-case-next
-          data-cursor="link"
-        >
-          Next
-          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
-            <path d="M3 8h10M9 4l4 4-4 4" />
-          </svg>
-        </button>
-      </div>
-
-      <p class="case-card__disclosure">{study.disclosure}</p>
+    <div class="case-card__footer">
+      <ul class="case-card__steps" aria-label="Story sections">
+        {study.steps.map((step) => <li>{step.label}</li>)}
+      </ul>
+      <span class="case-card__cta">
+        Read the story
+        <svg width="18" height="18" viewBox="0 0 18 18" fill="none" aria-hidden="true">
+          <path d="M4 9h10M10 5l4 4-4 4" />
+        </svg>
+      </span>
     </div>
-  </div>
+  </a>
 </article>
 
 <style>
@@ -191,37 +55,46 @@ const detailsId = `case-${study.slug}-details`;
     color: var(--color-cream);
     background:
       radial-gradient(
-        circle at 88% 8%,
-        color-mix(in srgb, var(--color-teal) 13%, transparent),
+        circle at var(--card-glow-x) 12%,
+        color-mix(in srgb, var(--color-teal) 15%, transparent),
         transparent 28rem
+      ),
+      radial-gradient(
+        circle at 12% 92%,
+        color-mix(in srgb, var(--color-purple) 13%, transparent),
+        transparent 24rem
       ),
       var(--color-navy);
     border-radius: clamp(1.25rem, 2.5vw, 2rem);
     box-shadow: 0 2rem 5rem color-mix(in srgb, var(--color-navy) 20%, transparent);
   }
 
-  .case-card::before {
+  .case-card__link {
+    position: relative;
+    z-index: 1;
+    display: grid;
+    grid-template-columns: minmax(0, 1.1fr) minmax(17rem, 0.9fr);
+    gap: clamp(1.5rem, 4vw, 4rem);
+    min-height: clamp(28rem, 46vw, 38rem);
+    padding: clamp(1.4rem, 4vw, 4.5rem);
+    color: inherit;
+    text-decoration: none;
+  }
+
+  .case-card__link::before {
     content: "";
     position: absolute;
     inset: 0;
     pointer-events: none;
     border: 1px solid color-mix(in srgb, var(--color-cream) 11%, transparent);
-    border-radius: inherit;
-    z-index: 3;
-  }
-
-  .case-card__summary {
-    position: relative;
-    z-index: 1;
-    display: grid;
-    grid-template-columns: minmax(0, 1.35fr) minmax(18rem, 0.65fr);
-    gap: clamp(2rem, 6vw, 6rem);
-    align-items: end;
-    padding: clamp(1.5rem, 4vw, 4.5rem);
+    border-radius: clamp(1.25rem, 2.5vw, 2rem);
   }
 
   .case-card__copy {
-    max-width: 47rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    max-width: 46rem;
   }
 
   .case-card__meta {
@@ -241,9 +114,9 @@ const detailsId = `case-${study.slug}-details`;
   }
 
   .case-card__title {
-    max-width: 12ch;
+    max-width: 13ch;
     margin: 0;
-    font-size: clamp(2.25rem, 5.6vw, 5.7rem);
+    font-size: clamp(2.05rem, 5vw, 5.4rem);
     line-height: 0.96;
     letter-spacing: -0.035em;
   }
@@ -257,55 +130,9 @@ const detailsId = `case-${study.slug}-details`;
     text-wrap: pretty;
   }
 
-  .case-card__open {
-    display: none;
-    align-items: center;
-    gap: 0.75rem;
-    min-height: 44px;
-    margin-top: 1.7rem;
-    padding: 0;
-    color: var(--color-teal-bright);
-    background: none;
-    border: 0;
-    font: 600 0.95rem/1 var(--font-display);
-    cursor: pointer;
-  }
-
-  .case-card__open-icon {
-    display: grid;
-    place-items: center;
-    width: 2.25rem;
-    height: 2.25rem;
-    border: 1px solid color-mix(in srgb, var(--color-teal) 40%, transparent);
-    border-radius: 50%;
-    transition:
-      color var(--duration-fast) var(--ease-out-soft),
-      background-color var(--duration-fast) var(--ease-out-soft),
-      transform var(--duration-base) var(--ease-out-soft);
-  }
-
-  .case-card__open svg path,
-  .case-card__control svg path,
-  .case-step__cta svg path {
-    stroke: currentColor;
-    stroke-width: 1.5;
-    stroke-linecap: round;
-    stroke-linejoin: round;
-  }
-
-  .case-card__open:hover .case-card__open-icon,
-  .case-card__open:focus-visible .case-card__open-icon {
-    color: var(--color-navy);
-    background: var(--color-teal);
-    transform: translateX(0.2rem) rotate(-4deg);
-  }
-
-  .case-card[data-open] .case-card__open-icon {
-    transform: rotate(90deg);
-  }
-
   .case-card__metrics {
     display: grid;
+    align-self: end;
     gap: 1rem;
     margin: 0;
   }
@@ -330,332 +157,75 @@ const detailsId = `case-${study.slug}-details`;
     margin: 0;
     color: var(--color-teal);
     font-family: var(--font-display);
-    font-size: clamp(2.4rem, 5vw, 4.8rem);
+    font-size: clamp(2.2rem, 4.4vw, 4.6rem);
     font-variant-numeric: tabular-nums;
     font-weight: 600;
     letter-spacing: -0.04em;
     line-height: 0.8;
   }
 
-  .case-card__details {
-    position: relative;
-    z-index: 2;
-    padding-inline: clamp(1.5rem, 4vw, 4.5rem);
-  }
-
-  .case-card__details-inner {
-    padding-block: clamp(1.5rem, 3vw, 3rem) clamp(1.5rem, 4vw, 4rem);
+  .case-card__footer {
+    grid-column: 1 / -1;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    padding-top: clamp(1.25rem, 3vw, 2rem);
     border-top: 1px solid color-mix(in srgb, var(--color-cream) 13%, transparent);
   }
 
-  .case-card__tabs {
-    display: none;
-    flex-wrap: wrap;
-    gap: 0.45rem;
-    margin-bottom: clamp(1.5rem, 3vw, 2.5rem);
-  }
-
-  .case-card__tab {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.55rem;
-    min-height: 44px;
-    padding: 0.65rem 1rem;
-    color: color-mix(in srgb, var(--color-cream) 54%, transparent);
-    background: transparent;
-    border: 1px solid color-mix(in srgb, var(--color-cream) 14%, transparent);
-    border-radius: 0.7rem;
-    font: 600 0.77rem/1 var(--font-body);
-    letter-spacing: 0.06em;
-    text-transform: uppercase;
-    cursor: pointer;
-    transition:
-      color var(--duration-fast) var(--ease-out-soft),
-      border-color var(--duration-fast) var(--ease-out-soft),
-      background-color var(--duration-fast) var(--ease-out-soft);
-  }
-
-  .case-card__tab span {
-    color: var(--color-teal);
-    font-variant-numeric: tabular-nums;
-  }
-
-  .case-card__tab:hover,
-  .case-card__tab:focus-visible {
-    color: var(--color-cream);
-    border-color: color-mix(in srgb, var(--color-teal) 55%, transparent);
-  }
-
-  .case-card__tab[aria-selected="true"] {
-    color: var(--color-navy);
-    background: var(--color-teal);
-    border-color: var(--color-teal);
-  }
-
-  .case-card__tab[aria-selected="true"] span {
-    color: var(--color-navy);
-  }
-
-  .case-step {
-    display: grid;
-    grid-template-columns: minmax(0, 1.12fr) minmax(18rem, 0.88fr);
-    gap: clamp(1.5rem, 4vw, 4rem);
-    align-items: center;
-  }
-
-  .case-step + .case-step {
-    margin-top: clamp(3rem, 7vw, 6rem);
-    padding-top: clamp(3rem, 7vw, 6rem);
-    border-top: 1px solid color-mix(in srgb, var(--color-cream) 10%, transparent);
-  }
-
-  .case-step__visual {
-    position: relative;
-    overflow: hidden;
-    min-width: 0;
-    background: var(--color-cream);
-    border-radius: clamp(1rem, 2vw, 1.5rem);
-    isolation: isolate;
-  }
-
-  .case-step__visual::after {
-    content: "";
-    position: absolute;
-    inset: 0;
-    pointer-events: none;
-    border: 1px solid color-mix(in srgb, var(--color-navy) 12%, transparent);
-    border-radius: inherit;
-  }
-
-  .case-step__image {
-    display: block;
-    width: 100%;
-    height: auto;
-    aspect-ratio: 3 / 2;
-    object-fit: cover;
-  }
-
-  .case-step__watermark {
-    position: absolute;
-    right: -0.02em;
-    bottom: -0.23em;
-    z-index: 2;
-    color: color-mix(in srgb, var(--color-navy) 9%, transparent);
-    font: 600 clamp(5rem, 12vw, 10rem)/1 var(--font-display);
-    letter-spacing: -0.07em;
-    pointer-events: none;
-  }
-
-  .case-step__content {
-    max-width: 34rem;
-  }
-
-  .case-step__label {
-    display: flex;
-    gap: 0.55rem;
-    margin: 0 0 1rem;
-    color: color-mix(in srgb, var(--color-cream) 58%, transparent);
-    font-size: 0.76rem;
-    font-weight: 600;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-  }
-
-  .case-step__label span {
-    color: var(--color-teal);
-    font-variant-numeric: tabular-nums;
-  }
-
-  .case-step__title {
-    margin: 0;
-    font-size: clamp(1.85rem, 3.6vw, 3.8rem);
-    line-height: 1.02;
-    letter-spacing: -0.028em;
-  }
-
-  .case-step__body {
-    margin: 1.25rem 0 0;
-    color: color-mix(in srgb, var(--color-cream) 70%, transparent);
-    font-size: clamp(1rem, 1.35vw, 1.15rem);
-    line-height: 1.65;
-    text-wrap: pretty;
-  }
-
-  .case-step__tags {
+  .case-card__steps {
     display: flex;
     flex-wrap: wrap;
     gap: 0.45rem;
     padding: 0;
-    margin: 1.5rem 0 0;
+    margin: 0;
     list-style: none;
   }
 
-  .case-step__tags li {
-    padding: 0.45rem 0.75rem;
-    color: color-mix(in srgb, var(--color-cream) 76%, transparent);
+  .case-card__steps li {
+    padding: 0.5rem 0.7rem;
+    color: color-mix(in srgb, var(--color-cream) 67%, transparent);
     background: color-mix(in srgb, var(--color-cream) 7%, transparent);
     border: 1px solid color-mix(in srgb, var(--color-cream) 12%, transparent);
-    border-radius: var(--radius-pill);
-    font-size: 0.73rem;
-    font-weight: 500;
+    border-radius: 0.7rem;
+    font-size: 0.72rem;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
   }
 
-  .case-step__cta {
+  .case-card__cta {
     display: inline-flex;
     align-items: center;
-    gap: 0.55rem;
-    margin-top: 1.6rem;
-    padding-bottom: 0.2rem;
+    gap: 0.6rem;
     color: var(--color-teal-bright);
-    border-bottom: 1px solid color-mix(in srgb, var(--color-teal) 42%, transparent);
     font-family: var(--font-display);
     font-size: 0.95rem;
-    font-weight: 500;
-    text-decoration: none;
+    font-weight: 600;
+    white-space: nowrap;
   }
 
-  .case-step__cta svg {
+  .case-card__cta svg {
     transition: transform var(--duration-fast) var(--ease-out-soft);
   }
 
-  .case-step__cta:hover svg,
-  .case-step__cta:focus-visible svg {
+  .case-card__cta path {
+    stroke: currentColor;
+    stroke-width: 1.5;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+
+  .case-card__link:hover .case-card__cta svg,
+  .case-card__link:focus-visible .case-card__cta svg {
     transform: translateX(0.25rem);
   }
 
-  .case-card__controls {
-    display: none;
-    grid-template-columns: 1fr auto 1fr;
-    align-items: center;
-    gap: 0.75rem;
-    margin-top: clamp(1.5rem, 3vw, 2.5rem);
-  }
-
-  .case-card__control {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.45rem;
-    min-height: 44px;
-    padding: 0.6rem 0;
-    color: var(--color-cream);
-    background: transparent;
-    border: 0;
-    font: 500 0.84rem/1 var(--font-body);
-    cursor: pointer;
-  }
-
-  .case-card__control:last-child {
-    justify-self: end;
-  }
-
-  .case-card__control:hover:not(:disabled),
-  .case-card__control:focus-visible:not(:disabled) {
-    color: var(--color-teal-bright);
-  }
-
-  .case-card__control:disabled {
-    opacity: 0.3;
-    cursor: not-allowed;
-  }
-
-  .case-card__position {
-    margin: 0;
-    color: color-mix(in srgb, var(--color-cream) 46%, transparent);
-    font-size: 0.75rem;
-    font-variant-numeric: tabular-nums;
-  }
-
-  .case-card__disclosure {
-    max-width: 52rem;
-    margin: clamp(1.5rem, 3vw, 2.5rem) 0 0;
-    color: color-mix(in srgb, var(--color-cream) 40%, transparent);
-    font-size: 0.72rem;
-    line-height: 1.55;
-  }
-
-  /* Progressive enhancement activates the compact click-through experience. */
-  .case-card[data-enhanced] .case-card__open {
-    display: inline-flex;
-  }
-
-  .case-card[data-enhanced] .case-card__details {
-    display: grid;
-    grid-template-rows: 0fr;
-    padding-block: 0;
-    opacity: 0;
-    transition:
-      grid-template-rows 420ms var(--ease-out-soft),
-      opacity var(--duration-base) var(--ease-out-soft);
-  }
-
-  .case-card[data-enhanced] .case-card__details-inner {
-    min-height: 0;
-    padding-block: 0;
-    overflow: hidden;
-    transition: padding var(--duration-base) var(--ease-out-soft);
-  }
-
-  .case-card[data-enhanced][data-open] .case-card__details {
-    grid-template-rows: 1fr;
-    opacity: 1;
-  }
-
-  .case-card[data-enhanced][data-open] .case-card__details-inner {
-    padding-block: clamp(1.5rem, 3vw, 3rem) clamp(1.5rem, 4vw, 4rem);
-  }
-
-  .case-card[data-enhanced] .case-card__tabs {
-    display: flex;
-  }
-
-  .case-card[data-enhanced] .case-card__controls {
-    display: grid;
-  }
-
-  .case-card[data-enhanced] .case-step {
-    display: none;
-    margin: 0;
-    padding: 0;
-    border: 0;
-  }
-
-  .case-card[data-enhanced] .case-step[data-active] {
-    display: grid;
-    animation: case-step-enter 420ms var(--ease-out-soft) both;
-  }
-
-  @keyframes case-step-enter {
-    from {
-      opacity: 0;
-      transform: translateY(0.8rem);
-    }
-    to {
-      opacity: 1;
-      transform: none;
-    }
-  }
-
-  @media (max-width: 860px) {
-    .case-card__summary {
+  @media (max-width: 900px) {
+    .case-card__link {
       grid-template-columns: minmax(0, 1fr);
-    }
-
-    .case-card__metrics {
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-    }
-
-    .case-card__metric {
-      display: flex;
-      flex-direction: column-reverse;
-      align-items: flex-start;
-    }
-
-    .case-step {
-      grid-template-columns: minmax(0, 1fr);
-    }
-
-    .case-step__content {
-      max-width: 42rem;
+      min-height: 0;
     }
   }
 
@@ -670,115 +240,9 @@ const detailsId = `case-${study.slug}-details`;
       align-items: end;
     }
 
-    .case-card__tabs {
+    .case-card__footer {
+      align-items: flex-start;
       flex-direction: column;
-    }
-
-    .case-card__tab {
-      width: 100%;
-    }
-
-    .case-step__image {
-      aspect-ratio: 4 / 3;
-    }
-  }
-
-  @media (prefers-reduced-motion: reduce) {
-    .case-card[data-enhanced] .case-step[data-active] {
-      animation: none;
     }
   }
 </style>
-
-<script>
-  document
-    .querySelectorAll<HTMLElement>("[data-case-study]")
-    .forEach((card) => initCaseStudy(card));
-
-  function initCaseStudy(card: HTMLElement) {
-    const openButton = card.querySelector<HTMLButtonElement>("[data-case-open]");
-    const openLabel = card.querySelector<HTMLElement>("[data-case-open-label]");
-    const details = card.querySelector<HTMLElement>("[data-case-details]");
-    const tabs = Array.from(
-      card.querySelectorAll<HTMLButtonElement>("[data-case-tab]")
-    );
-    const panels = Array.from(
-      card.querySelectorAll<HTMLElement>("[data-case-panel]")
-    );
-    const previous = card.querySelector<HTMLButtonElement>("[data-case-prev]");
-    const next = card.querySelector<HTMLButtonElement>("[data-case-next]");
-    const position = card.querySelector<HTMLElement>("[data-case-position]");
-
-    if (!openButton || !details || !tabs.length || tabs.length !== panels.length) {
-      return;
-    }
-
-    let open = false;
-    let activeIndex = 0;
-
-    function render() {
-      tabs.forEach((tab, index) => {
-        const active = index === activeIndex;
-        tab.setAttribute("aria-selected", String(active));
-        tab.tabIndex = active ? 0 : -1;
-      });
-
-      panels.forEach((panel, index) => {
-        const active = index === activeIndex;
-        panel.toggleAttribute("data-active", active);
-        panel.setAttribute("aria-hidden", String(!active));
-        panel.inert = !active;
-      });
-
-      if (previous) previous.disabled = activeIndex === 0;
-      if (next) next.disabled = activeIndex === panels.length - 1;
-      if (position) position.textContent = `${activeIndex + 1} / ${panels.length}`;
-    }
-
-    function goTo(index: number, focusTab = false) {
-      activeIndex = Math.max(0, Math.min(panels.length - 1, index));
-      render();
-      if (focusTab) tabs[activeIndex]?.focus();
-    }
-
-    function setOpen(nextOpen: boolean, focusTab = false) {
-      open = nextOpen;
-      card.toggleAttribute("data-open", open);
-      openButton.setAttribute("aria-expanded", String(open));
-      details.setAttribute("aria-hidden", String(!open));
-      details.inert = !open;
-      if (openLabel) openLabel.textContent = open ? "Close the story" : "Read the story";
-      if (open) {
-        goTo(0, focusTab);
-      } else {
-        openButton.focus({ preventScroll: true });
-      }
-    }
-
-    openButton.addEventListener("click", () => setOpen(!open, !open));
-    tabs.forEach((tab, index) => {
-      tab.addEventListener("click", () => goTo(index));
-      tab.addEventListener("keydown", (event) => {
-        let nextIndex = activeIndex;
-        if (event.key === "ArrowRight") nextIndex = (activeIndex + 1) % tabs.length;
-        if (event.key === "ArrowLeft") nextIndex = (activeIndex - 1 + tabs.length) % tabs.length;
-        if (event.key === "Home") nextIndex = 0;
-        if (event.key === "End") nextIndex = tabs.length - 1;
-        if (nextIndex !== activeIndex) {
-          event.preventDefault();
-          goTo(nextIndex, true);
-        }
-      });
-    });
-    previous?.addEventListener("click", () => goTo(activeIndex - 1, true));
-    next?.addEventListener("click", () => goTo(activeIndex + 1, true));
-    card.addEventListener("keydown", (event) => {
-      if (event.key === "Escape" && open) setOpen(false);
-    });
-
-    render();
-    details.inert = true;
-    details.setAttribute("aria-hidden", "true");
-    card.dataset.enhanced = "true";
-  }
-</script>
