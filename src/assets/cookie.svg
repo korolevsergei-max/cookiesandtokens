@@ -1,9 +1,14 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="-12 -11 124 124" role="img" aria-label="Cookie">
   <!-- Purple cookie "cookie" = human craft side. Sub-parts are independently
        grouped so the collision scene can parallax them at different rates:
-         #cookie-body   – the disc with a bite masked out (top-right)
-         #cookie-chips  – the light chip holes
-         #cookie-crumbs – the crumb cloud near the bite
+         #disc-body   – the disc with a bite masked out (top-right)
+         #disc-chips  – the light chip holes
+         #disc-crumbs – the crumb cloud near the bite
+       NOTE: these ids deliberately avoid the word "cookie". Ad blockers ship
+       cookie-consent cosmetic filter lists that hide elements whose id/class
+       looks like a cookie banner (#cookie-notice, #cookie-bar, …); an id of
+       "cookie-body" was matched by those lists and the disc vanished for any
+       visitor running one. Keep brand wording in copy, never in selectors.
   -->
   <!-- The disc is ONE closed path: most of the rim is the smooth r=46 circle
        (about centre 50,51), but the top-right edge is replaced by a run of small
@@ -12,11 +17,11 @@
        deep two-arc scoop), so the bite is genuinely transparent over ANY backdrop
        (navy hero, the glowing lens in the collision scene) and renders reliably in
        WebKit/Safari under GPU compositing. -->
-  <g id="cookie-body">
+  <g id="disc-body">
     <path fill="#A974E8" d="M 95.82 46.99 A 46.00 46.00 0 1 1 54.01 5.18 A 10.65 10.65 0 0 0 59.79 21.35 A 7.34 7.34 0 0 0 63.01 32.74 A 4.60 4.60 0 0 0 68.26 37.99 A 7.34 7.34 0 0 0 79.65 41.21 A 10.65 10.65 0 0 0 95.82 46.99 Z" />
   </g>
 
-  <g id="cookie-chips" fill="#FFFFFF">
+  <g id="disc-chips" fill="#FFFFFF">
     <circle cx="32.75" cy="42.95" r="5.75"/>
     <circle cx="60.35" cy="38.35" r="4.83"/>
     <circle cx="39.65" cy="68.25" r="6.44"/>
@@ -24,7 +29,7 @@
     <circle cx="51.15" cy="54.45" r="3.91"/>
   </g>
 
-  <g id="cookie-crumbs" fill="#A974E8">
+  <g id="disc-crumbs" fill="#A974E8">
     <circle cx="98.3" cy="28" r="3.45"/>
     <circle cx="104.05" cy="17.65" r="2.3"/>
     <circle cx="93.7" cy="5" r="2.99"/>

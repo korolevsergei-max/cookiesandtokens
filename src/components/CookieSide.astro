@@ -33,52 +33,52 @@ const services = [
 ---
 
 <section
-  id="cookie"
-  class="cookie-side"
-  data-cookie-side
+  id="craft"
+  class="craft-side"
+  data-craft-side
   data-tone="light"
-  aria-labelledby="cookie-title"
+  aria-labelledby="craft-title"
 >
-  <div class="cookie-side__header section-shell">
-    <p class="eyebrow cookie-side__eyebrow">What We Do</p>
-    <h2 id="cookie-title" class="cookie-side__headline">
-      Three levers.<br /><span class="cookie-side__accent">One engine.</span>
+  <div class="craft-side__header section-shell">
+    <p class="eyebrow craft-side__eyebrow">What We Do</p>
+    <h2 id="craft-title" class="craft-side__headline">
+      Three levers.<br /><span class="craft-side__accent">One engine.</span>
     </h2>
-    <p class="cookie-side__sub">
+    <p class="craft-side__sub">
       Brand, channels, and the digital experience where customers buy. Not
       three services. Three levers on the same number, pulled by one senior
       team.
     </p>
   </div>
 
-  <div class="cookie-side__grid section-shell">
+  <div class="craft-side__grid section-shell">
     {services.map((s) => (
-      <a class="cookie-card" data-cookie-card href={s.href} data-cursor="link">
-        <span class="cookie-card__num">{s.number}</span>
-        <h3 class="cookie-card__title">{s.title}</h3>
-        <p class="cookie-card__desc">{s.desc}</p>
-        <ul class="cookie-card__tags" aria-label="Service tags">
-          {s.tags.map((t) => <li class="cookie-card__tag">{t}</li>)}
+      <a class="craft-card" data-craft-card href={s.href} data-cursor="link">
+        <span class="craft-card__num">{s.number}</span>
+        <h3 class="craft-card__title">{s.title}</h3>
+        <p class="craft-card__desc">{s.desc}</p>
+        <ul class="craft-card__tags" aria-label="Service tags">
+          {s.tags.map((t) => <li class="craft-card__tag">{t}</li>)}
         </ul>
-        <span class="cookie-card__more" aria-hidden="true">
+        <span class="craft-card__more" aria-hidden="true">
           Explore
           <svg width="14" height="14" viewBox="0 0 16 16" fill="none">
             <path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
           </svg>
         </span>
-        <span class="cookie-card__glow" aria-hidden="true"></span>
+        <span class="craft-card__glow" aria-hidden="true"></span>
       </a>
     ))}
   </div>
 
   <!-- Purple accent blob -->
-  <div class="cookie-side__bg" aria-hidden="true">
-    <span class="cookie-side__blob"></span>
+  <div class="craft-side__bg" aria-hidden="true">
+    <span class="craft-side__blob"></span>
   </div>
 </section>
 
 <style>
-  .cookie-side {
+  .craft-side {
     position: relative;
     background-color: var(--color-cream-200);
     color: var(--color-ink);
@@ -86,13 +86,13 @@ const services = [
     isolation: isolate;
   }
 
-  .cookie-side__bg {
+  .craft-side__bg {
     position: absolute;
     inset: 0;
     z-index: 0;
     pointer-events: none;
   }
-  .cookie-side__blob {
+  .craft-side__blob {
     position: absolute;
     top: -20vmax;
     right: -20vmax;
@@ -104,26 +104,26 @@ const services = [
     opacity: 0.08;
   }
 
-  .cookie-side__header {
+  .craft-side__header {
     position: relative;
     z-index: 1;
     padding-bottom: 0;
     max-width: 52rem;
   }
-  .cookie-side__eyebrow {
+  .craft-side__eyebrow {
     color: var(--color-purple-deep);
   }
-  .cookie-side__headline {
+  .craft-side__headline {
     font-size: var(--text-display-xl);
     line-height: var(--text-display-xl--line-height);
     letter-spacing: var(--text-display-xl--letter-spacing);
     color: var(--color-ink);
     margin-top: 0.5rem;
   }
-  .cookie-side__accent {
+  .craft-side__accent {
     color: var(--color-purple);
   }
-  .cookie-side__sub {
+  .craft-side__sub {
     max-width: 34rem;
     font-size: var(--text-lead);
     line-height: var(--text-lead--line-height);
@@ -132,7 +132,7 @@ const services = [
   }
 
   /* ---------- Card grid ---------- */
-  .cookie-side__grid {
+  .craft-side__grid {
     position: relative;
     z-index: 1;
     padding-top: 2rem;
@@ -141,7 +141,7 @@ const services = [
     gap: 1.25rem;
   }
 
-  .cookie-card {
+  .craft-card {
     position: relative;
     padding: clamp(1.5rem, 3vw, 2.25rem);
     background: var(--color-cream);
@@ -158,12 +158,12 @@ const services = [
       transform    var(--duration-base) var(--ease-out-soft);
     will-change: transform;
   }
-  .cookie-card:hover {
+  .craft-card:hover {
     border-color: color-mix(in srgb, var(--color-purple) 45%, transparent);
     transform: translateY(-3px);
   }
 
-  .cookie-card__more {
+  .craft-card__more {
     display: inline-flex;
     align-items: center;
     gap: 0.4rem;
@@ -177,14 +177,14 @@ const services = [
     letter-spacing: 0.02em;
     color: var(--color-purple-deep);
   }
-  .cookie-card__more svg {
+  .craft-card__more svg {
     transition: transform var(--duration-base) var(--ease-out-soft);
   }
-  .cookie-card:hover .cookie-card__more svg {
+  .craft-card:hover .craft-card__more svg {
     transform: translateX(3px);
   }
 
-  .cookie-card__glow {
+  .craft-card__glow {
     position: absolute;
     inset: 0;
     border-radius: inherit;
@@ -197,18 +197,18 @@ const services = [
     transition: opacity var(--duration-base) var(--ease-out-soft);
     pointer-events: none;
   }
-  .cookie-card:hover .cookie-card__glow {
+  .craft-card:hover .craft-card__glow {
     opacity: 1;
   }
 
-  .cookie-card__num {
+  .craft-card__num {
     font-family: var(--font-display);
     font-size: 0.75rem;
     font-weight: 600;
     letter-spacing: 0.12em;
     color: var(--color-purple);
   }
-  .cookie-card__title {
+  .craft-card__title {
     font-family: var(--font-display);
     font-size: clamp(1.25rem, 2.5vw, 1.6rem);
     font-weight: 600;
@@ -216,13 +216,13 @@ const services = [
     line-height: 1.1;
     color: var(--color-ink);
   }
-  .cookie-card__desc {
+  .craft-card__desc {
     font-size: 0.9375rem;
     line-height: 1.6;
     color: var(--color-ink-muted);
   }
 
-  .cookie-card__tags {
+  .craft-card__tags {
     display: flex;
     flex-wrap: wrap;
     gap: 0.35rem;
@@ -230,7 +230,7 @@ const services = [
     padding: 0;
     margin: 0;
   }
-  .cookie-card__tag {
+  .craft-card__tag {
     padding: 0.2rem 0.6rem;
     font-size: 0.7rem;
     font-weight: 500;
@@ -247,14 +247,14 @@ const services = [
   import { prefersReducedMotion, isCoarsePointer } from "../lib/motion";
   import { scrollTo } from "../lib/lenis";
 
-  const root = document.querySelector<HTMLElement>("[data-cookie-side]");
+  const root = document.querySelector<HTMLElement>("[data-craft-side]");
   if (root) initCookieSide(root);
 
   function initCookieSide(root: HTMLElement) {
-    const cards = Array.from(root.querySelectorAll<HTMLElement>("[data-cookie-card]"));
+    const cards = Array.from(root.querySelectorAll<HTMLElement>("[data-craft-card]"));
 
     // Scroll-reveal: stagger in on enter (shared page recipe).
-    reveal(cards, { trigger: root.querySelector(".cookie-side__grid") });
+    reveal(cards, { trigger: root.querySelector(".craft-side__grid") });
 
     // Signpost cards smooth-scroll to their offering section (same recipe as Nav).
     cards.forEach((card) => {

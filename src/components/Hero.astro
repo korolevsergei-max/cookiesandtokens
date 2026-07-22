@@ -21,7 +21,7 @@ const paths = [
     eyebrow: "The Cookie",
     title: "What We Run",
     desc: "Brand, channels, and digital. Three levers, one engine.",
-    target: "#cookie",
+    target: "#craft",
     cursor: "cookie",
     cursorLabel: "Run",
   },
@@ -72,7 +72,7 @@ const paths = [
       <p class="eyebrow hero__prompt" aria-hidden="true">Choose your path</p>
 
       <div class="hero__shapes" data-shapes aria-hidden="true">
-        <div class="hero__shape hero__shape--cookie" data-shape="cookie">
+        <div class="hero__shape hero__shape--craft" data-shape="cookie">
           <div class="hero__shape-inner" set:html={cookieRaw} />
         </div>
         <div class="hero__shape hero__shape--token" data-shape="token">
@@ -239,7 +239,7 @@ const paths = [
   }
   /* Box widths kept near-equal so the cookie disc reads the same (a touch
      larger) size as the token octagon, which fills slightly less of its box. */
-  .hero__shape--cookie {
+  .hero__shape--craft {
     left: 0;
     width: 56%;
     z-index: 2;
@@ -258,7 +258,7 @@ const paths = [
      and the stage height so a shape can never grow taller than the stage and
      bleed into the sub / caption rows above and below it. (--shape-size is
      inherited from the stage, but the cookie overrides it to offset its
-     viewBox padding — see .hero__shape--cookie.) */
+     viewBox padding — see .hero__shape--craft.) */
   .hero__shape-inner {
     width: min(100%, var(--shape-size, 300px));
     will-change: transform;
@@ -291,7 +291,7 @@ const paths = [
   }
 
   /* Active-state glow / dim — keyed off the hero root data-active */
-  [data-hero][data-active="cookie"] .hero__shape--cookie {
+  [data-hero][data-active="cookie"] .hero__shape--craft {
     filter: drop-shadow(0 0 34px color-mix(in srgb, var(--color-purple) 60%, transparent));
   }
   [data-hero][data-active="cookie"] .hero__shape--token {
@@ -301,7 +301,7 @@ const paths = [
   [data-hero][data-active="token"] .hero__shape--token {
     filter: drop-shadow(0 0 34px color-mix(in srgb, var(--color-teal) 60%, transparent));
   }
-  [data-hero][data-active="token"] .hero__shape--cookie {
+  [data-hero][data-active="token"] .hero__shape--craft {
     opacity: 0.4;
     filter: saturate(0.6) brightness(0.85);
   }
