@@ -159,16 +159,28 @@
     background-size: 28px 28px;
     -webkit-mask-image: radial-gradient(110% 75% at 50% 50%, #000 30%, transparent 80%);
     mask-image: radial-gradient(110% 75% at 50% 50%, #000 30%, transparent 80%);
-    will-change: transform;
   }
   .collision__blob {
     position: absolute;
     width: 48vmax;
     height: 48vmax;
     border-radius: 50%;
-    filter: blur(100px);
     opacity: 0.22;
-    will-change: transform;
+  }
+  @media (hover: hover) and (pointer: fine) {
+    .collision__bg {
+      will-change: transform;
+    }
+    .collision__blob {
+      filter: blur(100px);
+      will-change: transform;
+    }
+  }
+  @media (hover: none), (pointer: coarse) {
+    /* Soft unblurred washes — 100px blur next to Work was hitching mobile scroll. */
+    .collision__blob {
+      opacity: 0.12;
+    }
   }
   .collision__blob--purple {
     top: -6vmax;
@@ -209,7 +221,12 @@
     display: grid;
     place-items: center;
     margin-top: calc(var(--coll-shape) * -0.5);
-    will-change: transform, opacity;
+  }
+  @media (hover: hover) and (pointer: fine) {
+    .collision__shape,
+    .collision__layer {
+      will-change: transform, opacity;
+    }
   }
   .collision__shape :global(svg),
   .collision__layer :global(svg) {
@@ -223,12 +240,18 @@
   .collision__craft {
     margin-left: calc(var(--coll-shape) * -0.82);
     z-index: 4;
-    filter: drop-shadow(0 18px 40px color-mix(in srgb, var(--color-purple) 28%, transparent));
   }
   .collision__token {
     margin-left: calc(var(--coll-shape) * -0.18);
     z-index: 2;
-    filter: drop-shadow(0 18px 40px color-mix(in srgb, var(--color-teal) 26%, transparent));
+  }
+  @media (hover: hover) and (pointer: fine) {
+    .collision__craft {
+      filter: drop-shadow(0 18px 40px color-mix(in srgb, var(--color-purple) 28%, transparent));
+    }
+    .collision__token {
+      filter: drop-shadow(0 18px 40px color-mix(in srgb, var(--color-teal) 26%, transparent));
+    }
   }
   /* Crumbs ride with the cookie; facets ride with the token */
   .collision__crumbs {

@@ -7,9 +7,11 @@
  * no per-frame toDataURL — just a pattern fill, which is GPU-cheap.
  *
  * Disabled under reduced motion (a single static tile, no animation).
+ * Skipped entirely on touch / coarse pointers — continuous grain redraw +
+ * mix-blend-mode was hitching native mobile scroll (especially around Work).
  * Returns a cleanup fn.
  */
-import { prefersReducedMotion } from "./motion";
+import { isCoarsePointer, prefersReducedMotion } from "./motion";
 
 interface GrainOptions {
   opacity?: number; // 0..1 overlay opacity
@@ -21,8 +23,13 @@ interface GrainOptions {
 export function initGrain(opts: GrainOptions = {}): () => void {
   if (typeof window === "undefined") return () => {};
 
+  // Touch devices: skip the overlay entirely. Even a static mix-blend canvas
+  // forces extra compositing while scrolling through Work and neighbors.
+  if (isCoarsePointer()) return () => {};
+
   const { opacity = 0.05, tileSize = 120, frames = 5, fps = 16 } = opts;
   const reduced = prefersReducedMotion();
+  const animate = !reduced;
 
   const canvas = document.createElement("canvas");
   canvas.className = "ct-grain";
@@ -34,7 +41,7 @@ export function initGrain(opts: GrainOptions = {}): () => void {
 
   // Build pre-rendered noise tiles -> CanvasPattern[]
   const patterns: CanvasPattern[] = [];
-  const frameCount = reduced ? 1 : frames;
+  const frameCount = animate ? frames : 1;
   for (let f = 0; f < frameCount; f++) {
     const tile = document.createElement("canvas");
     tile.width = tile.height = tileSize;
@@ -83,7 +90,7 @@ export function initGrain(opts: GrainOptions = {}): () => void {
 
   window.addEventListener("resize", resize, { passive: true });
   resize();
-  if (!reduced && patterns.length > 1) raf = requestAnimationFrame(draw);
+  if (animate && patterns.length > 1) raf = requestAnimationFrame(draw);
 
   return () => {
     cancelAnimationFrame(raf);

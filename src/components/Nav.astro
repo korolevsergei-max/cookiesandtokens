@@ -122,9 +122,20 @@ const isHome = pathname === "/" || pathname === "";
     padding-inline: var(--spacing-gutter);
     padding-block: 0.75rem;
     background: color-mix(in srgb, var(--color-navy) 88%, transparent);
-    backdrop-filter: blur(18px) saturate(1.4);
-    -webkit-backdrop-filter: blur(18px) saturate(1.4);
     border-bottom: 1px solid color-mix(in srgb, var(--color-cream) 8%, transparent);
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    .site-nav__inner {
+      backdrop-filter: blur(18px) saturate(1.4);
+      -webkit-backdrop-filter: blur(18px) saturate(1.4);
+    }
+  }
+
+  @media (hover: none), (pointer: coarse) {
+    .site-nav__inner {
+      background: var(--color-navy);
+    }
   }
 
   .site-nav__logo {

@@ -105,10 +105,12 @@ const titleId = `${id}-title`;
   import { initSketchField, type SceneController } from "../lib/offeringMotion";
   import { isCoarsePointer } from "../lib/motion";
 
-  // Always-on ambient sketch field (runs on all devices, IntersectionObserver-paused)
-  document.querySelectorAll<HTMLCanvasElement>("[data-creative-ambient]").forEach((canvas) => {
-    initSketchField(canvas, { ambient: true });
-  });
+  // Always-on ambient sketch field — desktop only; mobile scroll stays native.
+  if (!isCoarsePointer()) {
+    document.querySelectorAll<HTMLCanvasElement>("[data-creative-ambient]").forEach((canvas) => {
+      initSketchField(canvas, { ambient: true });
+    });
+  }
 
   const lists = document.querySelectorAll("[data-creative-list]");
   lists.forEach((list) => {

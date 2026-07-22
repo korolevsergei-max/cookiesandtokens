@@ -83,19 +83,12 @@ const number = String(index + 1).padStart(2, "0");
     color: inherit;
     text-decoration: none;
     border-top: 1px solid color-mix(in srgb, var(--color-navy) 12%, transparent);
-    transition:
-      background-color var(--duration-fast) var(--ease-out-soft),
-      padding-inline var(--duration-base) var(--ease-out-soft);
+    /* Avoid sticky iOS :hover reflows while the finger scrolls over these rows. */
+    touch-action: manipulation;
   }
 
   .work-item:last-child .work-item__link {
     border-bottom: 1px solid color-mix(in srgb, var(--color-navy) 12%, transparent);
-  }
-
-  .work-item__link:hover,
-  .work-item__link:focus-visible {
-    background: color-mix(in srgb, var(--color-navy) 4%, transparent);
-    padding-inline: clamp(0.75rem, 2vw, 1.25rem);
   }
 
   .work-item__index {
@@ -130,12 +123,6 @@ const number = String(index + 1).padStart(2, "0");
     font-weight: 600;
     letter-spacing: -0.035em;
     line-height: 1.02;
-    transition: color var(--duration-fast) var(--ease-out-soft);
-  }
-
-  .work-item__link:hover .work-item__title,
-  .work-item__link:focus-visible .work-item__title {
-    color: var(--work-item-accent);
   }
 
   .work-item__summary {
@@ -185,10 +172,6 @@ const number = String(index + 1).padStart(2, "0");
     color: var(--color-navy);
     border: 1px solid color-mix(in srgb, var(--color-navy) 16%, transparent);
     border-radius: 999px;
-    transition:
-      background-color var(--duration-fast) var(--ease-out-soft),
-      color var(--duration-fast) var(--ease-out-soft),
-      transform var(--duration-fast) var(--ease-out-soft);
   }
 
   .work-item__arrow path {
@@ -198,11 +181,41 @@ const number = String(index + 1).padStart(2, "0");
     stroke-linejoin: round;
   }
 
-  .work-item__link:hover .work-item__arrow,
-  .work-item__link:focus-visible .work-item__arrow {
-    color: var(--color-cream);
-    background: var(--color-navy);
-    transform: translateX(0.2rem);
+  @media (hover: hover) and (pointer: fine) {
+    .work-item__link {
+      transition:
+        background-color var(--duration-fast) var(--ease-out-soft),
+        padding-inline var(--duration-base) var(--ease-out-soft);
+    }
+
+    .work-item__title {
+      transition: color var(--duration-fast) var(--ease-out-soft);
+    }
+
+    .work-item__arrow {
+      transition:
+        background-color var(--duration-fast) var(--ease-out-soft),
+        color var(--duration-fast) var(--ease-out-soft),
+        transform var(--duration-fast) var(--ease-out-soft);
+    }
+
+    .work-item__link:hover,
+    .work-item__link:focus-visible {
+      background: color-mix(in srgb, var(--color-navy) 4%, transparent);
+      padding-inline: clamp(0.75rem, 2vw, 1.25rem);
+    }
+
+    .work-item__link:hover .work-item__title,
+    .work-item__link:focus-visible .work-item__title {
+      color: var(--work-item-accent);
+    }
+
+    .work-item__link:hover .work-item__arrow,
+    .work-item__link:focus-visible .work-item__arrow {
+      color: var(--color-cream);
+      background: var(--color-navy);
+      transform: translateX(0.2rem);
+    }
   }
 
   .work-item--compact .work-item__title {

@@ -12,7 +12,7 @@
  * the element in its natural (visible) state.
  */
 import { gsap, ease, ScrollTrigger } from "./gsap";
-import { prefersReducedMotion } from "./motion";
+import { isCoarsePointer, prefersReducedMotion } from "./motion";
 
 /** The canonical reveal tuning. Keep these few constants as the single source. */
 const REVEAL = {
@@ -48,7 +48,8 @@ export function reveal(targets: Targets, opts: RevealOptions = {}) {
   const list = normalize(targets);
   if (!list.length) return null;
 
-  if (prefersReducedMotion()) return null;
+  // Touch / coarse pointers keep native scroll — skip ScrollTrigger work.
+  if (prefersReducedMotion() || isCoarsePointer()) return null;
 
   const {
     y = REVEAL.y,
@@ -77,7 +78,7 @@ export function reveal(targets: Targets, opts: RevealOptions = {}) {
  * leaves the final value untouched.
  */
 export function countUp(el: HTMLElement, opts: { duration?: number; trigger?: Element | null } = {}) {
-  if (prefersReducedMotion()) return;
+  if (prefersReducedMotion() || isCoarsePointer()) return;
 
   const raw = el.textContent?.trim() ?? "";
   const match = raw.match(/^(\D*)(\d[\d.,]*)(\D*)$/);

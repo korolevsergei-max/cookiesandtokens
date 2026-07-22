@@ -91,8 +91,8 @@ const slug = (s: string) => s.toLowerCase().replace(/&/g, "").replace(/[^a-z0-9]
 
   </div>
 
-  {/* Accent blob */}
-  <div class="absolute bottom-0 right-0 w-[60vmax] h-[60vmax] bg-purple/10 blur-[120px] rounded-full pointer-events-none z-0"></div>
+  {/* Accent blob — blur only on desktop; soft wash on touch to keep scroll cheap. */}
+  <div class="absolute bottom-0 right-0 w-[60vmax] h-[60vmax] bg-purple/10 rounded-full pointer-events-none z-0 md:blur-[120px]" aria-hidden="true"></div>
 </section>
 
 <script>

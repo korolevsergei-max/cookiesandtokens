@@ -4,7 +4,7 @@
  * motion that embodies the brand thesis (human craft + AI underneath):
  *
  *   · Creative — self-drawing pen-stroke marks (the hand)     → initSketchField
- *   · Growth   — a momentum line + rising motes that climb    → initGrowthMomentum
+ *   · Growth   — a momentum line climbing through the plot   → initGrowthMomentum
  *   · Software — a schematic system diagram that draws once   → initSoftwareSchematic
  *
  * Every scene is reduced-motion safe (renders one settled static frame and
@@ -332,6 +332,11 @@ export function initSketchField(canvas: HTMLCanvasElement, opts: { ambient?: boo
 }
 
 /* ── Growth: a momentum line + rising motes ──────────────────────────────── */
+//
+// The line is structural, not decorative: the section feeds it the measured
+// positions of the four channel stations, so it climbs through each node marker
+// on its way up and to the right. Without anchors (narrow viewports, where the
+// plot collapses to a vertical rail) it falls back to a generic ascending curve.
 
 interface Mote {
   x: number;
@@ -361,7 +366,63 @@ function growthCurve(w: number, h: number): { x: number; y: number }[] {
   return ys.map((yy, i) => ({ x: (i / (ys.length - 1)) * w, y: yy * h }));
 }
 
-export function initGrowthMomentum(canvas: HTMLCanvasElement): SceneController {
+export interface Point {
+  x: number;
+  y: number;
+}
+
+/**
+ * Catmull-Rom resample through `pts` (a uniform spline, so the line passes
+ * exactly through every anchor). `n` samples per segment.
+ */
+function splineThrough(pts: Point[], n = 14): Point[] {
+  if (pts.length < 3) return pts.slice();
+  const out: Point[] = [];
+  for (let i = 0; i < pts.length - 1; i++) {
+    const p0 = pts[i - 1] ?? pts[i];
+    const p1 = pts[i];
+    const p2 = pts[i + 1];
+    const p3 = pts[i + 2] ?? p2;
+    for (let s = 0; s < n; s++) {
+      const t = s / n;
+      const t2 = t * t;
+      const t3 = t2 * t;
+      out.push({
+        x: 0.5 * (2 * p1.x + (-p0.x + p2.x) * t + (2 * p0.x - 5 * p1.x + 4 * p2.x - p3.x) * t2 + (-p0.x + 3 * p1.x - 3 * p2.x + p3.x) * t3),
+        y: 0.5 * (2 * p1.y + (-p0.y + p2.y) * t + (2 * p0.y - 5 * p1.y + 4 * p2.y - p3.y) * t2 + (-p0.y + 3 * p1.y - 3 * p2.y + p3.y) * t3),
+      });
+    }
+  }
+  out.push(pts[pts.length - 1]);
+  return out;
+}
+
+/**
+ * Build the climb from measured station anchors (normalized 0..1), extended one
+ * control point past each end so the line enters from the left edge below the
+ * first station and exits past the last one carrying the glowing head off-frame.
+ */
+function anchoredCurve(anchors: Point[], w: number, h: number): Point[] {
+  const first = anchors[0];
+  const last = anchors[anchors.length - 1];
+  const dx = last.x - first.x;
+  const dy = last.y - first.y;
+  const lead = { x: first.x - Math.max(0.1, dx * 0.35), y: first.y - dy * 0.28 };
+  const tail = { x: last.x + Math.max(0.1, dx * 0.3), y: last.y + dy * 0.24 };
+  const pts = [lead, ...anchors, tail].map((p) => ({ x: p.x * w, y: p.y * h }));
+  return splineThrough(pts);
+}
+
+export interface GrowthOptions {
+  /**
+   * Returns the four station positions as normalized 0..1 points measured off
+   * the DOM, or null when the plot layout isn't mounted (narrow viewports) —
+   * in which case the decorative fallback curve is drawn instead.
+   */
+  anchors?: () => Point[] | null;
+}
+
+export function initGrowthMomentum(canvas: HTMLCanvasElement, options: GrowthOptions = {}): SceneController {
   let motes: Mote[] = [];
   let curve: { x: number; y: number }[] = [];
   let lw = 0;
@@ -372,7 +433,10 @@ export function initGrowthMomentum(canvas: HTMLCanvasElement): SceneController {
       lw = f.w;
       lh = f.h;
       motes = buildMotes(f.w, f.h, 40);
-      curve = growthCurve(f.w, f.h);
+      // Re-measured only on resize: the canvas spans the whole section, so any
+      // reflow that moves the stations also resizes it (ResizeObserver → fit()).
+      const anchors = options.anchors?.() ?? null;
+      curve = anchors && anchors.length >= 2 ? anchoredCurve(anchors, f.w, f.h) : growthCurve(f.w, f.h);
     }
     const { palette } = f;
     const prog = f.reduced ? 0.62 : Math.max(0.08, f.progress);
@@ -404,7 +468,7 @@ export function initGrowthMomentum(canvas: HTMLCanvasElement): SceneController {
     if (drawn.length > 1) {
       const tip = drawn[drawn.length - 1];
       const grad = ctx.createLinearGradient(0, 0, 0, f.h);
-      grad.addColorStop(0, rgba(palette.teal, 0.1));
+      grad.addColorStop(0, rgba(palette.teal, 0.05));
       grad.addColorStop(1, rgba(palette.teal, 0));
       ctx.fillStyle = grad;
       ctx.beginPath();

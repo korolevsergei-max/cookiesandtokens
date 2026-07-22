@@ -1,4 +1,21 @@
 ---
+/**
+ * OfferingGrowth — the "Momentum Plot".
+ *
+ * Growth is the only Offering section that claims four channels run as ONE
+ * engine, so all four are readable at once rather than revealed one at a time.
+ * The channels are plotted as stations on a single rising momentum line: the
+ * canvas curve is fed the measured node positions, so it literally climbs
+ * through them (see initGrowthMomentum).
+ *
+ * Deliberately surface-less — no panels, bezels, or chip pills. Creative owns
+ * editorial rows + purple pills, Software owns the spec sheet + mono chips;
+ * Growth reads as a chart drawn straight onto the navy.
+ *
+ * Layout modes:
+ *   ≥1280px — plot band (climbing nodes + stems) above a 4-column station grid
+ *   <1280px — one vertical rail with the same nodes running down the left edge
+ */
 import ServiceIcon from "./ServiceIcon.astro";
 
 interface Card {
@@ -30,145 +47,257 @@ const {
 
 const titleId = `${id}-title`;
 const total = cards.length;
+
+// Station positions inside the plot band. X sits at each column's centre; Y
+// climbs so the line rises left → right. The stem then reaches from the node
+// down past the band's bottom edge to the station heading beneath it.
+const BAND = 180; // px — keep in sync with the band's height class below
+const nodeX = (i: number) => ((i + 0.5) / total) * 100;
+const nodeY = (i: number) => 80 - (i / (total - 1)) * 68;
+const stem = (i: number) => `calc(${(BAND * (1 - nodeY(i) / 100)).toFixed(1)}px + 2.5rem)`;
 ---
 
 <section
   id={id}
-  class="relative overflow-clip isolation-isolate bg-navy-800 text-cream"
+  class="growth relative overflow-clip isolation-isolate bg-navy-800 text-cream py-24 md:py-32"
   data-offering-growth
   aria-labelledby={titleId}
 >
-  {/* Momentum field — sticky on desktop for the cascade, absolute wash on mobile. */}
+  {/* Momentum field — the climbing line + rising motes, behind everything. */}
+  <canvas
+    class="absolute inset-0 w-full h-full z-0 pointer-events-none"
+    data-growth-motion
+    aria-hidden="true"
+  ></canvas>
+
+  <div class="relative z-10 max-w-[1400px] mx-auto px-[var(--spacing-gutter)]">
+    {/* Header — headline left, promise right, so it stops eating a viewport. */}
+    <header class="flex flex-col md:flex-row md:items-end justify-between gap-8 md:gap-16">
+      <div>
+        {eyebrow && <p class="eyebrow text-teal mb-6">{eyebrow}</p>}
+        <h2 id={titleId} class="text-display-lg md:text-display-xl tracking-tighter leading-none text-cream">
+          {titleLead}<br /><span class="text-teal">{titleAccent}</span>
+        </h2>
+      </div>
+      <p class="text-lead text-cream/70 max-w-[34ch] md:mb-3">
+        {sub}
+      </p>
+    </header>
+
+    {/* Plot band — node markers on the climb, with stems dropping to the
+        stations below. Wide viewports only; the rail takes over under xl. */}
+    <div class="growth-plot hidden xl:block relative h-[180px] mt-20" data-growth-plot aria-hidden="true">
+      {cards.map((_c, i) => (
+        <span
+          class="growth-node"
+          data-growth-anchor
+          style={`--nx:${nodeX(i)}%; --ny:${nodeY(i)}%; --stem:${stem(i)};`}
+        >
+          <span class="growth-node__ring"></span>
+        </span>
+      ))}
+    </div>
+
+    {/* Stations */}
+    <ol class="growth-stations mt-12 xl:mt-8 grid grid-cols-1 xl:grid-cols-4 gap-x-8 gap-y-14" data-growth-stations>
+      {cards.map((c) => (
+        <li class="growth-station relative" data-growth-station>
+          <div class="flex items-center gap-3 mb-5">
+            <span class="font-display text-sm font-semibold tracking-widest text-teal tabular-nums">{c.number}</span>
+            <ServiceIcon title={c.title} class="w-5 h-5 text-teal-bright shrink-0" />
+          </div>
+
+          <h3 class="growth-station__title font-display text-2xl xl:text-[1.75rem] font-semibold tracking-tight leading-tight text-cream mb-3">
+            {c.title}
+          </h3>
+
+          <p class="text-[15px] xl:text-base text-cream/65 leading-relaxed max-w-[46ch]">{c.desc}</p>
+
+          <p class="growth-station__tags mt-5 max-w-[46ch]" aria-label="What this includes">
+            {c.tags.map((t, ti) => (
+              <>
+                {ti > 0 && <span class="growth-station__sep" aria-hidden="true">·</span>}
+                <span>{t}</span>
+              </>
+            ))}
+          </p>
+        </li>
+      ))}
+    </ol>
+  </div>
+
+  {/* Ambient background blob — base wash behind the canvas. */}
   <div
-    class="pointer-events-none z-0 absolute inset-0 md:sticky md:top-0 md:h-[100dvh] md:-mb-[100dvh] md:inset-auto"
+    class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[80vmax] h-[80vmax] bg-teal/5 rounded-full pointer-events-none z-0 md:blur-[120px]"
     aria-hidden="true"
   >
-    <canvas class="w-full h-full opacity-70 md:opacity-100" data-growth-motion></canvas>
   </div>
-
-  <div class="section-shell relative z-10 max-w-[1400px] mx-auto pb-12 md:pb-24 pt-24 md:pt-40">
-    {eyebrow && <p class="eyebrow text-teal mb-6">{eyebrow}</p>}
-    <h2 id={titleId} class="text-display-lg md:text-display-xl tracking-tighter leading-none max-w-4xl text-cream">
-      {titleLead}<br /><span class="text-teal">{titleAccent}</span>
-    </h2>
-    <p class="text-lead text-cream/70 max-w-2xl mt-6">
-      {sub}
-    </p>
-  </div>
-
-  {/* Z-Axis Sticky Cascade - GSAP target container.
-      Mobile uses a normal vertical list; sticky stack is desktop-only. */}
-  <div class="relative z-10 pb-16 md:pb-40" data-growth-stack-container>
-
-    {cards.map((c, i) => (
-      <div class="growth-stack-card relative z-10 md:sticky md:top-0 md:min-h-[100dvh] flex items-center justify-center py-6 md:py-12 px-4 pointer-events-none">
-
-        {/* The visible stage panel */}
-        <article class="group relative p-1.5 rounded-[2rem] bg-white/5 ring-1 ring-white/10 overflow-hidden flex flex-col w-full max-w-3xl pointer-events-auto md:will-change-transform shadow-[0_40px_90px_-30px_rgba(0,0,0,0.75)]">
-          {/* Inner Core (Double-Bezel) */}
-          <div class="relative flex flex-col flex-1 h-full rounded-[calc(2rem-6px)] bg-navy-700 p-8 md:p-12 shadow-[inset_0_1px_1px_rgba(255,255,255,0.1)] transition-transform duration-700 ease-[cubic-bezier(0.32,0.72,0,1)] group-hover:scale-[0.985] origin-center z-10 overflow-hidden">
-
-            {/* Oversized ghosted stage numeral */}
-            <span class="pointer-events-none absolute -top-8 -right-3 md:-top-12 md:-right-5 font-display font-semibold leading-none text-[8rem] md:text-[13rem] text-white/[0.045] select-none tabular-nums">{c.number}</span>
-
-            <div class="flex items-center justify-between mb-8 relative z-10">
-              <span class="font-display text-sm font-semibold tracking-widest text-teal tabular-nums">{c.number}</span>
-              {/* Ascending stage indicator — fills as you climb 01 → 04 */}
-              <div class="flex items-center gap-1.5" aria-label={`Stage ${i + 1} of ${total}`}>
-                {Array.from({ length: total }).map((_, s) => (
-                  <span class={`h-[3px] rounded-full transition-all duration-500 ${s <= i ? "w-7 bg-teal-bright" : "w-3 bg-white/15"}`}></span>
-                ))}
-              </div>
-            </div>
-
-            {/* Service mark */}
-            <div class="relative z-10 mb-7">
-              <span class="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-teal/10 ring-1 ring-teal/15 text-teal-bright shadow-[inset_0_1px_1px_rgba(255,255,255,0.12)] transition-transform duration-700 ease-[cubic-bezier(0.32,0.72,0,1)] group-hover:scale-105 group-hover:-translate-y-0.5">
-                <ServiceIcon title={c.title} class="w-7 h-7" />
-              </span>
-            </div>
-
-            <div class="flex-1 relative z-10">
-              <h3 class="font-display text-3xl md:text-4xl font-semibold tracking-tight text-cream mb-4">{c.title}</h3>
-              <p class="text-lg md:text-xl text-cream/70 leading-relaxed max-w-[45ch]">{c.desc}</p>
-            </div>
-
-            <ul class="flex flex-wrap gap-2 mt-12 relative z-10" aria-label="What this includes">
-              {c.tags.map((t) => (
-                <li class="px-3 py-1 text-[10px] uppercase font-semibold tracking-widest text-teal-bright bg-teal/15 rounded-full ring-1 ring-teal/20">
-                  {t}
-                </li>
-              ))}
-            </ul>
-
-          </div>
-        </article>
-      </div>
-    ))}
-  </div>
-
-  {/* Ambient background blob for dark mode (base wash behind the canvas) */}
-  <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[80vmax] h-[80vmax] bg-teal/5 blur-[120px] rounded-full pointer-events-none z-0"></div>
 </section>
 
+<style>
+  /* ── Plot band: node markers + stems ──────────────────────────────────── */
+  .growth-node {
+    position: absolute;
+    left: var(--nx);
+    top: var(--ny);
+    width: 0;
+    height: 0;
+  }
+
+  .growth-node__ring {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 13px;
+    height: 13px;
+    margin: -6.5px 0 0 -6.5px;
+    border-radius: 50%;
+    border: 1.5px solid var(--color-teal);
+    background: var(--color-navy-800);
+    transition:
+      transform var(--duration-base) var(--ease-out-soft),
+      border-color var(--duration-base) var(--ease-out-soft),
+      box-shadow var(--duration-base) var(--ease-out-soft);
+  }
+
+  /* Stem: node → the station beneath it. Length varies with the climb, which
+     is what makes the four columns read as plotted rather than merely offset. */
+  .growth-node::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 1px;
+    height: var(--stem);
+    background: linear-gradient(
+      to bottom,
+      color-mix(in srgb, var(--color-teal) 30%, transparent),
+      transparent
+    );
+  }
+
+  /* Hovering a station lights its node up on the line above (set from JS). */
+  .growth-node.is-active .growth-node__ring {
+    transform: scale(1.45);
+    border-color: var(--color-teal-bright);
+    box-shadow: 0 0 16px 1px color-mix(in srgb, var(--color-teal-bright) 45%, transparent);
+  }
+
+  /* ── Stations ─────────────────────────────────────────────────────────── */
+  .growth-station__title {
+    transition: color var(--duration-base) var(--ease-out-soft);
+  }
+
+  .growth-station:hover .growth-station__title {
+    color: var(--color-teal-bright);
+  }
+
+  /* Tags as an inline mono run — no pills, no chips, no container. */
+  .growth-station__tags {
+    font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, monospace;
+    font-size: 0.6875rem;
+    line-height: 1.9;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: color-mix(in srgb, var(--color-teal) 78%, transparent);
+  }
+
+  .growth-station__sep {
+    color: color-mix(in srgb, var(--color-cream) 28%, transparent);
+    margin: 0 0.5em;
+  }
+
+  /* ── Rail (< xl): the same climb, running down the left edge ──────────── */
+  @media (max-width: 1279px) {
+    .growth-stations {
+      border-left: 1px solid color-mix(in srgb, var(--color-teal) 22%, transparent);
+      padding-left: 2rem;
+    }
+
+    .growth-station::before {
+      content: "";
+      position: absolute;
+      top: 0.4rem;
+      left: -2rem;
+      width: 11px;
+      height: 11px;
+      margin-left: -6px;
+      border-radius: 50%;
+      border: 1.5px solid var(--color-teal);
+      background: var(--color-navy-800);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .growth-node__ring,
+    .growth-station__title {
+      transition: none;
+    }
+  }
+</style>
+
 <script>
-  import { gsap, ScrollTrigger, initGsap } from "../lib/gsap";
-  import { prefersReducedMotion } from "../lib/motion";
-  import { initGrowthMomentum } from "../lib/offeringMotion";
+  import { ScrollTrigger, initGsap } from "../lib/gsap";
+  import { isCoarsePointer, prefersReducedMotion } from "../lib/motion";
+  import { initGrowthMomentum, type Point } from "../lib/offeringMotion";
+  import { reveal } from "../lib/reveal";
 
   initGsap();
   const reduced = prefersReducedMotion();
+  const coarse = isCoarsePointer();
 
   document.querySelectorAll<HTMLElement>("[data-offering-growth]").forEach((section) => {
-    const container = section.querySelector<HTMLElement>("[data-growth-stack-container]");
-    if (!container) return;
-
-    // Momentum field
     const canvas = section.querySelector<HTMLCanvasElement>("[data-growth-motion]");
-    const scene = canvas ? initGrowthMomentum(canvas) : null;
+    const plot = section.querySelector<HTMLElement>("[data-growth-plot]");
+    const stations = Array.from(section.querySelectorAll<HTMLElement>("[data-growth-station]"));
+    if (!canvas) return;
 
-    // Feed scroll progress so the line literally grows as cards advance.
-    if (scene && !reduced) {
-      ScrollTrigger.create({
-        trigger: container,
-        start: "top top",
-        end: "bottom bottom",
-        onUpdate: (self) => scene.setProgress(self.progress),
+    const nodes = plot ? Array.from(plot.querySelectorAll<HTMLElement>("[data-growth-anchor]")) : [];
+
+    /**
+     * Station positions normalized against the canvas box, so the momentum line
+     * passes through each marker. Returns null when the plot is hidden (rail
+     * layout under xl) — the scene then draws its generic ascending curve.
+     */
+    function anchors(): Point[] | null {
+      if (!plot || !nodes.length || plot.offsetParent === null) return null;
+      const box = canvas!.getBoundingClientRect();
+      if (!box.width || !box.height) return null;
+      return nodes.map((n) => {
+        const r = n.getBoundingClientRect();
+        return {
+          x: (r.left + r.width / 2 - box.left) / box.width,
+          y: (r.top + r.height / 2 - box.top) / box.height,
+        };
       });
     }
 
-    // Desktop-only Z-axis stack pin/fade. Mobile stays a normal vertical list.
-    if (!reduced && window.innerWidth >= 768) {
-      const cards = gsap.utils.toArray<HTMLElement>(container.querySelectorAll(".growth-stack-card"));
-      cards.forEach((card, i) => {
-        if (i === cards.length - 1) return;
-        const innerArticle = card.querySelector("article");
-        if (!innerArticle) return;
+    const scene = initGrowthMomentum(canvas, { anchors });
 
-        ScrollTrigger.create({
-          trigger: card,
-          start: "top top",
-          endTrigger: cards[cards.length - 1],
-          end: "top top",
-          pin: true,
-          pinSpacing: false,
-        });
+    // Scrubbed climb: the line completes as the plot settles into view. Touch
+    // and reduced-motion get the finished line, frozen — scroll stays native.
+    if (!reduced && !coarse) {
+      ScrollTrigger.create({
+        trigger: section,
+        start: "top 70%",
+        end: "center center",
+        scrub: true,
+        onUpdate: (self) => scene.setProgress(self.progress),
+      });
+    } else {
+      scene.setProgress(1);
+      scene.pause();
+    }
 
-        gsap.to(innerArticle, {
-          scale: 0.9,
-          opacity: 0,
-          y: -40,
-          ease: "none",
-          scrollTrigger: {
-            trigger: cards[i + 1],
-            start: "top bottom",
-            end: "top top",
-            scrub: true,
-          },
-        });
+    reveal(stations, { trigger: plot ?? stations[0] });
+
+    // Hovering a station lights its node on the line above it.
+    if (!coarse && nodes.length === stations.length) {
+      stations.forEach((station, i) => {
+        const ring = nodes[i];
+        station.addEventListener("mouseenter", () => ring.classList.add("is-active"));
+        station.addEventListener("mouseleave", () => ring.classList.remove("is-active"));
       });
     }
   });
-
-  window.addEventListener("resize", () => ScrollTrigger.refresh());
 </script>
