@@ -131,8 +131,9 @@ const image = preferAbstract ? undefined : step.visual.image;
     z-index: 1;
     background: linear-gradient(
       180deg,
-      color-mix(in srgb, var(--color-navy) 4%, transparent),
-      color-mix(in srgb, var(--color-navy) 42%, transparent)
+      color-mix(in srgb, var(--color-navy) 0%, transparent) 35%,
+      color-mix(in srgb, var(--color-navy) 28%, transparent) 72%,
+      color-mix(in srgb, var(--color-navy) 55%, transparent)
     );
     pointer-events: none;
   }

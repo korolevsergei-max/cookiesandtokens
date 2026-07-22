@@ -116,7 +116,7 @@ export const caseStudies: CaseStudy[] = [
           ],
           image: restaurantContextImage,
           alt:
-            "Abstract art of fragmented navy planes and purple-teal signal lines that nearly meet but stay disconnected.",
+            "Quiet plant-based restaurant interior with unused digital ordering screens and empty booths.",
         },
       },
       {
@@ -137,7 +137,7 @@ export const caseStudies: CaseStudy[] = [
           ],
           image: restaurantApproachImage,
           alt:
-            "Abstract art of luminous purple and teal beams converging into one focal point across navy and cream.",
+            "Growth desk with campaign printouts, channel notes, and a laptop used to reallocate paid media.",
         },
       },
       {
@@ -159,7 +159,7 @@ export const caseStudies: CaseStudy[] = [
           ],
           image: restaurantOutcomeImage,
           alt:
-            "Abstract art of expanding teal and violet ripples rising from a navy base on cream, suggesting compounding growth.",
+            "Busy restaurant kitchen pass with lined-up takeout orders during peak service.",
         },
       },
     ],
@@ -206,7 +206,7 @@ export const caseStudies: CaseStudy[] = [
           ],
           image: retailContextImage,
           alt:
-            "Abstract art of misaligned teal lattice and purple constellation systems divided by navy voids.",
+            "Specialty retail aisle beside an unused loyalty signup tablet at the register.",
         },
       },
       {
@@ -228,7 +228,7 @@ export const caseStudies: CaseStudy[] = [
           ],
           image: retailApproachImage,
           alt:
-            "Abstract art of purple and teal ribbons orbiting a calm cream center in a continuous cadence.",
+            "Desk setup for loyalty email planning with member benefit cards and campaign drafts.",
         },
       },
       {
@@ -250,7 +250,7 @@ export const caseStudies: CaseStudy[] = [
           ],
           image: retailOutcomeImage,
           alt:
-            "Abstract art of a dense blooming constellation of teal and purple nodes across cream and navy.",
+            "Crowded specialty retail floor with shoppers using phones and loyalty cards.",
         },
       },
     ],
@@ -298,7 +298,7 @@ export const caseStudies: CaseStudy[] = [
           ],
           image: medicalContextImage,
           alt:
-            "Abstract cinematic art of a narrow teal aperture of light cutting through navy fog onto cream.",
+            "Empty medical clinic waiting room with spaced chairs and a quiet reception desk.",
         },
       },
       {
@@ -321,7 +321,7 @@ export const caseStudies: CaseStudy[] = [
           ],
           image: medicalApproachImage,
           alt:
-            "Abstract Bauhaus art of modular cream panels with three teal and purple pilot beams entering a navy frame.",
+            "Clinic website rebuild desk with wireframes, SEO notes, and channel pilot planning.",
         },
       },
       {
@@ -344,7 +344,7 @@ export const caseStudies: CaseStudy[] = [
           ],
           image: medicalOutcomeImage,
           alt:
-            "Abstract art of expanding teal and soft purple concentric rings pulsing over cream with navy depth.",
+            "Busy diagnostic clinic reception with patients checking in and staff at computers.",
         },
       },
     ],
@@ -392,7 +392,7 @@ export const caseStudies: CaseStudy[] = [
           ],
           image: realEstateContextImage,
           alt:
-            "Abstract art of stacked navy planes compressing a thin teal horizon of deadline pressure on cream.",
+            "Quiet pre-construction sales gallery with an architectural model and sparse inquiry cards.",
         },
       },
       {
@@ -414,7 +414,7 @@ export const caseStudies: CaseStudy[] = [
           ],
           image: realEstateApproachImage,
           alt:
-            "Abstract kinetic art of a sharp teal trajectory cutting across cream into a structured purple and navy plane.",
+            "Late-night landing page and ad creative build on dual monitors with floorplans nearby.",
         },
       },
       {
@@ -437,7 +437,7 @@ export const caseStudies: CaseStudy[] = [
           ],
           image: realEstateOutcomeImage,
           alt:
-            "Abstract art of cascading purple and teal luminous nodes flowing into a cream basin over navy.",
+            "Busy pre-construction open house with buyers touring a staged condo and a sales associate taking interest.",
         },
       },
     ],
