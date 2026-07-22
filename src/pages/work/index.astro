@@ -2,23 +2,8 @@
 import BaseLayout from "../../layouts/BaseLayout.astro";
 import Nav from "../../components/Nav.astro";
 import Footer from "../../components/Footer.astro";
-import CaseStudyCard from "../../components/CaseStudyCard.astro";
-import {
-  caseStudies,
-  serviceAreaLabels,
-  serviceAreaOrder,
-  type CaseStudy,
-} from "../../data/caseStudies";
-
-const groups = serviceAreaOrder
-  .map((area) => ({
-    area,
-    label: serviceAreaLabels[area],
-    studies: caseStudies.filter((study) => study.serviceArea === area),
-  }))
-  .filter((group): group is typeof group & { studies: CaseStudy[] } =>
-    group.studies.length > 0
-  );
+import WorkIndexItem from "../../components/WorkIndexItem.astro";
+import { caseStudies } from "../../data/caseStudies";
 ---
 
 <BaseLayout
@@ -28,8 +13,8 @@ const groups = serviceAreaOrder
   <Nav />
 
   <main>
-    <section class="work-index" aria-labelledby="work-index-title">
-      <header class="work-index__hero">
+    <section class="work-index" data-work-index aria-labelledby="work-index-title">
+      <header class="work-index__hero" data-work-index-intro>
         <a href="/" class="work-index__back" data-cursor="link">Back to site</a>
         <p class="eyebrow work-index__eyebrow">Selected Work</p>
         <div class="work-index__headline">
@@ -41,18 +26,10 @@ const groups = serviceAreaOrder
         </div>
       </header>
 
-      <div class="work-index__groups">
+      <div class="work-index__list" data-work-index-list>
         {
-          groups.map((group) => (
-            <section class="work-index__group" aria-labelledby={`work-${group.area}`}>
-              <header class="work-index__group-head">
-                <p>{group.studies.length} {group.studies.length === 1 ? "story" : "stories"}</p>
-                <h2 id={`work-${group.area}`}>{group.label}</h2>
-              </header>
-              <div class="work-index__cards">
-                {group.studies.map((study, index) => <CaseStudyCard study={study} index={index} />)}
-              </div>
-            </section>
+          caseStudies.map((study, index) => (
+            <WorkIndexItem study={study} variant="full" index={index} />
           ))
         }
       </div>
@@ -81,7 +58,7 @@ const groups = serviceAreaOrder
   }
 
   .work-index__hero,
-  .work-index__groups {
+  .work-index__list {
     max-width: 88rem;
     margin-inline: auto;
   }
@@ -140,58 +117,26 @@ const groups = serviceAreaOrder
     text-wrap: pretty;
   }
 
-  .work-index__groups {
-    display: grid;
-    gap: clamp(4rem, 9vw, 8rem);
-    margin-top: clamp(4rem, 9vw, 8rem);
-  }
-
-  .work-index__group {
-    display: grid;
-    grid-template-columns: minmax(8rem, 0.2fr) minmax(0, 1fr);
-    gap: clamp(1.5rem, 4vw, 4rem);
-    align-items: start;
-  }
-
-  .work-index__group-head {
-    position: sticky;
-    top: var(--scroll-offset);
-    padding-top: 0.3rem;
-  }
-
-  .work-index__group-head p {
-    margin: 0 0 0.5rem;
-    color: var(--color-purple-deep);
-    font-size: 0.72rem;
-    font-weight: 700;
-    letter-spacing: 0.13em;
-    text-transform: uppercase;
-  }
-
-  .work-index__group-head h2 {
-    margin: 0;
-    font-size: clamp(1.45rem, 2.4vw, 2.2rem);
-    letter-spacing: -0.03em;
-  }
-
-  .work-index__cards {
-    display: grid;
-    gap: clamp(1.25rem, 3vw, 2.5rem);
-    min-width: 0;
+  .work-index__list {
+    margin-top: clamp(3.5rem, 8vw, 6.5rem);
   }
 
   @media (max-width: 900px) {
-    .work-index__headline,
-    .work-index__group {
+    .work-index__headline {
       grid-template-columns: minmax(0, 1fr);
-    }
-
-    .work-index__group-head {
-      position: static;
-      display: flex;
-      align-items: end;
-      justify-content: space-between;
-      gap: 1rem;
     }
   }
 </style>
+
+<script>
+  import { reveal } from "../../lib/reveal";
+
+  const root = document.querySelector<HTMLElement>("[data-work-index]");
+  if (root) {
+    reveal(root.querySelector("[data-work-index-intro]"), { trigger: root, y: 24 });
+    reveal(root.querySelectorAll("[data-work-item]"), {
+      trigger: root.querySelector("[data-work-index-list]"),
+      stagger: 0.1,
+    });
+  }
+</script>

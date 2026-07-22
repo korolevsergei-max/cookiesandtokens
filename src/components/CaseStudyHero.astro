@@ -1,30 +1,74 @@
 ---
-import type { CaseStudy } from "../data/caseStudies";
+import { Image } from "astro:assets";
+import {
+  serviceAreaLabels,
+  type CaseStudy,
+} from "../data/caseStudies";
 
 interface Props {
   study: CaseStudy;
 }
 
 const { study } = Astro.props;
+const heroStep = study.steps[0];
+const heroImage = heroStep.visual.image;
+const areaLabel = serviceAreaLabels[study.serviceArea];
+const accent =
+  study.serviceArea === "growth" ? "teal" : "purple";
 ---
 
-<header class="story-hero">
+<header
+  class:list={["story-hero", `story-hero--${accent}`]}
+  data-story-hero
+>
   <div class="story-hero__inner">
-    <a href="/work/" class="story-hero__back" data-cursor="link">Back to work</a>
-    <p class="eyebrow story-hero__eyebrow">{study.industry} / {study.year}</p>
-    <h1>{study.title}</h1>
-    <p class="story-hero__summary">{study.summary}</p>
+    <div class="story-hero__copy" data-story-hero-copy>
+      <a href="/work/" class="story-hero__back" data-cursor="link">Back to work</a>
+      <p class="eyebrow story-hero__eyebrow">
+        {areaLabel} · {study.industry} · {study.year}
+      </p>
+      <h1>{study.title}</h1>
+      <p class="story-hero__summary">{study.summary}</p>
+    </div>
 
-    <dl class="story-hero__metrics" aria-label="Headline outcomes">
+    <figure
+      class:list={["story-hero__visual", heroImage && "story-hero__visual--image"]}
+      data-story-hero-visual
+      aria-label={heroImage ? undefined : heroStep.visual.alt}
+      role={heroImage ? undefined : "img"}
+    >
       {
-        study.metrics.map((metric) => (
-          <div>
-            <dt>{metric.label}</dt>
-            <dd>{metric.value}</dd>
+        heroImage ? (
+          <Image
+            src={heroImage}
+            alt={heroStep.visual.alt}
+            class="story-hero__image"
+            widths={[640, 960, 1280, 1600]}
+            sizes="(max-width: 900px) 100vw, 48vw"
+            format="webp"
+            quality={88}
+            loading="eager"
+            fetchpriority="high"
+          />
+        ) : (
+          <div
+            class:list={[
+              "story-hero__abstract",
+              `story-hero__abstract--${study.slug.split("-")[0]}`,
+            ]}
+            aria-hidden="true"
+          >
+            <span class="story-hero__ring story-hero__ring--a"></span>
+            <span class="story-hero__ring story-hero__ring--b"></span>
+            <span class="story-hero__beam story-hero__beam--a"></span>
+            <span class="story-hero__beam story-hero__beam--b"></span>
+            <span class="story-hero__block story-hero__block--a"></span>
+            <span class="story-hero__block story-hero__block--b"></span>
+            <span class="story-hero__block story-hero__block--c"></span>
           </div>
-        ))
+        )
       }
-    </dl>
+    </figure>
   </div>
 </header>
 
@@ -33,11 +77,11 @@ const { study } = Astro.props;
     position: relative;
     overflow: clip;
     padding-inline: var(--spacing-gutter);
-    padding-block: clamp(8rem, 18vh, 13rem) clamp(4rem, 10vh, 8rem);
+    padding-block: clamp(7.5rem, 16vh, 11rem) clamp(2.5rem, 6vh, 4rem);
     color: var(--color-cream);
     background:
       radial-gradient(
-        circle at 78% 18%,
+        circle at 82% 18%,
         color-mix(in srgb, var(--color-teal) 16%, transparent),
         transparent 32rem
       ),
@@ -49,18 +93,26 @@ const { study } = Astro.props;
       var(--color-navy);
   }
 
-  .story-hero::after {
-    content: "";
-    position: absolute;
-    inset-inline: var(--spacing-gutter);
-    bottom: 0;
-    height: 1px;
-    background: color-mix(in srgb, var(--color-cream) 12%, transparent);
+  .story-hero--purple {
+    background:
+      radial-gradient(
+        circle at 78% 16%,
+        color-mix(in srgb, var(--color-purple) 22%, transparent),
+        transparent 30rem
+      ),
+      radial-gradient(
+        circle at 14% 88%,
+        color-mix(in srgb, var(--color-teal) 12%, transparent),
+        transparent 26rem
+      ),
+      var(--color-navy);
   }
 
   .story-hero__inner {
-    position: relative;
-    z-index: 1;
+    display: grid;
+    grid-template-columns: minmax(0, 0.95fr) minmax(0, 1.05fr);
+    gap: clamp(2rem, 5vw, 4.5rem);
+    align-items: end;
     max-width: 88rem;
     margin-inline: auto;
   }
@@ -69,7 +121,7 @@ const { study } = Astro.props;
     display: inline-flex;
     align-items: center;
     min-height: 44px;
-    margin-bottom: clamp(2rem, 5vw, 4rem);
+    margin-bottom: clamp(1.5rem, 4vw, 2.75rem);
     color: color-mix(in srgb, var(--color-cream) 62%, transparent);
     font-size: 0.86rem;
     font-weight: 600;
@@ -91,64 +143,242 @@ const { study } = Astro.props;
   }
 
   .story-hero__eyebrow {
-    margin: 0 0 1.2rem;
+    margin: 0 0 1.1rem;
     color: var(--color-teal);
   }
 
+  .story-hero--purple .story-hero__eyebrow {
+    color: color-mix(in srgb, var(--color-purple) 70%, var(--color-cream));
+  }
+
   .story-hero h1 {
-    max-width: 12ch;
+    max-width: 11ch;
     margin: 0;
-    font-size: clamp(3.2rem, 10vw, 9rem);
-    line-height: 0.92;
-    letter-spacing: -0.055em;
+    font-size: clamp(2.8rem, 7.5vw, 6.8rem);
+    line-height: 0.94;
+    letter-spacing: -0.05em;
   }
 
   .story-hero__summary {
-    max-width: 46rem;
-    margin: clamp(1.5rem, 3vw, 2.4rem) 0 0;
+    max-width: 36rem;
+    margin: clamp(1.25rem, 2.5vw, 1.85rem) 0 0;
     color: color-mix(in srgb, var(--color-cream) 72%, transparent);
-    font-size: clamp(1.15rem, 2vw, 1.55rem);
+    font-size: clamp(1.05rem, 1.7vw, 1.3rem);
     line-height: 1.55;
     text-wrap: pretty;
   }
 
-  .story-hero__metrics {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(12rem, 1fr));
-    gap: clamp(1rem, 3vw, 2rem);
-    max-width: 62rem;
-    margin: clamp(3rem, 7vw, 5.5rem) 0 0;
+  .story-hero__visual {
+    position: relative;
+    overflow: hidden;
+    margin: 0;
+    min-height: clamp(22rem, 38vw, 34rem);
+    border-radius: clamp(1.1rem, 2.2vw, 1.8rem);
+    background: var(--color-cream);
+    isolation: isolate;
   }
 
-  .story-hero__metrics div {
-    padding-top: 1rem;
-    border-top: 1px solid color-mix(in srgb, var(--color-cream) 16%, transparent);
+  .story-hero__visual::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    border: 1px solid color-mix(in srgb, var(--color-cream) 14%, transparent);
+    border-radius: inherit;
+    z-index: 4;
   }
 
-  .story-hero__metrics dt {
-    color: color-mix(in srgb, var(--color-cream) 56%, transparent);
-    font-size: 0.82rem;
-    line-height: 1.35;
+  .story-hero__image {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
   }
 
-  .story-hero__metrics dd {
-    margin: 0.5rem 0 0;
-    color: var(--color-teal);
-    font-family: var(--font-display);
-    font-size: clamp(2.6rem, 6vw, 5.5rem);
-    font-variant-numeric: tabular-nums;
-    font-weight: 600;
-    letter-spacing: -0.05em;
-    line-height: 0.85;
+  .story-hero__visual--image::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    background: linear-gradient(
+      200deg,
+      transparent 55%,
+      color-mix(in srgb, var(--color-navy) 18%, transparent)
+    );
+    pointer-events: none;
   }
 
-  @media (max-width: 760px) {
-    .story-hero {
-      padding-block-start: 6.5rem;
+  .story-hero__abstract {
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(
+        circle at 78% 18%,
+        color-mix(in srgb, var(--color-teal) 28%, transparent),
+        transparent 16rem
+      ),
+      radial-gradient(
+        circle at 18% 82%,
+        color-mix(in srgb, var(--color-purple) 22%, transparent),
+        transparent 15rem
+      ),
+      var(--color-cream);
+  }
+
+  .story-hero__abstract--retail {
+    background:
+      radial-gradient(
+        circle at 70% 30%,
+        color-mix(in srgb, var(--color-purple) 30%, transparent),
+        transparent 18rem
+      ),
+      radial-gradient(
+        circle at 20% 70%,
+        color-mix(in srgb, var(--color-teal) 20%, transparent),
+        transparent 14rem
+      ),
+      var(--color-cream);
+  }
+
+  .story-hero__abstract--medical {
+    background:
+      radial-gradient(
+        circle at 50% 20%,
+        color-mix(in srgb, var(--color-purple) 26%, transparent),
+        transparent 16rem
+      ),
+      radial-gradient(
+        circle at 80% 80%,
+        color-mix(in srgb, var(--color-teal) 18%, transparent),
+        transparent 12rem
+      ),
+      var(--color-cream);
+  }
+
+  .story-hero__abstract--real {
+    background:
+      radial-gradient(
+        circle at 25% 25%,
+        color-mix(in srgb, var(--color-teal) 32%, transparent),
+        transparent 15rem
+      ),
+      radial-gradient(
+        circle at 85% 65%,
+        color-mix(in srgb, var(--color-purple) 18%, transparent),
+        transparent 14rem
+      ),
+      var(--color-cream);
+  }
+
+  .story-hero__ring,
+  .story-hero__beam,
+  .story-hero__block {
+    position: absolute;
+    display: block;
+  }
+
+  .story-hero__ring {
+    border: 1px solid color-mix(in srgb, var(--color-navy) 14%, transparent);
+    border-radius: 999px;
+  }
+
+  .story-hero__ring--a {
+    width: 62%;
+    aspect-ratio: 1;
+    left: 6%;
+    top: 12%;
+  }
+
+  .story-hero__ring--b {
+    width: 40%;
+    aspect-ratio: 1;
+    right: 8%;
+    bottom: 14%;
+  }
+
+  .story-hero__beam {
+    height: 2px;
+    background: linear-gradient(90deg, var(--color-purple), var(--color-teal));
+    opacity: 0.55;
+    transform-origin: left center;
+  }
+
+  .story-hero__beam--a {
+    width: 55%;
+    left: 16%;
+    top: 42%;
+    transform: rotate(-14deg);
+  }
+
+  .story-hero__beam--b {
+    width: 42%;
+    left: 34%;
+    top: 58%;
+    transform: rotate(16deg);
+  }
+
+  .story-hero__block {
+    width: clamp(3.8rem, 8vw, 6.2rem);
+    aspect-ratio: 1;
+    border-radius: 1.2rem;
+    box-shadow: 0 1.25rem 3rem color-mix(in srgb, var(--color-navy) 18%, transparent);
+  }
+
+  .story-hero__block--a {
+    left: 14%;
+    top: 24%;
+    background:
+      radial-gradient(circle at 35% 30%, var(--color-cream), transparent 32%),
+      var(--color-navy);
+  }
+
+  .story-hero__block--b {
+    right: 16%;
+    top: 34%;
+    background:
+      radial-gradient(circle at 35% 30%, var(--color-cream), transparent 32%),
+      var(--color-purple-deep);
+  }
+
+  .story-hero__block--c {
+    left: 42%;
+    bottom: 18%;
+    background:
+      radial-gradient(circle at 35% 30%, var(--color-cream), transparent 32%),
+      var(--color-teal-deep);
+  }
+
+  .story-hero__abstract--retail .story-hero__block--a {
+    border-radius: 999px;
+  }
+
+  .story-hero__abstract--medical .story-hero__beam--a {
+    transform: rotate(0deg);
+    width: 48%;
+    left: 26%;
+    top: 48%;
+  }
+
+  .story-hero__abstract--real .story-hero__ring--a {
+    width: 48%;
+    left: 28%;
+    top: 18%;
+  }
+
+  @media (max-width: 900px) {
+    .story-hero__inner {
+      grid-template-columns: minmax(0, 1fr);
+      align-items: start;
     }
 
-    .story-hero__metrics {
-      grid-template-columns: minmax(0, 1fr);
+    .story-hero__visual {
+      min-height: 22rem;
+      order: -1;
+    }
+
+    .story-hero {
+      padding-block-start: 6.25rem;
     }
   }
 </style>

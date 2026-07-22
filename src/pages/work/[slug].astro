@@ -3,13 +3,13 @@ import BaseLayout from "../../layouts/BaseLayout.astro";
 import Nav from "../../components/Nav.astro";
 import Footer from "../../components/Footer.astro";
 import CaseStudyHero from "../../components/CaseStudyHero.astro";
-import CaseStudyLocalNav from "../../components/CaseStudyLocalNav.astro";
+import CaseStudyProof from "../../components/CaseStudyProof.astro";
 import CaseStudySections from "../../components/CaseStudySections.astro";
-import CaseStudyPager from "../../components/CaseStudyPager.astro";
+import WorkNext from "../../components/WorkNext.astro";
 import CTA from "../../components/CTA.astro";
 import {
   caseStudies,
-  getAdjacentCaseStudies,
+  getNextCaseStudy,
 } from "../../data/caseStudies";
 
 export function getStaticPaths() {
@@ -24,7 +24,7 @@ interface Props {
 }
 
 const { study } = Astro.props;
-const { previous, next } = getAdjacentCaseStudies(study.slug);
+const next = getNextCaseStudy(study.slug);
 ---
 
 <BaseLayout
@@ -34,14 +34,47 @@ const { previous, next } = getAdjacentCaseStudies(study.slug);
   <Nav />
 
   <main>
-    <article>
+    <article data-case-study>
       <CaseStudyHero study={study} />
-      <CaseStudyLocalNav study={study} />
+      <CaseStudyProof study={study} />
       <CaseStudySections study={study} />
-      <CaseStudyPager previous={previous} next={next} />
+      {next && <WorkNext next={next} />}
     </article>
     <CTA />
   </main>
 
   <Footer />
 </BaseLayout>
+
+<script>
+  import { reveal, countUp } from "../../lib/reveal";
+
+  const root = document.querySelector<HTMLElement>("[data-case-study]");
+  if (root) {
+    reveal(root.querySelector("[data-story-hero-copy]"), {
+      trigger: root.querySelector("[data-story-hero]"),
+      y: 28,
+    });
+    reveal(root.querySelector("[data-story-hero-visual]"), {
+      trigger: root.querySelector("[data-story-hero]"),
+      y: 40,
+      delay: 0.12,
+    });
+    reveal(root.querySelector("[data-story-proof]"), {
+      trigger: root.querySelector("[data-story-proof]"),
+      y: 24,
+      pop: true,
+    });
+    root.querySelectorAll<HTMLElement>("[data-story-metric]").forEach((el) => {
+      countUp(el, { trigger: root.querySelector("[data-story-proof]") });
+    });
+    reveal(root.querySelectorAll("[data-story-chapter]"), {
+      trigger: root.querySelector("[data-story-narrative]"),
+      stagger: 0.12,
+    });
+    reveal(root.querySelector("[data-work-next]"), {
+      trigger: root.querySelector("[data-work-next]"),
+      y: 36,
+    });
+  }
+</script>

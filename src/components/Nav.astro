@@ -327,10 +327,7 @@ const isHome = pathname === "/" || pathname === "";
     const measure = () => {
       const height = nav.querySelector(".site-nav__inner")?.getBoundingClientRect().height ?? 72;
       document.documentElement.style.setProperty("--nav-height", `${height}px`);
-      const local = document.querySelector<HTMLElement>("[data-story-local-nav]");
-      const localHeight = local?.getBoundingClientRect().height ?? 0;
-      const offset = height + (local && getComputedStyle(local).position === "sticky" ? localHeight : 0) + 12;
-      document.documentElement.style.setProperty("--scroll-offset", `${offset}px`);
+      document.documentElement.style.setProperty("--scroll-offset", `${height + 12}px`);
     };
 
     measure();

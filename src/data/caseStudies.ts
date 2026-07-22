@@ -437,14 +437,22 @@ export function getCaseStudyBySlug(slug: string): CaseStudy | undefined {
   return caseStudies.find((study) => study.slug === slug);
 }
 
+/** Next study with wrap-around so the handoff never dead-ends. */
+export function getNextCaseStudy(slug: string): CaseStudy | undefined {
+  const index = caseStudies.findIndex((study) => study.slug === slug);
+  if (index < 0 || caseStudies.length === 0) return undefined;
+  return caseStudies[(index + 1) % caseStudies.length];
+}
+
 export function getAdjacentCaseStudies(slug: string): {
   previous?: CaseStudy;
   next?: CaseStudy;
 } {
   const index = caseStudies.findIndex((study) => study.slug === slug);
   if (index < 0) return {};
+  const last = caseStudies.length - 1;
   return {
-    previous: index > 0 ? caseStudies[index - 1] : undefined,
-    next: index < caseStudies.length - 1 ? caseStudies[index + 1] : undefined,
+    previous: index > 0 ? caseStudies[index - 1] : caseStudies[last],
+    next: getNextCaseStudy(slug),
   };
 }

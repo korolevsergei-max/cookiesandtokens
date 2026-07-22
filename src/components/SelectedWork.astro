@@ -1,20 +1,6 @@
 ---
-import CaseStudyGroup from "./CaseStudyGroup.astro";
-import {
-  caseStudies,
-  serviceAreaOrder,
-  type CaseStudy,
-} from "../data/caseStudies";
-
-const groups = serviceAreaOrder
-  .map((area, index) => ({
-    area,
-    number: String(index + 1).padStart(2, "0"),
-    studies: caseStudies.filter((study) => study.serviceArea === area),
-  }))
-  .filter((group): group is typeof group & { studies: CaseStudy[] } =>
-    group.studies.length > 0
-  );
+import WorkIndexItem from "./WorkIndexItem.astro";
+import { caseStudies } from "../data/caseStudies";
 ---
 
 <section
@@ -31,24 +17,20 @@ const groups = serviceAreaOrder
         The work is only good if it
         <span class="selected-work__accent">moves something.</span>
       </h2>
-      <p>The context, the calls we made, and what moved.</p>
+      <p>Four stories. The context, the calls, and what moved.</p>
     </div>
     <a href="/work/" class="selected-work__all" data-cursor="link">
-      View all work
+      All work
       <svg width="18" height="18" viewBox="0 0 18 18" fill="none" aria-hidden="true">
         <path d="M4 9h10M10 5l4 4-4 4" />
       </svg>
     </a>
   </header>
 
-  <div class="selected-work__groups">
+  <div class="selected-work__list" data-work-list>
     {
-      groups.map((group) => (
-        <CaseStudyGroup
-          area={group.area}
-          number={group.number}
-          studies={group.studies}
-        />
+      caseStudies.map((study, index) => (
+        <WorkIndexItem study={study} variant="compact" index={index} />
       ))
     }
   </div>
@@ -84,7 +66,7 @@ const groups = serviceAreaOrder
   }
 
   .selected-work__intro,
-  .selected-work__groups {
+  .selected-work__list {
     position: relative;
     z-index: 1;
     max-width: 88rem;
@@ -96,7 +78,7 @@ const groups = serviceAreaOrder
     grid-template-columns: minmax(0, 1fr) auto;
     gap: 1rem;
     align-items: end;
-    margin-bottom: clamp(3.5rem, 8vw, 7rem);
+    margin-bottom: clamp(2.5rem, 6vw, 4.5rem);
   }
 
   .selected-work__eyebrow {
@@ -188,9 +170,9 @@ const groups = serviceAreaOrder
   const root = document.querySelector<HTMLElement>("[data-selected-work]");
   if (root) {
     reveal(root.querySelector("[data-work-intro]"), { trigger: root });
-    reveal(root.querySelectorAll("[data-work-group]"), {
-      trigger: root.querySelector("[data-work-group]"),
-      stagger: 0.12,
+    reveal(root.querySelectorAll("[data-work-item]"), {
+      trigger: root.querySelector("[data-work-list]"),
+      stagger: 0.08,
     });
   }
 </script>
