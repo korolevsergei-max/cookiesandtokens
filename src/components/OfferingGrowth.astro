@@ -1,20 +1,18 @@
 ---
 /**
- * OfferingGrowth — the "Momentum Plot".
+ * OfferingGrowth — the "Signal Board".
  *
- * Growth is the only Offering section that claims four channels run as ONE
- * engine, so all four are readable at once rather than revealed one at a time.
- * The channels are plotted as stations on a single rising momentum line: the
- * canvas curve is fed the measured node positions, so it literally climbs
- * through them (see initGrowthMomentum).
+ * Four channels as an asymmetric bento: tile size carries importance, so the
+ * compounding channel most agencies skip gets the hero and paid media closes
+ * as a wide amplifier strip. Each tile is a real surface — gradient, grain,
+ * edge highlight, ambient shadow — with its own live micro-visual, because the
+ * previous flat-plot pass read as empty.
  *
- * Deliberately surface-less — no panels, bezels, or chip pills. Creative owns
- * editorial rows + purple pills, Software owns the spec sheet + mono chips;
- * Growth reads as a chart drawn straight onto the navy.
+ * Vocabularies elsewhere on the page: Creative owns editorial rows, Software
+ * owns the mono spec sheet, Industries owns expand-to-read dossiers. Asymmetric
+ * bento with embedded generative visuals is this section's alone.
  *
- * Layout modes:
- *   ≥1280px — plot band (climbing nodes + stems) above a 4-column station grid
- *   <1280px — one vertical rail with the same nodes running down the left edge
+ * Layout: bento at xl · hero + 2-up + wide at md · single stack below.
  */
 import ServiceIcon from "./ServiceIcon.astro";
 
@@ -46,33 +44,31 @@ const {
 } = Astro.props;
 
 const titleId = `${id}-title`;
-const total = cards.length;
 
-// Station positions inside the plot band. The band mirrors the station grid
-// (same columns, same gap) so each node lands dead centre over its column; only
-// Y varies, climbing left → right. The stem then reaches from the node down
-// past the band's bottom edge to the station heading beneath it.
-const BAND = 300; // px — keep in sync with the band's height class below
-const nodeY = (i: number) => 88 - (i / (total - 1)) * 80;
-const stem = (i: number) => `calc(${(BAND * (1 - nodeY(i) / 100)).toFixed(1)}px + 2.5rem)`;
+// Per-tile placement + which generative scene fills its visual band. Index
+// order matches the incoming cards (01 Organic → 04 Paid).
+const TILES = [
+  { kind: "mesh", area: "hero", glow: "28% 26%" },
+  { kind: "loop", area: "upper", glow: "70% 30%" },
+  { kind: "burst", area: "lower", glow: "50% 34%" },
+  { kind: "momentum", area: "wide", glow: "78% 60%" },
+] as const;
 ---
 
 <section
   id={id}
-  class="growth relative overflow-clip isolation-isolate bg-navy-800 text-cream py-24 md:py-32"
+  class="growth relative overflow-clip isolation-isolate bg-navy-800 text-cream py-24 md:py-28"
   data-offering-growth
   aria-labelledby={titleId}
 >
-  {/* Momentum field — the climbing line + rising motes, behind everything. */}
+  {/* Section backdrop — rising motes only; the tiles carry the real motion. */}
   <canvas
-    class="absolute inset-0 w-full h-full z-0 pointer-events-none"
-    data-growth-motion
+    class="absolute inset-0 w-full h-full z-0 pointer-events-none opacity-70"
+    data-growth-backdrop
     aria-hidden="true"
   ></canvas>
 
   <div class="relative z-10 max-w-[1400px] mx-auto px-[var(--spacing-gutter)]">
-    {/* Header — the headline runs full width so it holds at two lines, then the
-        promise is pushed out to the right margin. Keeps it off a full viewport. */}
     <header>
       {eyebrow && <p class="eyebrow text-teal mb-6">{eyebrow}</p>}
       <h2 id={titleId} class="text-display-lg tracking-tighter leading-none text-cream">
@@ -83,44 +79,64 @@ const stem = (i: number) => `calc(${(BAND * (1 - nodeY(i) / 100)).toFixed(1)}px 
       </p>
     </header>
 
-    {/* Plot band — node markers on the climb, with stems dropping to the
-        stations below. Wide viewports only; the rail takes over under xl. */}
-    <div class="growth-plot hidden xl:grid grid-cols-4 gap-x-8 h-[300px] mt-10" data-growth-plot aria-hidden="true">
-      {cards.map((_c, i) => (
-        <span class="growth-node" style={`--ny:${nodeY(i)}%; --stem:${stem(i)};`}>
-          <span class="growth-node__ring" data-growth-anchor></span>
-        </span>
-      ))}
-    </div>
+    <ol class="growth-board mt-14 md:mt-16" data-growth-board>
+      {cards.map((c, i) => {
+        const t = TILES[i] ?? TILES[TILES.length - 1];
+        const hero = t.area === "hero";
+        const wide = t.area === "wide";
+        return (
+          <li
+            class:list={["growth-tile", `growth-tile--${t.area}`]}
+            data-growth-tile
+            data-kind={t.kind}
+            data-cursor="token"
+            style={`--glow:${t.glow};`}
+          >
+            <span class="growth-tile__sheen" aria-hidden="true"></span>
+            <span class="growth-tile__numeral" aria-hidden="true">{c.number}</span>
 
-    {/* Stations */}
-    <ol class="growth-stations mt-12 xl:mt-8 grid grid-cols-1 xl:grid-cols-4 gap-x-8 gap-y-14" data-growth-stations>
-      {cards.map((c) => (
-        <li class="growth-station relative" data-growth-station>
-          <div class="flex items-center gap-3 mb-5">
-            <span class="font-display text-sm font-semibold tracking-widest text-teal tabular-nums">{c.number}</span>
-            <ServiceIcon title={c.title} class="w-5 h-5 text-teal-bright shrink-0" />
-          </div>
+            {/* Live micro-visual — the channel's idea in motion. */}
+            <div class="growth-tile__visual" aria-hidden="true">
+              <canvas data-growth-visual></canvas>
+            </div>
 
-          {/* min-height holds two lines so every description starts on the same
-              baseline across the four columns, however the title wraps. */}
-          <h3 class="growth-station__title font-display text-2xl xl:text-[1.75rem] font-semibold tracking-tight leading-tight text-cream mb-3 xl:min-h-[4.4rem]">
-            {c.title}
-          </h3>
+            <div class="growth-tile__body">
+              <div class="growth-tile__meta">
+                <span class="growth-tile__num">{c.number}</span>
+                <ServiceIcon title={c.title} class="w-5 h-5 text-teal-bright shrink-0" />
+              </div>
 
-          <p class="text-[15px] xl:text-base text-cream/65 leading-relaxed max-w-[46ch]">{c.desc}</p>
+              <h3
+                class:list={[
+                  "growth-tile__title font-display font-semibold tracking-tight leading-tight text-cream",
+                  hero ? "text-3xl xl:text-5xl" : "text-2xl xl:text-3xl",
+                ]}
+              >
+                {c.title}
+              </h3>
 
-          <p class="growth-station__tags mt-5 max-w-[46ch]" aria-label="What this includes">
-            {c.tags.map((t) => (
-              <span class="growth-station__tag">{t}</span>
-            ))}
-          </p>
-        </li>
-      ))}
+              <p
+                class:list={[
+                  "growth-tile__desc leading-relaxed text-cream/75",
+                  hero ? "text-base xl:text-[1.0625rem] max-w-[42ch]" : "text-[15px] max-w-[44ch]",
+                ]}
+              >
+                {c.desc}
+              </p>
+
+              <p class="growth-tile__tags" aria-label="What this includes">
+                {c.tags.map((tag) => (
+                  <span class="growth-tile__tag">{tag}</span>
+                ))}
+              </p>
+            </div>
+          </li>
+        );
+      })}
     </ol>
   </div>
 
-  {/* Ambient background blob — base wash behind the canvas. */}
+  {/* Ambient wash behind everything. */}
   <div
     class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[80vmax] h-[80vmax] bg-teal/5 rounded-full pointer-events-none z-0 md:blur-[120px]"
     aria-hidden="true"
@@ -129,68 +145,223 @@ const stem = (i: number) => `calc(${(BAND * (1 - nodeY(i) / 100)).toFixed(1)}px 
 </section>
 
 <style>
-  /* ── Plot band: node markers + stems ──────────────────────────────────── */
+  /* ── Bento grid ───────────────────────────────────────────────────────────
+     Single column stack → hero + 2-up + wide at md → full asymmetric bento at
+     xl, where tile size is what communicates relative weight. */
+  .growth-board {
+    display: grid;
+    gap: 1rem;
+    grid-template-columns: 1fr;
+  }
 
-  /* One cell per station column, so a node is always centred over the copy
-     beneath it however the grid resolves. */
-  .growth-node {
+  @media (min-width: 768px) {
+    .growth-board {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+    .growth-tile--hero,
+    .growth-tile--wide {
+      grid-column: span 2;
+    }
+  }
+
+  @media (min-width: 1280px) {
+    .growth-board {
+      grid-template-columns: repeat(12, minmax(0, 1fr));
+      grid-template-rows: 340px 340px auto;
+    }
+    .growth-tile--hero {
+      grid-column: 1 / span 7;
+      grid-row: 1 / span 2;
+    }
+    .growth-tile--upper {
+      grid-column: 8 / span 5;
+      grid-row: 1;
+    }
+    .growth-tile--lower {
+      grid-column: 8 / span 5;
+      grid-row: 2;
+    }
+    .growth-tile--wide {
+      grid-column: 1 / span 12;
+      grid-row: 3;
+    }
+  }
+
+  /* ── Tile surface ─────────────────────────────────────────────────────────
+     Layered on purpose: gradient base, teal glow at the visual's origin, then
+     grain. No backdrop-filter anywhere — blurred surfaces are the treatment
+     that tanks frame rate on mid-tier devices. */
+  .growth-tile {
     position: relative;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    padding: 1.75rem;
+    border-radius: 1.75rem;
+    background:
+      radial-gradient(
+        120% 90% at var(--glow),
+        color-mix(in srgb, var(--color-teal) 9%, transparent),
+        transparent 62%
+      ),
+      linear-gradient(
+        160deg,
+        color-mix(in srgb, var(--color-navy-600) 55%, var(--color-navy-700)),
+        var(--color-navy-800)
+      );
+    box-shadow:
+      inset 0 1px 0 rgba(255, 255, 255, 0.1),
+      inset 0 0 0 1px rgba(255, 255, 255, 0.08),
+      0 30px 60px -30px rgba(0, 0, 0, 0.65);
+    transition: box-shadow var(--duration-base) var(--ease-out-soft);
   }
 
-  .growth-node__ring {
-    position: absolute;
-    top: var(--ny);
-    left: 50%;
-    width: 13px;
-    height: 13px;
-    margin: -6.5px 0 0 -6.5px;
-    border-radius: 50%;
-    border: 1.5px solid var(--color-teal);
-    background: var(--color-navy-800);
-    transition:
-      transform var(--duration-base) var(--ease-out-soft),
-      border-color var(--duration-base) var(--ease-out-soft),
-      box-shadow var(--duration-base) var(--ease-out-soft);
+  @media (min-width: 1280px) {
+    .growth-tile {
+      padding: 2.25rem;
+    }
+    .growth-tile--hero {
+      padding: 2.75rem;
+    }
   }
 
-  /* Stem: node → the station beneath it. Length varies with the climb, which
-     is what makes the four columns read as plotted rather than merely offset. */
-  .growth-node::after {
+  /* Grain — a tiled turbulence texture at low opacity. Pure CSS, so unlike the
+     global grain overlay it costs nothing per frame and works on touch too. */
+  .growth-tile::after {
     content: "";
     position: absolute;
-    top: var(--ny);
-    left: 50%;
-    width: 1px;
-    height: var(--stem);
-    background: linear-gradient(
-      to bottom,
-      color-mix(in srgb, var(--color-teal) 30%, transparent),
-      transparent
+    inset: 0;
+    pointer-events: none;
+    opacity: 0.035;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23n)'/%3E%3C/svg%3E");
+  }
+
+  /* Specular highlight that tracks the pointer (--mx/--my set from JS). */
+  .growth-tile__sheen {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    opacity: 0;
+    background: radial-gradient(
+      36% 44% at var(--mx, 50%) var(--my, 50%),
+      rgba(255, 255, 255, 0.09),
+      transparent 70%
     );
+    transition: opacity var(--duration-base) var(--ease-out-soft);
   }
 
-  /* Hovering a station lights its node up on the line above (set from JS). */
-  .growth-node__ring.is-active {
-    transform: scale(1.45);
-    border-color: var(--color-teal-bright);
-    box-shadow: 0 0 16px 1px color-mix(in srgb, var(--color-teal-bright) 45%, transparent);
+  .growth-tile:hover .growth-tile__sheen {
+    opacity: 1;
   }
 
-  /* ── Stations ─────────────────────────────────────────────────────────── */
-  .growth-station__title {
+  .growth-tile:hover {
+    box-shadow:
+      inset 0 1px 0 rgba(255, 255, 255, 0.14),
+      inset 0 0 0 1px color-mix(in srgb, var(--color-teal) 22%, transparent),
+      0 40px 80px -32px rgba(0, 0, 0, 0.8);
+  }
+
+  /* Oversized ghosted numeral — a graphic anchor in the corner. */
+  .growth-tile__numeral {
+    position: absolute;
+    top: -0.35em;
+    right: 0.06em;
+    font-family: var(--font-display);
+    font-weight: 600;
+    font-variant-numeric: tabular-nums;
+    line-height: 1;
+    font-size: 8rem;
+    color: rgba(255, 255, 255, 0.04);
+    pointer-events: none;
+    user-select: none;
+  }
+
+  .growth-tile--hero .growth-tile__numeral {
+    font-size: 13rem;
+  }
+
+  /* ── Visual band ──────────────────────────────────────────────────────────
+     Sits above the copy and takes the slack, so tall tiles fill with motion
+     instead of dead navy. */
+  /* Low min-height on purpose: `flex: 1` hands the band whatever the copy
+     doesn't use, so it fills tall tiles without ever pushing the tags out of
+     a fixed-height one. */
+  .growth-tile__visual {
+    position: relative;
+    flex: 1 1 auto;
+    min-height: 56px;
+    margin-bottom: 1.25rem;
+    /* Dissolve into the tile rather than ending on a hard edge. */
+    -webkit-mask-image: radial-gradient(120% 100% at 50% 40%, #000 45%, transparent 100%);
+    mask-image: radial-gradient(120% 100% at 50% 40%, #000 45%, transparent 100%);
+  }
+
+  .growth-tile__visual canvas {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+  }
+
+  .growth-tile--hero .growth-tile__visual {
+    min-height: 200px;
+  }
+
+  /* Phones: the visuals are supporting texture, not the point — keep them
+     present but stop them inflating the stack. */
+  @media (max-width: 767px) {
+    .growth-tile {
+      padding: 1.5rem;
+    }
+    .growth-tile__visual {
+      min-height: 76px;
+    }
+    .growth-tile--hero .growth-tile__visual {
+      min-height: 132px;
+    }
+  }
+
+  .growth-tile--wide .growth-tile__visual {
+    min-height: 96px;
+  }
+
+  /* ── Copy ─────────────────────────────────────────────────────────────── */
+  .growth-tile__body {
+    position: relative;
+    z-index: 1;
+  }
+
+  .growth-tile__meta {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: 1rem;
+  }
+
+  .growth-tile__num {
+    font-family: var(--font-display);
+    font-size: 0.875rem;
+    font-weight: 600;
+    letter-spacing: 0.16em;
+    font-variant-numeric: tabular-nums;
+    color: var(--color-teal);
+  }
+
+  .growth-tile__title {
+    margin-bottom: 0.75rem;
     transition: color var(--duration-base) var(--ease-out-soft);
   }
 
-  .growth-station:hover .growth-station__title {
+  .growth-tile:hover .growth-tile__title {
     color: var(--color-teal-bright);
   }
 
-  /* Tags as an inline mono run — no pills, no chips, no container. Flex (not
-     inline text) so tags can wrap between themselves without depending on
-     whitespace text nodes, which the template doesn't emit. */
-  .growth-station__tags {
+  /* Tags as an inline mono run — no pills, no chips. Flex so they wrap between
+     themselves without relying on whitespace text nodes. */
+  .growth-tile__tags {
     display: flex;
     flex-wrap: wrap;
+    margin-top: 1.25rem;
     font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, monospace;
     font-size: 0.6875rem;
     line-height: 1.9;
@@ -201,109 +372,120 @@ const stem = (i: number) => `calc(${(BAND * (1 - nodeY(i) / 100)).toFixed(1)}px 
 
   /* Each tag carries its own trailing separator and never breaks internally,
      so a wrap leaves the dot at the end of a line instead of orphaning it. */
-  .growth-station__tag {
+  .growth-tile__tag {
     white-space: nowrap;
   }
 
-  .growth-station__tag:not(:last-child)::after {
+  .growth-tile__tag:not(:last-child)::after {
     content: "·";
     color: color-mix(in srgb, var(--color-cream) 28%, transparent);
     margin: 0 0.45em;
   }
 
-  /* ── Rail (< xl): the same climb, running down the left edge ──────────── */
-  @media (max-width: 1279px) {
-    .growth-stations {
-      border-left: 1px solid color-mix(in srgb, var(--color-teal) 22%, transparent);
-      padding-left: 2rem;
+  /* The wide closer reads as a strip: the climb runs the full width behind the
+     copy, masked out on the left so it never fights the text. Side-by-side
+     columns left a dead zone in the middle. */
+  @media (min-width: 1280px) {
+    .growth-tile--wide {
+      justify-content: center;
+      min-height: 244px;
     }
-
-    .growth-station::before {
-      content: "";
+    .growth-tile--wide .growth-tile__visual {
       position: absolute;
-      top: 0.4rem;
-      left: -2rem;
-      width: 11px;
-      height: 11px;
-      margin-left: -6px;
-      border-radius: 50%;
-      border: 1.5px solid var(--color-teal);
-      background: var(--color-navy-800);
+      inset: 0;
+      flex: none;
+      margin: 0;
+      min-height: 0;
+      -webkit-mask-image: linear-gradient(to right, transparent 24%, #000 58%);
+      mask-image: linear-gradient(to right, transparent 24%, #000 58%);
+    }
+    .growth-tile--wide .growth-tile__tags {
+      margin-top: 1rem;
     }
   }
 
   @media (prefers-reduced-motion: reduce) {
-    .growth-node__ring,
-    .growth-station__title {
+    .growth-tile,
+    .growth-tile__title,
+    .growth-tile__sheen {
       transition: none;
     }
   }
 </style>
 
 <script>
-  import { ScrollTrigger, initGsap } from "../lib/gsap";
+  import { gsap, initGsap } from "../lib/gsap";
   import { isCoarsePointer, prefersReducedMotion } from "../lib/motion";
-  import { initGrowthMomentum, type Point } from "../lib/offeringMotion";
+  import {
+    initActivationBurst,
+    initGrowthMomentum,
+    initLifecycleLoop,
+    initNodeMesh,
+    type SceneController,
+  } from "../lib/offeringMotion";
   import { reveal } from "../lib/reveal";
 
   initGsap();
   const reduced = prefersReducedMotion();
   const coarse = isCoarsePointer();
 
+  const SCENES: Record<string, (c: HTMLCanvasElement) => SceneController> = {
+    mesh: initNodeMesh,
+    loop: initLifecycleLoop,
+    burst: initActivationBurst,
+    momentum: (c) => initGrowthMomentum(c),
+  };
+
   document.querySelectorAll<HTMLElement>("[data-offering-growth]").forEach((section) => {
-    const canvas = section.querySelector<HTMLCanvasElement>("[data-growth-motion]");
-    const plot = section.querySelector<HTMLElement>("[data-growth-plot]");
-    const stations = Array.from(section.querySelectorAll<HTMLElement>("[data-growth-station]"));
-    if (!canvas) return;
+    // Backdrop: motes only. The tiles carry the section's motion now.
+    const backdrop = section.querySelector<HTMLCanvasElement>("[data-growth-backdrop]");
+    if (backdrop) initGrowthMomentum(backdrop, { line: false });
 
-    const nodes = plot ? Array.from(plot.querySelectorAll<HTMLElement>("[data-growth-anchor]")) : [];
+    const tiles = Array.from(section.querySelectorAll<HTMLElement>("[data-growth-tile]"));
 
-    /**
-     * Station positions normalized against the canvas box, so the momentum line
-     * passes through each marker. Returns null when the plot is hidden (rail
-     * layout under xl) — the scene then draws its generic ascending curve.
-     */
-    function anchors(): Point[] | null {
-      if (!plot || !nodes.length || plot.offsetParent === null) return null;
-      const box = canvas!.getBoundingClientRect();
-      if (!box.width || !box.height) return null;
-      return nodes.map((n) => {
-        const r = n.getBoundingClientRect();
-        return {
-          x: (r.left + r.width / 2 - box.left) / box.width,
-          y: (r.top + r.height / 2 - box.top) / box.height,
-        };
+    tiles.forEach((tile) => {
+      const canvas = tile.querySelector<HTMLCanvasElement>("[data-growth-visual]");
+      const kind = tile.dataset.kind ?? "";
+      const scene = canvas && SCENES[kind] ? SCENES[kind](canvas) : null;
+
+      // The momentum curve is progress-driven, so it needs an explicit end
+      // state. Draw it complete rather than scrubbing: the strip masks out its
+      // left third for the copy, which is exactly where a part-drawn line
+      // lives, so a scrub would read as an empty tile until you scrolled past.
+      // The rising motes keep the tile alive.
+      if (scene && kind === "momentum") scene.setProgress(1);
+
+      // Touch: draw one settled frame, then stop. Keeps native scroll smooth.
+      if (scene && coarse) {
+        scene.setProgress(1);
+        scene.pause();
+      }
+
+      if (coarse || reduced) return;
+
+      // Cursor-reactive depth. quickTo gives the tilt a spring settle instead
+      // of tracking the pointer rigidly. Note GSAP's transform props are
+      // `rotationX`/`rotationY` — `rotateX` silently animates nothing.
+      gsap.set(tile, { transformPerspective: 900 });
+      const rx = gsap.quickTo(tile, "rotationX", { duration: 0.5, ease: "power3.out" });
+      const ry = gsap.quickTo(tile, "rotationY", { duration: 0.5, ease: "power3.out" });
+
+      tile.addEventListener("pointermove", (e) => {
+        const r = tile.getBoundingClientRect();
+        const px = (e.clientX - r.left) / r.width;
+        const py = (e.clientY - r.top) / r.height;
+        tile.style.setProperty("--mx", `${(px * 100).toFixed(1)}%`);
+        tile.style.setProperty("--my", `${(py * 100).toFixed(1)}%`);
+        rx((0.5 - py) * 5);
+        ry((px - 0.5) * 5);
       });
-    }
 
-    const scene = initGrowthMomentum(canvas, { anchors });
-
-    // Scrubbed climb: the line completes as the plot settles into view. Touch
-    // and reduced-motion get the finished line, frozen — scroll stays native.
-    if (!reduced && !coarse) {
-      ScrollTrigger.create({
-        trigger: section,
-        start: "top 70%",
-        end: "center center",
-        scrub: true,
-        onUpdate: (self) => scene.setProgress(self.progress),
+      tile.addEventListener("pointerleave", () => {
+        rx(0);
+        ry(0);
       });
-    } else {
-      scene.setProgress(1);
-      scene.pause();
-    }
+    });
 
-    // Trigger off the station list, not the plot band — the band is display:none
-    // under xl, which would collapse its trigger position to the document top.
-    reveal(stations, { trigger: section.querySelector("[data-growth-stations]") });
-
-    // Hovering a station lights its node on the line above it.
-    if (!coarse && nodes.length === stations.length) {
-      stations.forEach((station, i) => {
-        const ring = nodes[i];
-        station.addEventListener("mouseenter", () => ring.classList.add("is-active"));
-        station.addEventListener("mouseleave", () => ring.classList.remove("is-active"));
-      });
-    }
+    reveal(tiles, { trigger: section.querySelector("[data-growth-board]") });
   });
 </script>

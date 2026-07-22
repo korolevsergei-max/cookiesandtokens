@@ -333,10 +333,10 @@ export function initSketchField(canvas: HTMLCanvasElement, opts: { ambient?: boo
 
 /* ── Growth: a momentum line + rising motes ──────────────────────────────── */
 //
-// The line is structural, not decorative: the section feeds it the measured
-// positions of the four channel stations, so it climbs through each node marker
-// on its way up and to the right. Without anchors (narrow viewports, where the
-// plot collapses to a vertical rail) it falls back to a generic ascending curve.
+// Two jobs. Inside the Paid Media tile it draws the full climb — curve, area
+// fill and glowing head — at a wide short aspect. Behind the whole section it
+// runs with `line: false`, contributing only the rising motes and gridlines so
+// the tiles above it stay the focus.
 
 interface Mote {
   x: number;
@@ -397,29 +397,9 @@ function splineThrough(pts: Point[], n = 14): Point[] {
   return out;
 }
 
-/**
- * Build the climb from measured station anchors (normalized 0..1), extended one
- * control point past each end so the line enters from the left edge below the
- * first station and exits past the last one carrying the glowing head off-frame.
- */
-function anchoredCurve(anchors: Point[], w: number, h: number): Point[] {
-  const first = anchors[0];
-  const last = anchors[anchors.length - 1];
-  const dx = last.x - first.x;
-  const dy = last.y - first.y;
-  const lead = { x: first.x - Math.max(0.1, dx * 0.35), y: first.y - dy * 0.28 };
-  const tail = { x: last.x + Math.max(0.1, dx * 0.3), y: last.y + dy * 0.24 };
-  const pts = [lead, ...anchors, tail].map((p) => ({ x: p.x * w, y: p.y * h }));
-  return splineThrough(pts);
-}
-
 export interface GrowthOptions {
-  /**
-   * Returns the four station positions as normalized 0..1 points measured off
-   * the DOM, or null when the plot layout isn't mounted (narrow viewports) —
-   * in which case the decorative fallback curve is drawn instead.
-   */
-  anchors?: () => Point[] | null;
+  /** false → motes and gridlines only, no curve (the section backdrop). */
+  line?: boolean;
 }
 
 export function initGrowthMomentum(canvas: HTMLCanvasElement, options: GrowthOptions = {}): SceneController {
@@ -433,18 +413,7 @@ export function initGrowthMomentum(canvas: HTMLCanvasElement, options: GrowthOpt
       lw = f.w;
       lh = f.h;
       motes = buildMotes(f.w, f.h, 40);
-      // Re-measured only on resize: the canvas spans the whole section, so any
-      // reflow that moves the stations also resizes it (ResizeObserver → fit()).
-      const measured = options.anchors?.() ?? null;
-      if (measured && measured.length >= 2) {
-        curve = anchoredCurve(measured, f.w, f.h);
-      } else if (options.anchors) {
-        // Anchors were asked for but the plot isn't mounted (narrow viewports,
-        // where the section draws its own rail in CSS) — motes only, no curve.
-        curve = [];
-      } else {
-        curve = growthCurve(f.w, f.h);
-      }
+      curve = options.line === false ? [] : growthCurve(f.w, f.h);
     }
     const { palette } = f;
     // Floor only — an externally set progress still wins, so reduced-motion
@@ -535,6 +504,185 @@ export function initGrowthMomentum(canvas: HTMLCanvasElement, options: GrowthOpt
   // Ambient: runs while visible. Default progress shows a confidently "grown"
   // line even before the scroll driver kicks in (mobile / first paint).
   return mountScene(canvas, render, { autoPlay: true, defaultProgress: 0.62 });
+}
+
+/* ── Growth tiles: one micro-visual per channel ──────────────────────────── */
+//
+// Three small scenes that fill the upper band of their bento tile. Each one is
+// the channel's idea in motion — a network that knits itself, a loop that keeps
+// circulating, a burst that radiates — so the tiles read as four different
+// instruments rather than four copies of one card. All are deliberately soft
+// and low-contrast: they sit behind copy, so they must never compete with it.
+
+/** Organic & Community — points drift and link up as they come within range. */
+export function initNodeMesh(canvas: HTMLCanvasElement): SceneController {
+  interface Node {
+    x: number;
+    y: number;
+    vx: number;
+    vy: number;
+    r: number;
+  }
+
+  const COUNT = 22;
+  const LINK = 0.28; // link radius as a fraction of the smaller side
+  let nodes: Node[] = [];
+  let lw = 0;
+  let lh = 0;
+
+  const render: RenderFn = (ctx, f) => {
+    if (f.w !== lw || f.h !== lh) {
+      lw = f.w;
+      lh = f.h;
+      nodes = Array.from({ length: COUNT }, () => ({
+        x: Math.random() * f.w,
+        y: Math.random() * f.h,
+        vx: (Math.random() - 0.5) * 9,
+        vy: (Math.random() - 0.5) * 9,
+        r: 1.1 + Math.random() * 1.6,
+      }));
+    }
+
+    const { palette } = f;
+    const dts = f.dt / 1000;
+    const link = LINK * Math.min(f.w, f.h);
+
+    if (!f.reduced) {
+      for (const n of nodes) {
+        n.x += n.vx * dts;
+        n.y += n.vy * dts;
+        // Bounce rather than wrap: the cluster stays a cluster.
+        if (n.x < 0 || n.x > f.w) n.vx *= -1;
+        if (n.y < 0 || n.y > f.h) n.vy *= -1;
+        n.x = Math.max(0, Math.min(f.w, n.x));
+        n.y = Math.max(0, Math.min(f.h, n.y));
+      }
+    }
+
+    ctx.lineWidth = 1;
+    for (let i = 0; i < nodes.length; i++) {
+      for (let j = i + 1; j < nodes.length; j++) {
+        const a = nodes[i];
+        const b = nodes[j];
+        const d = Math.hypot(b.x - a.x, b.y - a.y);
+        if (d > link) continue;
+        // Fade the link in as the pair closes — the mesh breathes.
+        ctx.strokeStyle = rgba(palette.teal, 0.3 * (1 - d / link));
+        ctx.beginPath();
+        ctx.moveTo(a.x, a.y);
+        ctx.lineTo(b.x, b.y);
+        ctx.stroke();
+      }
+    }
+
+    for (const n of nodes) {
+      ctx.fillStyle = rgba(palette.tealBright, 0.55);
+      ctx.beginPath();
+      ctx.arc(n.x, n.y, n.r, 0, Math.PI * 2);
+      ctx.fill();
+    }
+  };
+
+  return mountScene(canvas, render);
+}
+
+/** Email & Lifecycle — pulses circulating a closed loop, forever returning. */
+export function initLifecycleLoop(canvas: HTMLCanvasElement): SceneController {
+  const PULSES = 3;
+  const CYCLE = 5200; // ms for one lap
+  let path: Point[] = [];
+  let lw = 0;
+  let lh = 0;
+
+  const render: RenderFn = (ctx, f) => {
+    if (f.w !== lw || f.h !== lh) {
+      lw = f.w;
+      lh = f.h;
+      // A closed, slightly irregular ring — a lifecycle, not a perfect circle.
+      // Both radii derive from one unit so the loop stays a loop in a short
+      // wide band instead of flattening into a line.
+      const cx = f.w * 0.5;
+      const cy = f.h * 0.5;
+      const unit = Math.min(f.w * 0.5, f.h * 1.5) * 0.42;
+      const rx = unit * 1.45;
+      const ry = unit;
+      const ring: Point[] = [];
+      const STEPS = 9;
+      for (let i = 0; i < STEPS; i++) {
+        const a = (i / STEPS) * Math.PI * 2;
+        const wob = 0.86 + 0.14 * Math.sin(a * 3);
+        ring.push({ x: cx + Math.cos(a) * rx * wob, y: cy + Math.sin(a) * ry * wob });
+      }
+      // Wrap the ends so the spline closes smoothly on itself.
+      path = splineThrough([...ring, ring[0], ring[1]], 10);
+    }
+
+    const { palette } = f;
+
+    ctx.strokeStyle = rgba(palette.teal, 0.22);
+    ctx.lineWidth = 1.25;
+    ctx.beginPath();
+    ctx.moveTo(path[0].x, path[0].y);
+    for (let i = 1; i < path.length; i++) ctx.lineTo(path[i].x, path[i].y);
+    ctx.stroke();
+
+    for (let p = 0; p < PULSES; p++) {
+      const phase = f.reduced
+        ? p / PULSES
+        : (((f.time / CYCLE + p / PULSES) % 1) + 1) % 1;
+      const at = path[Math.floor(phase * (path.length - 1))];
+      if (!at) continue;
+      ctx.save();
+      ctx.shadowColor = rgba(palette.tealBright, 0.8);
+      ctx.shadowBlur = 12;
+      ctx.fillStyle = rgba(palette.tealBright, 0.9);
+      ctx.beginPath();
+      ctx.arc(at.x, at.y, 2.6, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.restore();
+    }
+  };
+
+  return mountScene(canvas, render);
+}
+
+/** Experiential & Activations — rings radiating from a point, on a stagger. */
+export function initActivationBurst(canvas: HTMLCanvasElement): SceneController {
+  const RINGS = 4;
+  const CYCLE = 3800; // ms per ring lifetime
+
+  const render: RenderFn = (ctx, f) => {
+    const { palette } = f;
+    const cx = f.w * 0.5;
+    const cy = f.h * 0.52;
+    // Reach across a wide band rather than being pinned to its short side.
+    const max = Math.min(f.w * 0.46, f.h * 1.7);
+
+    for (let i = 0; i < RINGS; i++) {
+      const phase = f.reduced
+        ? (i + 1) / (RINGS + 1)
+        : (((f.time / CYCLE + i / RINGS) % 1) + 1) % 1;
+      const r = max * phase;
+      if (r < 1) continue;
+      // Fade out as the ring reaches the edge so it dissolves, never clips.
+      ctx.strokeStyle = rgba(palette.teal, 0.34 * (1 - phase));
+      ctx.lineWidth = 1.25;
+      ctx.beginPath();
+      ctx.arc(cx, cy, r, 0, Math.PI * 2);
+      ctx.stroke();
+    }
+
+    ctx.save();
+    ctx.shadowColor = rgba(palette.tealBright, 0.85);
+    ctx.shadowBlur = 14;
+    ctx.fillStyle = rgba(palette.tealBright, 0.95);
+    ctx.beginPath();
+    ctx.arc(cx, cy, 3, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.restore();
+  };
+
+  return mountScene(canvas, render);
 }
 
 /* ── Software: a schematic system diagram that draws once ────────────────── */
