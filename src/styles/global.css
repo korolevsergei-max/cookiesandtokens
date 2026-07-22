@@ -100,9 +100,17 @@
   body {
     background-color: var(--color-navy);
     color: var(--color-cream);
+    /* Follow text color so the caret stays readable on navy and cream. */
+    caret-color: currentColor;
     font-family: var(--font-body);
     font-feature-settings: "ss01", "cv01";
     overflow-x: clip;
+  }
+
+  /* Light sections: native caret/controls must not inherit dark color-scheme. */
+  [data-tone="light"] {
+    color-scheme: light;
+    caret-color: var(--color-ink);
   }
 
   h1, h2, h3, h4 {
@@ -174,7 +182,20 @@
   z-index: 9998;
   pointer-events: none;
   mix-blend-mode: overlay;
-  will-change: opacity;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .ct-grain {
+    will-change: opacity;
+  }
+}
+
+@media (hover: none), (pointer: coarse) {
+  /* Static grain on touch — skip continuous blend promotion during scroll. */
+  .ct-grain {
+    mix-blend-mode: soft-light;
+    opacity: 0.03;
+  }
 }
 
 /* ============================================================================
@@ -208,15 +229,19 @@ html.ct-cursor-active * {
 }
 
 .ct-cursor__dot {
-  width: 6px;
-  height: 6px;
-  margin: -3px 0 0 -3px;
+  width: 7px;
+  height: 7px;
+  margin: -3.5px 0 0 -3.5px;
   border-radius: 50%;
-  background: var(--color-cream);
+  /* Dual-tone: navy core + cream halo stays visible on cream AND navy. */
+  background: var(--color-navy);
+  box-shadow: 0 0 0 2px var(--color-cream);
   transition:
     width var(--duration-fast) var(--ease-out-soft),
     height var(--duration-fast) var(--ease-out-soft),
-    opacity var(--duration-fast) var(--ease-out-soft);
+    opacity var(--duration-fast) var(--ease-out-soft),
+    background-color var(--duration-fast) var(--ease-out-soft),
+    box-shadow var(--duration-fast) var(--ease-out-soft);
 }
 
 .ct-cursor__ring {
@@ -224,12 +249,14 @@ html.ct-cursor-active * {
   height: 36px;
   margin: -18px 0 0 -18px;
   border-radius: 50%;
-  border: 1.5px solid color-mix(in srgb, var(--color-cream) 55%, transparent);
+  border: 1.5px solid var(--color-navy);
+  box-shadow: 0 0 0 1.5px var(--color-cream);
   transition:
     width var(--duration-base) var(--ease-out-soft),
     height var(--duration-base) var(--ease-out-soft),
     border-color var(--duration-base) var(--ease-out-soft),
-    background-color var(--duration-base) var(--ease-out-soft);
+    background-color var(--duration-base) var(--ease-out-soft),
+    box-shadow var(--duration-base) var(--ease-out-soft);
 }
 
 .ct-cursor__label {
@@ -258,12 +285,14 @@ html.ct-cursor-active * {
   margin: -14px 0 0 -14px;
 }
 
-/* State: link — ring grows, dot hides */
+/* State: link — ring grows, solid enough to read on cream Work rows */
 .ct-cursor[data-state="link"] .ct-cursor__ring {
   width: 56px;
   height: 56px;
   margin: -28px 0 0 -28px;
-  background: color-mix(in srgb, var(--color-cream) 10%, transparent);
+  border-color: var(--color-navy);
+  background: color-mix(in srgb, var(--color-navy) 16%, transparent);
+  box-shadow: 0 0 0 1.5px var(--color-cream);
 }
 .ct-cursor[data-state="link"] .ct-cursor__dot {
   opacity: 0;
@@ -275,10 +304,12 @@ html.ct-cursor-active * {
   height: 64px;
   margin: -32px 0 0 -32px;
   border-color: var(--color-purple);
-  background: color-mix(in srgb, var(--color-purple) 20%, transparent);
+  background: color-mix(in srgb, var(--color-purple) 22%, transparent);
+  box-shadow: 0 0 0 1.5px var(--color-cream);
 }
 .ct-cursor[data-state="cookie"] .ct-cursor__dot {
   background: var(--color-purple);
+  box-shadow: 0 0 0 2px var(--color-cream);
 }
 
 /* State: token (teal) */
@@ -287,10 +318,12 @@ html.ct-cursor-active * {
   height: 64px;
   margin: -32px 0 0 -32px;
   border-color: var(--color-teal);
-  background: color-mix(in srgb, var(--color-teal) 18%, transparent);
+  background: color-mix(in srgb, var(--color-teal) 20%, transparent);
+  box-shadow: 0 0 0 1.5px var(--color-cream);
 }
 .ct-cursor[data-state="token"] .ct-cursor__dot {
   background: var(--color-teal);
+  box-shadow: 0 0 0 2px var(--color-cream);
 }
 
 /* State: hidden */
