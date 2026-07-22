@@ -2,15 +2,19 @@ import type { ImageMetadata } from "astro";
 
 import medicalApproachImage from "../assets/case-studies/medical/approach.jpg";
 import medicalContextImage from "../assets/case-studies/medical/context.jpg";
+import medicalHeroImage from "../assets/case-studies/medical/hero.jpg";
 import medicalOutcomeImage from "../assets/case-studies/medical/outcome.jpg";
 import realEstateApproachImage from "../assets/case-studies/real-estate/approach.jpg";
 import realEstateContextImage from "../assets/case-studies/real-estate/context.jpg";
+import realEstateHeroImage from "../assets/case-studies/real-estate/hero.jpg";
 import realEstateOutcomeImage from "../assets/case-studies/real-estate/outcome.jpg";
 import restaurantApproachImage from "../assets/case-studies/restaurant/approach.jpg";
 import restaurantContextImage from "../assets/case-studies/restaurant/context.jpg";
+import restaurantHeroImage from "../assets/case-studies/restaurant/hero.jpg";
 import restaurantOutcomeImage from "../assets/case-studies/restaurant/outcome.jpg";
 import retailApproachImage from "../assets/case-studies/retail/approach.jpg";
 import retailContextImage from "../assets/case-studies/retail/context.jpg";
+import retailHeroImage from "../assets/case-studies/retail/hero.jpg";
 import retailOutcomeImage from "../assets/case-studies/retail/outcome.jpg";
 
 export const serviceAreaOrder = ["creative", "growth", "software"] as const;
@@ -53,6 +57,11 @@ export interface CaseStudyStep {
   visual: CaseStudyVisual;
 }
 
+export interface CaseStudyHeroVisual {
+  image: ImageMetadata;
+  alt: string;
+}
+
 export interface CaseStudy {
   slug: string;
   serviceArea: ServiceArea;
@@ -62,6 +71,7 @@ export interface CaseStudy {
   title: string;
   summary: string;
   catalogSummary: string;
+  hero: CaseStudyHeroVisual;
   metrics: CaseStudyMetric[];
   steps: [CaseStudyStep, CaseStudyStep, CaseStudyStep];
   disclosure: string;
@@ -93,6 +103,10 @@ export const caseStudies: CaseStudy[] = [
       "A plant based restaurant chain needed its paid channels to work as one growth engine, not a pile of disconnected campaigns.",
     catalogSummary:
       "Search, social, and display were rebuilt into a faster testing loop for a restaurant chain that needed more paid orders at better efficiency.",
+    hero: {
+      image: restaurantHeroImage,
+      alt: "Phone checkout beside a plant-based takeout order on a cream restaurant counter.",
+    },
     metrics: [
       { value: "+83%", label: "web traffic vs. prior year" },
       { value: "3.3×", label: "paid cart sessions vs. baseline" },
@@ -182,6 +196,10 @@ export const caseStudies: CaseStudy[] = [
       "A specialty retailer with 35 locations needed loyalty and email to work as one growth engine across online and retail.",
     catalogSummary:
       "A fragmented loyalty program became a connected owned-channel engine across ecommerce and 35 stores.",
+    hero: {
+      image: retailHeroImage,
+      alt: "Loyalty membership card beside a phone showing a member email offer on a boutique counter.",
+    },
     metrics: [
       { value: "350k", label: "members reached" },
       { value: ">40%", label: "email open rates" },
@@ -273,6 +291,10 @@ export const caseStudies: CaseStudy[] = [
       "A clinic needed more sales during a COVID-related lockdown, so the website and campaigns were rebuilt around lead generation.",
     catalogSummary:
       "A medical clinic used a rebuilt site, SEO, and three ten-day channel pilots to create record monthly sales during difficult market conditions.",
+    hero: {
+      image: medicalHeroImage,
+      alt: "Hands holding a phone with an appointment confirmation outside a modern clinic entrance.",
+    },
     metrics: [
       { value: "3.3×", label: "web traffic growth" },
       { value: "3", label: "ten-day pilots" },
@@ -367,6 +389,10 @@ export const caseStudies: CaseStudy[] = [
       "A real estate firm needed leads for a pre-construction project with only ten days before a grand open house.",
     catalogSummary:
       "A landing page built in 48 hours and a rapidly optimized paid campaign generated more than 230 leads in ten days.",
+    hero: {
+      image: realEstateHeroImage,
+      alt: "Twilight exterior of a modern condo tower with visitors arriving for an open house.",
+    },
     metrics: [
       { value: "230+", label: "leads in 10 days" },
       { value: "48h", label: "landing page build" },

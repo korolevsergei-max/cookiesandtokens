@@ -10,8 +10,7 @@ interface Props {
 }
 
 const { study } = Astro.props;
-const heroStep = study.steps[0];
-const heroImage = heroStep.visual.image;
+const { image: heroImage, alt: heroAlt } = study.hero;
 const areaLabel = serviceAreaLabels[study.serviceArea];
 const accent =
   study.serviceArea === "growth" ? "teal" : "purple";
@@ -32,42 +31,20 @@ const accent =
     </div>
 
     <figure
-      class:list={["story-hero__visual", heroImage && "story-hero__visual--image"]}
+      class="story-hero__visual story-hero__visual--image"
       data-story-hero-visual
-      aria-label={heroImage ? undefined : heroStep.visual.alt}
-      role={heroImage ? undefined : "img"}
     >
-      {
-        heroImage ? (
-          <Image
-            src={heroImage}
-            alt={heroStep.visual.alt}
-            class="story-hero__image"
-            widths={[640, 960, 1280, 1600]}
-            sizes="(max-width: 900px) 100vw, 48vw"
-            format="webp"
-            quality={88}
-            loading="eager"
-            fetchpriority="high"
-          />
-        ) : (
-          <div
-            class:list={[
-              "story-hero__abstract",
-              `story-hero__abstract--${study.slug.split("-")[0]}`,
-            ]}
-            aria-hidden="true"
-          >
-            <span class="story-hero__ring story-hero__ring--a"></span>
-            <span class="story-hero__ring story-hero__ring--b"></span>
-            <span class="story-hero__beam story-hero__beam--a"></span>
-            <span class="story-hero__beam story-hero__beam--b"></span>
-            <span class="story-hero__block story-hero__block--a"></span>
-            <span class="story-hero__block story-hero__block--b"></span>
-            <span class="story-hero__block story-hero__block--c"></span>
-          </div>
-        )
-      }
+      <Image
+        src={heroImage}
+        alt={heroAlt}
+        class="story-hero__image"
+        widths={[640, 960, 1280, 1600]}
+        sizes="(max-width: 900px) 100vw, 48vw"
+        format="webp"
+        quality={88}
+        loading="eager"
+        fetchpriority="high"
+      />
     </figure>
   </div>
 </header>
