@@ -1,8 +1,17 @@
 import type { ImageMetadata } from "astro";
 
-import approachImage from "../assets/case-studies/restaurant/approach.png";
-import contextImage from "../assets/case-studies/restaurant/context.png";
-import outcomeImage from "../assets/case-studies/restaurant/outcome.png";
+import medicalApproachImage from "../assets/case-studies/medical/approach.jpg";
+import medicalContextImage from "../assets/case-studies/medical/context.jpg";
+import medicalOutcomeImage from "../assets/case-studies/medical/outcome.jpg";
+import realEstateApproachImage from "../assets/case-studies/real-estate/approach.jpg";
+import realEstateContextImage from "../assets/case-studies/real-estate/context.jpg";
+import realEstateOutcomeImage from "../assets/case-studies/real-estate/outcome.jpg";
+import restaurantApproachImage from "../assets/case-studies/restaurant/approach.jpg";
+import restaurantContextImage from "../assets/case-studies/restaurant/context.jpg";
+import restaurantOutcomeImage from "../assets/case-studies/restaurant/outcome.jpg";
+import retailApproachImage from "../assets/case-studies/retail/approach.jpg";
+import retailContextImage from "../assets/case-studies/retail/context.jpg";
+import retailOutcomeImage from "../assets/case-studies/retail/outcome.jpg";
 
 export const serviceAreaOrder = ["creative", "growth", "software"] as const;
 
@@ -105,9 +114,9 @@ export const caseStudies: CaseStudy[] = [
             { value: "3", label: "paid channels" },
             { value: "50%", label: "budget increase" },
           ],
-          image: contextImage,
+          image: restaurantContextImage,
           alt:
-            "Illustrated restaurant locations and customers connected through fragmented digital marketing paths.",
+            "Abstract art of fragmented navy planes and purple-teal signal lines that nearly meet but stay disconnected.",
         },
       },
       {
@@ -126,9 +135,9 @@ export const caseStudies: CaseStudy[] = [
             { value: "10", label: "weeks of optimization" },
             { value: "3", label: "search paths expanded" },
           ],
-          image: approachImage,
+          image: restaurantApproachImage,
           alt:
-            "Illustrated team testing campaign assets and combining channels into a focused restaurant growth system.",
+            "Abstract art of luminous purple and teal beams converging into one focal point across navy and cream.",
         },
       },
       {
@@ -148,9 +157,9 @@ export const caseStudies: CaseStudy[] = [
             { value: "3.3×", label: "cart sessions" },
             { value: "$0.40", label: "week ten CPC" },
           ],
-          image: outcomeImage,
+          image: restaurantOutcomeImage,
           alt:
-            "Illustrated restaurant network turning a growing digital audience into more orders at lower cost.",
+            "Abstract art of expanding teal and violet ripples rising from a navy base on cream, suggesting compounding growth.",
         },
       },
     ],
@@ -195,8 +204,9 @@ export const caseStudies: CaseStudy[] = [
             { value: "35", label: "retail locations" },
             { value: "2", label: "loyalty paths" },
           ],
+          image: retailContextImage,
           alt:
-            "Abstract loyalty map showing ecommerce and retail locations before program consolidation.",
+            "Abstract art of misaligned teal lattice and purple constellation systems divided by navy voids.",
         },
       },
       {
@@ -216,8 +226,9 @@ export const caseStudies: CaseStudy[] = [
             { value: "2-3", label: "emails per week" },
             { value: "1", label: "connected program" },
           ],
+          image: retailApproachImage,
           alt:
-            "Branded editorial diagram showing loyalty benefits feeding recurring email engagement.",
+            "Abstract art of purple and teal ribbons orbiting a calm cream center in a continuous cadence.",
         },
       },
       {
@@ -237,8 +248,9 @@ export const caseStudies: CaseStudy[] = [
             { value: ">40%", label: "opens" },
             { value: "~4%", label: "CTR" },
           ],
+          image: retailOutcomeImage,
           alt:
-            "Data-forward loyalty visual showing member growth and email engagement outcomes.",
+            "Abstract art of a dense blooming constellation of teal and purple nodes across cream and navy.",
         },
       },
     ],
@@ -284,8 +296,9 @@ export const caseStudies: CaseStudy[] = [
             { value: "1", label: "clinic" },
             { value: "COVID", label: "lockdown market" },
           ],
+          image: medicalContextImage,
           alt:
-            "Editorial medical-office visual showing constrained demand flowing into a digital intake path.",
+            "Abstract cinematic art of a narrow teal aperture of light cutting through navy fog onto cream.",
         },
       },
       {
@@ -306,8 +319,9 @@ export const caseStudies: CaseStudy[] = [
             { value: "10", label: "days each" },
             { value: "3", label: "channels" },
           ],
+          image: medicalApproachImage,
           alt:
-            "Branded diagram showing website conversion improvements and three paid-media pilot tests.",
+            "Abstract Bauhaus art of modular cream panels with three teal and purple pilot beams entering a navy frame.",
         },
       },
       {
@@ -328,8 +342,9 @@ export const caseStudies: CaseStudy[] = [
             { value: "Record", label: "sales" },
             { value: "Lower", label: "average CPC" },
           ],
+          image: medicalOutcomeImage,
           alt:
-            "Data visual showing medical-office traffic growth and improved paid-media efficiency.",
+            "Abstract art of expanding teal and soft purple concentric rings pulsing over cream with navy depth.",
         },
       },
     ],
@@ -375,8 +390,9 @@ export const caseStudies: CaseStudy[] = [
             { value: "10", label: "days" },
             { value: "<100", label: "prior-month leads" },
           ],
+          image: realEstateContextImage,
           alt:
-            "Timeline visual showing a compressed real-estate launch window and prior low lead volume.",
+            "Abstract art of stacked navy planes compressing a thin teal horizon of deadline pressure on cream.",
         },
       },
       {
@@ -396,8 +412,9 @@ export const caseStudies: CaseStudy[] = [
             { value: "48h", label: "page build" },
             { value: "3", label: "ad channels" },
           ],
+          image: realEstateApproachImage,
           alt:
-            "Branded diagram showing a landing page connected to display, social, and search optimization.",
+            "Abstract kinetic art of a sharp teal trajectory cutting across cream into a structured purple and navy plane.",
         },
       },
       {
@@ -418,8 +435,9 @@ export const caseStudies: CaseStudy[] = [
             { value: "13.43%", label: "third campaign conversion" },
             { value: "4.6×", label: "benchmark" },
           ],
+          image: realEstateOutcomeImage,
           alt:
-            "Data visual showing real-estate lead growth and conversion performance above benchmark.",
+            "Abstract art of cascading purple and teal luminous nodes flowing into a cream basin over navy.",
         },
       },
     ],
