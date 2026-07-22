@@ -4,12 +4,10 @@ import type { CaseStudyStep } from "../data/caseStudies";
 
 interface Props {
   step: CaseStudyStep;
-  /** Skip first-step image when already used in the hero */
-  preferAbstract?: boolean;
 }
 
-const { step, preferAbstract = false } = Astro.props;
-const image = preferAbstract ? undefined : step.visual.image;
+const { step } = Astro.props;
+const image = step.visual.image;
 ---
 
 <figure

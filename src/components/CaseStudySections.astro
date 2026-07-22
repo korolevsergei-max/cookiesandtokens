@@ -25,7 +25,7 @@ const { study } = Astro.props;
             {step.tags.map((tag) => <li>{tag}</li>)}
           </ul>
         </div>
-        <CaseStudyVisual step={step} preferAbstract={index === 0 && Boolean(step.visual.image)} />
+        <CaseStudyVisual step={step} />
       </section>
     ))
   }
