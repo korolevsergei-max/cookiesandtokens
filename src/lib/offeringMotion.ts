@@ -371,32 +371,6 @@ export interface Point {
   y: number;
 }
 
-/**
- * Catmull-Rom resample through `pts` (a uniform spline, so the line passes
- * exactly through every anchor). `n` samples per segment.
- */
-function splineThrough(pts: Point[], n = 14): Point[] {
-  if (pts.length < 3) return pts.slice();
-  const out: Point[] = [];
-  for (let i = 0; i < pts.length - 1; i++) {
-    const p0 = pts[i - 1] ?? pts[i];
-    const p1 = pts[i];
-    const p2 = pts[i + 1];
-    const p3 = pts[i + 2] ?? p2;
-    for (let s = 0; s < n; s++) {
-      const t = s / n;
-      const t2 = t * t;
-      const t3 = t2 * t;
-      out.push({
-        x: 0.5 * (2 * p1.x + (-p0.x + p2.x) * t + (2 * p0.x - 5 * p1.x + 4 * p2.x - p3.x) * t2 + (-p0.x + 3 * p1.x - 3 * p2.x + p3.x) * t3),
-        y: 0.5 * (2 * p1.y + (-p0.y + p2.y) * t + (2 * p0.y - 5 * p1.y + 4 * p2.y - p3.y) * t2 + (-p0.y + 3 * p1.y - 3 * p2.y + p3.y) * t3),
-      });
-    }
-  }
-  out.push(pts[pts.length - 1]);
-  return out;
-}
-
 export interface GrowthOptions {
   /** false → motes and gridlines only, no curve (the section backdrop). */
   line?: boolean;
@@ -524,8 +498,10 @@ export function initNodeMesh(canvas: HTMLCanvasElement): SceneController {
     r: number;
   }
 
-  const COUNT = 22;
-  const LINK = 0.28; // link radius as a fraction of the smaller side
+  // Density scales with area so a big hero band reads as a knit network rather
+  // than a handful of scattered dots, while a small tile stays uncluttered.
+  const DENSITY = 1 / 5200; // nodes per px²
+  const LINK = 0.34; // link radius as a fraction of the smaller side
   let nodes: Node[] = [];
   let lw = 0;
   let lh = 0;
@@ -534,7 +510,8 @@ export function initNodeMesh(canvas: HTMLCanvasElement): SceneController {
     if (f.w !== lw || f.h !== lh) {
       lw = f.w;
       lh = f.h;
-      nodes = Array.from({ length: COUNT }, () => ({
+      const count = Math.max(14, Math.min(64, Math.round(f.w * f.h * DENSITY)));
+      nodes = Array.from({ length: count }, () => ({
         x: Math.random() * f.w,
         y: Math.random() * f.h,
         vx: (Math.random() - 0.5) * 9,
@@ -598,23 +575,28 @@ export function initLifecycleLoop(canvas: HTMLCanvasElement): SceneController {
     if (f.w !== lw || f.h !== lh) {
       lw = f.w;
       lh = f.h;
-      // A closed, slightly irregular ring — a lifecycle, not a perfect circle.
-      // Both radii derive from one unit so the loop stays a loop in a short
-      // wide band instead of flattening into a line.
+      // A stadium track, not a circle. These bands are short and wide, so an
+      // ellipse stretched to fill one reads as a squashed lens; a racetrack
+      // with true semicircular ends spans the width and still reads as a
+      // closed cycle at any aspect.
       const cx = f.w * 0.5;
       const cy = f.h * 0.5;
-      const unit = Math.min(f.w * 0.5, f.h * 1.5) * 0.42;
-      const rx = unit * 1.45;
-      const ry = unit;
-      const ring: Point[] = [];
-      const STEPS = 9;
-      for (let i = 0; i < STEPS; i++) {
-        const a = (i / STEPS) * Math.PI * 2;
-        const wob = 0.86 + 0.14 * Math.sin(a * 3);
-        ring.push({ x: cx + Math.cos(a) * rx * wob, y: cy + Math.sin(a) * ry * wob });
+      const r = Math.min(f.h * 0.4, f.w * 0.16);
+      const half = Math.max(0, Math.min(f.w * 0.34, f.h * 1.7) - r); // straight run
+      const pts: Point[] = [];
+      const ARC = 16;
+      // right cap, top → bottom
+      for (let i = 0; i <= ARC; i++) {
+        const a = -Math.PI / 2 + (i / ARC) * Math.PI;
+        pts.push({ x: cx + half + Math.cos(a) * r, y: cy + Math.sin(a) * r });
       }
-      // Wrap the ends so the spline closes smoothly on itself.
-      path = splineThrough([...ring, ring[0], ring[1]], 10);
+      // left cap, bottom → top
+      for (let i = 0; i <= ARC; i++) {
+        const a = Math.PI / 2 + (i / ARC) * Math.PI;
+        pts.push({ x: cx - half + Math.cos(a) * r, y: cy + Math.sin(a) * r });
+      }
+      pts.push(pts[0]);
+      path = pts;
     }
 
     const { palette } = f;
@@ -656,7 +638,7 @@ export function initActivationBurst(canvas: HTMLCanvasElement): SceneController 
     const cx = f.w * 0.5;
     const cy = f.h * 0.52;
     // Reach across a wide band rather than being pinned to its short side.
-    const max = Math.min(f.w * 0.46, f.h * 1.7);
+    const max = Math.min(f.w * 0.44, f.h * 2.3);
 
     for (let i = 0; i < RINGS; i++) {
       const phase = f.reduced

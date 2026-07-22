@@ -167,7 +167,10 @@ const TILES = [
   @media (min-width: 1280px) {
     .growth-board {
       grid-template-columns: repeat(12, minmax(0, 1fr));
-      grid-template-rows: 340px 340px auto;
+      /* Content-driven with a floor, rather than a fixed 340px: the stacked
+         tiles size to their copy and the hero inherits only what they actually
+         need, instead of being handed a tall band of empty navy. */
+      grid-template-rows: minmax(280px, auto) minmax(280px, auto) auto;
     }
     .growth-tile--hero {
       grid-column: 1 / span 7;
@@ -218,10 +221,10 @@ const TILES = [
 
   @media (min-width: 1280px) {
     .growth-tile {
-      padding: 2.25rem;
+      padding: 2rem;
     }
     .growth-tile--hero {
-      padding: 2.75rem;
+      padding: 2.5rem;
     }
   }
 
@@ -289,11 +292,12 @@ const TILES = [
   .growth-tile__visual {
     position: relative;
     flex: 1 1 auto;
-    min-height: 56px;
+    min-height: 48px;
     margin-bottom: 1.25rem;
-    /* Dissolve into the tile rather than ending on a hard edge. */
-    -webkit-mask-image: radial-gradient(120% 100% at 50% 40%, #000 45%, transparent 100%);
-    mask-image: radial-gradient(120% 100% at 50% 40%, #000 45%, transparent 100%);
+    /* Dissolve into the tile rather than ending on a hard edge. Kept generous
+       so the visual stays legible instead of fading to empty navy early. */
+    -webkit-mask-image: radial-gradient(125% 105% at 50% 42%, #000 62%, transparent 100%);
+    mask-image: radial-gradient(125% 105% at 50% 42%, #000 62%, transparent 100%);
   }
 
   .growth-tile__visual canvas {
